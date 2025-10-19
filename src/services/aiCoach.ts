@@ -424,6 +424,36 @@ class AICoachService {
       canUnlock: this.canUnlockMockExams()
     };
   }
+
+  // Get mock exam average score
+  getMockExamAverage(): number {
+    const mockExamResults = this.getMockExamResults();
+    if (mockExamResults.length === 0) return 0;
+    
+    const totalScore = mockExamResults.reduce((sum, result) => sum + result.percentage, 0);
+    return Math.round(totalScore / mockExamResults.length);
+  }
+
+  // Get mock exam count
+  getMockExamCount(): number {
+    return this.getMockExamResults().length;
+  }
+
+  // Get mock exam pass rate
+  getMockExamPassRate(): number {
+    const mockExamResults = this.getMockExamResults();
+    if (mockExamResults.length === 0) return 0;
+    
+    const passedExams = mockExamResults.filter(result => result.percentage >= 70).length;
+    return Math.round((passedExams / mockExamResults.length) * 100);
+  }
+
+  // Get individual test score
+  getTestScore(testId: string): number | null {
+    const testScores = this.getTestScores();
+    const testData = testScores[testId];
+    return testData ? testData.lastScore : null;
+  }
 }
 
 export const aiCoach = new AICoachService();
