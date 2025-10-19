@@ -10,79 +10,7 @@
   box-sizing: border-box;
 }
 
-/* Mock Exam Unlock Progress Section */
-.unlock-progress-section {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 2px solid #f59e0b;
-  border-radius: 16px;
-  padding: 1.5rem;
-  margin: 1rem 0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.section-header h3 {
-  margin: 0 0 0.5rem 0;
-  color: #92400e;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.section-header p {
-  margin: 0 0 1.5rem 0;
-  color: #a16207;
-  font-size: 0.9rem;
-}
-
-.unlock-progress-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.unlock-progress-item {
-  background: white;
-  border-radius: 12px;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.progress-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.progress-content {
-  flex: 1;
-}
-
-.progress-label {
-  font-size: 0.8rem;
-  color: #6b7280;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.progress-value {
-  font-size: 1rem;
-  color: #1f2937;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-}
-
-.progress-status {
-  font-size: 0.9rem;
-}
-
-.progress-status.met {
-  color: #059669;
-}
-
-.progress-status.pending {
-  color: #dc2626;
-}
+/* Mock Exam Unlock Progress Section - REMOVED */
 
 /* Floating AI Tutor Button - WhatsApp Style */
 .floating-ai-tutor {
@@ -127,8 +55,8 @@
 
 /* New mascot-as-button styles */
 .floating-ai-btn-mascot {
-  width: 100px; /* Increased from 80px */
-  height: 100px; /* Increased from 80px */
+  width: 120px; /* Meta/WhatsApp style - much larger */
+  height: 120px; /* Meta/WhatsApp style - much larger */
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -136,7 +64,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 40, 104, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 40, 104, 0.4);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;

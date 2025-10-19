@@ -1677,8 +1677,8 @@ body.practice-page .practice-test {
 
 /* Mascot as button for practice test page */
 .practice-test-ai-tutor .floating-ai-btn-mascot {
-  width: 100px; /* Increased from 80px */
-  height: 100px; /* Increased from 80px */
+  width: 120px; /* Meta/WhatsApp style - much larger */
+  height: 120px; /* Meta/WhatsApp style - much larger */
   border-radius: 50%;
   background: transparent;
   border: none; /* Removed border to match dashboard */
@@ -1686,7 +1686,7 @@ body.practice-page .practice-test {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 40, 104, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 40, 104, 0.4);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
