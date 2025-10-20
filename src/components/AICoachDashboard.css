@@ -53,10 +53,10 @@
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
-/* New mascot-as-button styles */
+/* New mascot-as-button styles - Meta/WhatsApp size */
 .floating-ai-btn-mascot {
-  width: 120px; /* Meta/WhatsApp style - much larger */
-  height: 120px; /* Meta/WhatsApp style - much larger */
+  width: 60px; /* Meta/WhatsApp standard size */
+  height: 60px; /* Meta/WhatsApp standard size */
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -64,7 +64,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(0, 40, 104, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 40, 104, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -120,21 +120,22 @@
 /* Mobile first - make it work on mobile */
 @media (max-width: 768px) {
   .dashboard {
-    height: calc(100vh - 100px) !important;
-    max-height: calc(100vh - 100px) !important;
-    overflow: hidden !important;
-    padding-bottom: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-bottom: 2rem !important;
+    min-height: calc(100vh - 100px);
   }
   
   .ai-insights-summary {
-    overflow: hidden !important;
-    flex: 1 !important;
-    padding-bottom: 0.2rem !important;
+    overflow: visible !important;
+    flex: none !important;
+    padding-bottom: 0.5rem !important;
   }
   
   .insights-grid {
-    overflow: hidden !important;
-    flex: 1 !important;
+    overflow: visible !important;
+    flex: none !important;
   }
   
   /* Mobile floating button positioning */
@@ -400,6 +401,7 @@
     min-height: auto !important;
     max-height: none !important;
     overflow: visible !important;
+    margin-bottom: 0.5rem !important;
   }
 }
 
@@ -420,8 +422,8 @@
   transition: all 0.3s ease;
   flex-shrink: 0;
   min-height: 58px;
-  max-height: 58px;
-  overflow: hidden;
+  max-height: none;
+  overflow: visible;
 }
 
 /* Web only - make larger than mobile */
@@ -430,7 +432,8 @@
     padding: 0.8rem !important;
     gap: 0.6rem !important;
     min-height: 100px !important;
-    max-height: 100px !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
 }
 

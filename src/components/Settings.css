@@ -532,13 +532,15 @@
 @media (max-width: 768px) {
   .settings-container {
     padding: 0.5rem;
-    height: 100vh;
-    overflow: hidden;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
   }
 
   .settings-page {
-    height: 100%;
-    overflow: hidden;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
     padding-top: 0.5rem;
     display: flex;
     flex-direction: column;
