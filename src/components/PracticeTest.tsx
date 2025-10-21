@@ -180,7 +180,7 @@ export const PracticeTest: React.FC = () => {
       }
     };
     loadQuestions();
-  }, [testId, t]);
+  }, [testId, t, i18n]);
 
   const handleAnswer = (answerId: string) => {
     if (!isAnswered) {
@@ -334,7 +334,13 @@ export const PracticeTest: React.FC = () => {
                 {/* Critical (<60%): Only show Retry button */}
                 {isCritical && (
                   <>
-                    <button className="practice-nav-btn primary" onClick={() => window.location.reload()}>
+                    <button className="practice-nav-btn primary" onClick={() => {
+                      setCurrentQuestion(0);
+                      setSelectedAnswer('');
+                      setIsAnswered(false);
+                      setShowResult(false);
+                      setScore(0);
+                    }}>
                       Retry Test
                     </button>
                     <button className="practice-nav-btn" onClick={() => navigate('/')}>
@@ -346,7 +352,13 @@ export const PracticeTest: React.FC = () => {
                 {/* Needs Work (60-79%): Show both, prioritize Retry */}
                 {needsWork && (
                   <>
-                    <button className="practice-nav-btn primary" onClick={() => window.location.reload()}>
+                    <button className="practice-nav-btn primary" onClick={() => {
+                      setCurrentQuestion(0);
+                      setSelectedAnswer('');
+                      setIsAnswered(false);
+                      setShowResult(false);
+                      setScore(0);
+                    }}>
                       Retry Test (Recommended)
                     </button>
                     <button className="practice-nav-btn" onClick={() => {
@@ -368,7 +380,13 @@ export const PracticeTest: React.FC = () => {
                     }}>
                       Next: {nextTest.name}
                     </button>
-                    <button className="practice-nav-btn" onClick={() => window.location.reload()}>
+                    <button className="practice-nav-btn" onClick={() => {
+                      setCurrentQuestion(0);
+                      setSelectedAnswer('');
+                      setIsAnswered(false);
+                      setShowResult(false);
+                      setScore(0);
+                    }}>
                       Retry Test
                     </button>
                     <button className="practice-nav-btn" onClick={() => navigate('/')}>

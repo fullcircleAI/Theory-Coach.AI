@@ -103,7 +103,7 @@ Provide a helpful explanation with tips.`;
   async generateAnalytics(userProgress: any): Promise<AIAnalytics> {
     try {
       const prompt = `Analyze this driving theory progress: ${JSON.stringify(userProgress)}`;
-      const aiResponse = await this.callHuggingFace(prompt);
+      // const aiResponse = await this.callHuggingFace(prompt);
       
       return {
         examReadinessScore: 65,

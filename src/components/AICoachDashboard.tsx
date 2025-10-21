@@ -57,8 +57,19 @@ export const AICoachDashboard: React.FC = () => {
     // Simulate data refresh
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Reload data (in real app, fetch from API)
-    window.location.reload();
+    // Reload data without full page reload
+    const realData: UserProgress = {
+      averageScore: aiCoach.getCombinedAverage(),
+      totalQuestions: aiCoach.getTotalQuestions(),
+      correctAnswers: aiCoach.getTestHistory().reduce((sum, t) => sum + t.score, 0),
+      studyTime: aiCoach.getStudyTime(),
+      weakAreas: [],
+      strongAreas: []
+    };
+
+    const realInsights = aiCoach.getAIInsights();
+    setUserProgress(realData);
+    setAiInsights(realInsights);
   };
 
   // const getScoreColor = (score: number) => { // Removed unused function
