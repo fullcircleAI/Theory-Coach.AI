@@ -69,11 +69,13 @@ export const InstallPrompt: React.FC = () => {
   return (
     <div className="install-prompt-overlay" onClick={handleDismiss}>
       <div className="install-prompt" onClick={(e) => e.stopPropagation()}>
-        <button className="install-close" onClick={handleDismiss}>×</button>
+        {/* iOS/Android drag handle */}
+        <div className="install-drag-handle"></div>
         
-        <div className="install-mascot">
-          <img src="/images/mascot.png" alt="Theory Coach AI Mascot" className="mascot-image" />
-        </div>
+        <div className="install-content">
+          <div className="install-mascot">
+            <img src="/images/mascot.png" alt="Theory Coach AI Mascot" className="mascot-image" />
+          </div>
         
         <h3 className="install-title">Install Theory Coach AI</h3>
         <p className="install-description">
@@ -95,13 +97,14 @@ export const InstallPrompt: React.FC = () => {
           </div>
         </div>
         
-        <div className="install-actions">
-          <button className="install-btn primary" onClick={handleInstall}>
-            Install Now
-          </button>
-          <button className="install-btn secondary" onClick={handleDismiss}>
-            Maybe Later
-          </button>
+          <div className="install-actions">
+            <button className="install-btn primary" onClick={handleInstall}>
+              Install Now
+            </button>
+            <button className="install-btn secondary" onClick={handleDismiss}>
+              Maybe Later
+            </button>
+          </div>
         </div>
       </div>
     </div>
