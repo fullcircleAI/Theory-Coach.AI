@@ -268,7 +268,7 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
               <span className="back-text">Back</span>
             </button>
             <h1 className="auth-title">
-              Get Started
+              Sign Up
             </h1>
           </div>
         </div>
