@@ -365,18 +365,31 @@
 
 .social-button.google {
   background: white;
-  color: #333;
+  color: #3c4043;
   border: 1px solid #dadce0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
+  font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.25px;
+  border-radius: 4px;
+  min-height: 40px;
+  padding: 0 16px;
 }
 
 .social-button.google:hover {
   background: #f8f9fa;
   border-color: #dadce0;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.social-button.google:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
 }
 
 .social-button.apple {
@@ -394,27 +407,18 @@
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
 }
 
-.google-icon {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #4285F4;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  text-align: center;
-  border-radius: 4px;
-  background: white;
-  border: 1px solid #dadce0;
-  margin-right: 8px;
+.google-logo {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .google-text {
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 500;
-  color: #333;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #3c4043;
+  font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: 0.25px;
 }
 
 /* Password toggle functionality */
