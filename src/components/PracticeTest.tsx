@@ -299,9 +299,9 @@ export const PracticeTest: React.FC = () => {
     // Coaching messages based on performance
     const getCoachingMessage = () => {
       if (isCritical) {
-        return "Let's master this first! Practice makes perfect.";
+        return "Let's learn this first! Practice makes perfect.";
       } else if (needsWork) {
-        return "Almost there! 80% mastery recommended before moving on.";
+        return "Almost there! 80% proficiency recommended before moving on.";
       } else {
         return "Excellent Work!";
       }
@@ -374,7 +374,7 @@ export const PracticeTest: React.FC = () => {
                   </>
                 )}
 
-                {/* Mastery (80%+): Encourage progression */}
+                {/* Proficiency (80%+): Encourage progression */}
                 {hasMastery && (
                   <>
                     <button className="practice-nav-btn next-test primary" onClick={() => {

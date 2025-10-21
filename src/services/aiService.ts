@@ -239,7 +239,7 @@ Format as JSON with keys: message, tone, actionItems, nextSteps
       estimatedTimeToPass: 24,
       dailyGoals: ['Complete 1 practice test', 'Review weak areas', 'Take notes on mistakes'],
       focusAreas: ['Priority rules', 'Traffic signs'],
-      motivation: 'You\'re making great progress! Keep practicing to master Dutch driving theory.'
+      motivation: 'You\'re making great progress! Keep practicing to learn Dutch driving theory.'
     };
   }
 

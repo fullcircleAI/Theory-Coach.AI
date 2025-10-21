@@ -79,7 +79,7 @@ export const InstallPrompt: React.FC = () => {
         
         <h3 className="install-title">Install Theory Coach AI</h3>
         <p className="install-description">
-          Master driving theory in 24 hours with our AI-powered coaching system
+          Learn driving theory in 24 hours with our AI-powered coaching system
         </p>
         
         <div className="install-features">

@@ -91,7 +91,7 @@ Provide a helpful explanation with tips.`;
           'Take notes on mistakes'
         ],
         focusAreas: ['Priority rules', 'Traffic signs'],
-        motivation: aiResponse || 'You\'re making great progress! Keep practicing to master Dutch driving theory.'
+        motivation: aiResponse || 'You\'re making great progress! Keep practicing to learn Dutch driving theory.'
       };
     } catch (error) {
       console.error('Free AI study plan error:', error);
@@ -295,7 +295,7 @@ Provide a helpful explanation with tips.`;
       estimatedTimeToPass: 24,
       dailyGoals: ['Complete 1 practice test', 'Review weak areas', 'Take notes on mistakes'],
       focusAreas: ['Priority rules', 'Traffic signs'],
-      motivation: 'You\'re making great progress! Keep practicing to master Dutch driving theory.'
+      motivation: 'You\'re making great progress! Keep practicing to learn Dutch driving theory.'
     };
   }
 

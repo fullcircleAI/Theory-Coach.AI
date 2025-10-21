@@ -76,7 +76,7 @@ export const AICoachRecommendations: React.FC = () => {
     const mockStudyPlan = [
       'Today: Focus on Traffic Lights (2 hours) - Your biggest weakness',
       'Tomorrow: Practice Priority Rules (1.5 hours) - Build confidence',
-      'This Week: Master Roundabouts (1 hour daily) - Visual + practice',
+      'This Week: Learn Roundabouts (1 hour daily) - Visual + practice',
       'Next Week: Review Speed Limits (30 min) - Quick refresh'
     ];
 

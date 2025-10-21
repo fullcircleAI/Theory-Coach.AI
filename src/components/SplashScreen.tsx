@@ -28,7 +28,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
           </div>
         </div>
         <h1 className="splash-title">Theory Coach AI</h1>
-        <p className="splash-subtitle">Master Dutch Driving Theory in 24 hours</p>
+        <p className="splash-subtitle">Learn Dutch Driving Theory in 24 hours</p>
       </div>
     </div>
   );

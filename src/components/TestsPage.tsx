@@ -39,7 +39,7 @@ export const TestsPage: React.FC = () => {
     {
       id: 'traffic-rules-signs',
       name: 'Traffic Rules & Signs',
-      description: 'Master Dutch traffic rules, signs, and regulations',
+      description: 'Learn Dutch traffic rules, signs, and regulations',
       questionCount: 40,
       difficulty: 'medium',
       category: 'Rules',
@@ -84,7 +84,7 @@ export const TestsPage: React.FC = () => {
     {
       id: 'roundabout-rules',
       name: 'Roundabout Rules',
-      description: 'Master roundabout navigation and priority rules',
+      description: 'Learn roundabout navigation and priority rules',
       questionCount: 18,
       difficulty: 'medium',
       category: 'Rules',
