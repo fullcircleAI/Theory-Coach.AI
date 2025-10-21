@@ -118,24 +118,18 @@ export const AICoachDashboard: React.FC = () => {
   //   return 'green';
   // };
 
-  // Calculate Exam Readiness Confidence Level (Practice Tests + Mock Exams)
+  // Calculate Exam Readiness - Simple Formula You Can Explain
   const getExamReadiness = () => {
-    const averageScore = userProgress.averageScore; // Combined practice + mock exam average
-    const studyTime = userProgress.studyTime; // Combined study time
-    const totalQuestions = userProgress.totalQuestions; // Combined question count
+    const averageScore = userProgress.averageScore; // Your test scores
+    const studyTime = userProgress.studyTime; // Hours studied
     
-    // Base confidence from combined average score (0-70 points)
-    let confidence = Math.min(70, averageScore);
+    // SIMPLE FORMULA: Your Score + Study Time Bonus
+    // Example: 70% average + 8 hours studied = 78% readiness
+    // Example: 85% average + 12 hours studied = 97% readiness
+    const studyBonus = Math.min(24, studyTime); // +1% per hour, max +24%
+    const readiness = Math.min(100, averageScore + studyBonus);
     
-    // Bonus for study time (0-20 points) - includes practice + mock exam time
-    const studyTimeBonus = Math.min(20, (studyTime / 24) * 20);
-    confidence += studyTimeBonus;
-    
-    // Bonus for practice volume (0-10 points) - includes practice + mock exam questions
-    const practiceBonus = Math.min(10, (totalQuestions / 100) * 10);
-    confidence += practiceBonus;
-    
-    return Math.min(100, Math.max(0, Math.round(confidence)));
+    return Math.round(readiness);
   };
 
   const getReadinessStatus = (confidence: number) => {
