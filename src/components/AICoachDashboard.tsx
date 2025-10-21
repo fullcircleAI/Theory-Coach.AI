@@ -46,7 +46,8 @@ export const AICoachDashboard: React.FC = () => {
       today.setHours(0, 0, 0, 0); // Reset time to start of day
       
       if (examDateObj < today) {
-        // Exam date has passed - show prompt
+        // Exam date has passed - automatically delete old date and show prompt
+        localStorage.removeItem('examDate');
         setShowExamDatePrompt(true);
       } else {
         setExamDate(savedExamDate);
@@ -341,11 +342,10 @@ export const AICoachDashboard: React.FC = () => {
               <button 
                 className="prompt-button secondary"
                 onClick={() => {
-                  localStorage.removeItem('examDate');
                   setShowExamDatePrompt(false);
                 }}
               >
-                Remove Date
+                Skip
               </button>
               <button 
                 className="prompt-button primary"
