@@ -122,12 +122,16 @@ export const AICoachDashboard: React.FC = () => {
   const getExamReadiness = () => {
     const averageScore = userProgress.averageScore; // Your test scores
     const studyTime = userProgress.studyTime; // Hours studied
+    const totalQuestions = userProgress.totalQuestions; // Questions answered
     
-    // SIMPLE FORMULA: Your Score + Study Time Bonus
-    // Example: 70% average + 8 hours studied = 78% readiness
-    // Example: 85% average + 12 hours studied = 97% readiness
+    // SIMPLE FORMULA: Score + Study Time + Practice Volume
+    // 1. Your average score (0-100%)
+    // 2. Study time bonus: +1% per hour (max +24%)
+    // 3. Practice bonus: +1% per 50 questions (max +10%)
+    // Example: 70% score + 8 hours + 100 questions = 70% + 8% + 2% = 80%
     const studyBonus = Math.min(24, studyTime); // +1% per hour, max +24%
-    const readiness = Math.min(100, averageScore + studyBonus);
+    const practiceBonus = Math.min(10, Math.floor(totalQuestions / 50)); // +1% per 50 questions, max +10%
+    const readiness = Math.min(100, averageScore + studyBonus + practiceBonus);
     
     return Math.round(readiness);
   };
