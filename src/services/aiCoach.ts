@@ -144,7 +144,6 @@ class AICoachService {
   getTopRecommendation(): TestRecommendation {
     const testScores = this.getTestScores();
     const ignores = this.getIgnoreCounts();
-    const allTestIds = Object.keys(TEST_METADATA);
 
     // New user - recommend beginner path
     if (Object.keys(testScores).length === 0) {
@@ -161,7 +160,7 @@ class AICoachService {
     // Calculate weak areas
     const weakAreas: Array<{ testId: string; score: number; ignoreCount: number }> = [];
     
-    allTestIds.forEach(testId => {
+    Object.keys(TEST_METADATA).forEach(testId => {
       const testData = testScores[testId];
       if (testData) {
         weakAreas.push({
@@ -236,7 +235,7 @@ class AICoachService {
 
   // Get contextual reasoning for recommendations
   private getContextualReason(weakArea: { testId: string; score: number; ignoreCount: number }, testScores: any): string {
-    const { testId, score, ignoreCount } = weakArea;
+    const { testId, score } = weakArea;
     const testName = TEST_METADATA[testId].name;
     
     // Count total tests completed
@@ -276,18 +275,28 @@ class AICoachService {
   getAIInsights(): AIInsight[] {
     const testScores = this.getTestScores();
     const recommendation = this.getTopRecommendation();
-    const allTestIds = Object.keys(TEST_METADATA);
+    const isReadyForMockExam = this.canUnlockMockExams();
 
     const insights: AIInsight[] = [];
 
-    // 1. RED BOX - Top recommendation (ALWAYS)
-    insights.push({
-      type: 'recommendation',
-      message: recommendation.testName,
-      priority: 'red',
-      testId: recommendation.testId,
-      explanation: recommendation.reason
-    });
+    // 1. RED BOX - Mock Exam CTA if ready, otherwise top recommendation
+    if (isReadyForMockExam) {
+      insights.push({
+        type: 'recommendation',
+        message: 'Start Mock Exam',
+        priority: 'red',
+        testId: 'mock-exam',
+        explanation: 'Ready to test your knowledge!'
+      });
+    } else {
+        insights.push({
+        type: 'recommendation',
+        message: recommendation.testName,
+        priority: 'red',
+        testId: recommendation.testId,
+        explanation: recommendation.reason
+      });
+    }
 
     // 2. YELLOW BOX - Second priority (ALWAYS)
     const secondPriority = this.getSecondPriority(testScores, recommendation.testId);
@@ -302,9 +311,9 @@ class AICoachService {
     // 3. GREEN BOX - Strength/maintenance (ALWAYS)
     const strengthArea = this.getStrengthArea(testScores);
       insights.push({
-      type: 'strength',
+        type: 'strength',
       message: strengthArea.testName,
-      priority: 'green',
+        priority: 'green',
       testId: strengthArea.testId,
       explanation: strengthArea.explanation
     });
@@ -314,10 +323,8 @@ class AICoachService {
 
   // Get second priority for YELLOW box
   private getSecondPriority(testScores: any, excludeTestId: string): { testName: string; testId: string; explanation: string } {
-    const allTestIds = Object.keys(TEST_METADATA);
-    
     // Find second weakest area (not the top recommendation)
-    const availableTests = allTestIds.filter(id => id !== excludeTestId);
+    const availableTests = Object.keys(TEST_METADATA).filter(id => id !== excludeTestId);
     
     if (availableTests.length === 0) {
       return {
@@ -358,10 +365,8 @@ class AICoachService {
 
   // Get strength area for GREEN box
   private getStrengthArea(testScores: any): { testName: string; testId: string; explanation: string } {
-    const allTestIds = Object.keys(TEST_METADATA);
-    
     // Find best performing area
-    const bestTest = allTestIds
+    const bestTest = Object.keys(TEST_METADATA)
       .map(testId => ({
         testId,
         score: testScores[testId]?.average || 0

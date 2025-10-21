@@ -64,12 +64,12 @@
     "title": "Mock Exam"
   },
   "aiTutor": {
-    "title": "AI Tutor",
-    "welcome": "Hi! I'm your AI driving theory tutor. Ask me anything about Dutch driving rules, practice tests, or how to improve your scores!",
+    "title": "Coach",
+    "welcome": "Hi! I'm your Theory Coach. Ask me anything about driving theory, practice tests, or how to improve your scores!",
     "error": "Sorry, I'm having trouble right now. Please try again in a moment.",
     "actionItems": "Action Items:",
     "nextSteps": "Next Steps:",
-    "inputPlaceholder": "Ask me anything about driving theory...",
+    "inputPlaceholder": "Message Coach...",
     "quickQuestions": {
       "title": "Try asking:",
       "whyWrong": "Why did I get this wrong?",
@@ -77,6 +77,13 @@
       "howImprove": "How can I improve?",
       "whenReady": "When am I ready for the exam?"
     }
+  },
+  "install": {
+    "title": "Install Theory Coach AI",
+    "description": "Learn driving theory in 24 hours with our AI-powered coaching system",
+    "mobileMessage": "Install on mobile for the best experience",
+    "installNow": "Install Now",
+    "maybeLater": "Maybe Later"
   },
   "questions": {
     "alcoholDrugs": {

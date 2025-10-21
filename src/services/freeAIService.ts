@@ -145,7 +145,7 @@ Provide a helpful explanation with tips.`;
   // Generate AI analytics and predictions
   async generateAnalytics(userProgress: any): Promise<AIAnalytics> {
     try {
-      const prompt = `Analyze this driving theory progress: ${JSON.stringify(userProgress)}`;
+      // const prompt = `Analyze this driving theory progress: ${JSON.stringify(userProgress)}`;
       // const aiResponse = await this.callHuggingFace(prompt);
       
       return {
@@ -210,9 +210,9 @@ Provide a helpful explanation with tips.`;
       
       if (!isCBRRelated) {
         return {
-          message: "🚗 I'm your CBR driving theory tutor! I can ONLY help with:\n\n• Traffic rules & regulations\n• Road signs & markings\n• CBR exam preparation\n• Driving theory questions\n• Vehicle safety & knowledge\n• Priority rules & right of way\n\nWhat driving theory topic would you like help with?",
+          message: "I'm your Theory Coach! I can ONLY help with:\n\n• Traffic rules & regulations\n• Road signs & markings\n• Driving theory preparation\n• Driving theory questions\n• Vehicle safety & knowledge\n• Priority rules & right of way\n\nWhat driving theory topic would you like help with?",
           tone: 'supportive',
-          actionItems: ['Ask about traffic rules', 'Get help with road signs', 'Learn about CBR exam'],
+          actionItems: ['Ask about traffic rules', 'Get help with road signs', 'Learn about driving theory'],
           nextSteps: ['Practice with specific topics', 'Take a practice test']
         };
       }
@@ -225,7 +225,12 @@ Provide a helpful explanation with tips.`;
       const conversationContext = this.getConversationContext();
       const contextInfo = context ? `User is on: ${context.currentTest || 'dashboard'}, Progress: ${context.userProgress?.averageScore || 0}%` : '';
       
-      const prompt = `You are a helpful Dutch CBR driving theory expert. 
+      // Check if user is ready for mock exams
+      const isReadyForMockExam = context?.userProgress?.averageScore >= 70;
+      const mockExamMotivation = isReadyForMockExam ? 
+        "IMPORTANT: If user has 70%+ average score, encourage them to take mock exams! Say something like 'You're doing great! Ready to test your knowledge with a mock exam?'" : "";
+      
+      const prompt = `You are a helpful driving theory expert. 
       
 Previous conversation:
 ${conversationContext}
@@ -233,7 +238,9 @@ ${conversationContext}
 Current context: ${contextInfo}
 User question: "${userMessage}"
 
-Provide a helpful, encouraging response about Dutch driving theory. Keep it under 100 words and be practical.`;
+${mockExamMotivation}
+
+Provide a helpful, encouraging response about driving theory. Keep it under 100 words and be practical.`;
       
       const aiResponse = await this.callHuggingFace(prompt);
       
@@ -241,10 +248,10 @@ Provide a helpful, encouraging response about Dutch driving theory. Keep it unde
       if (aiResponse && aiResponse.trim().length > 10) {
         const response: AITutorResponse = {
           message: aiResponse,
-          tone: 'encouraging',
-          actionItems: this.getContextualActionItems(currentPage),
-          nextSteps: this.getContextualNextSteps(currentPage, userProgress)
-        };
+        tone: 'encouraging',
+        actionItems: this.getContextualActionItems(currentPage),
+        nextSteps: this.getContextualNextSteps(currentPage, userProgress)
+      };
         
         // Add AI response to conversation history
         this.addToHistory('ai', aiResponse);
@@ -402,6 +409,16 @@ Provide a helpful, encouraging response about Dutch driving theory. Keep it unde
     };
   }
 
+  // Enhanced fallback with mock exam motivation
+  private getMockExamMotivatedResponse(): AITutorResponse {
+    return {
+      message: 'Excellent progress! You\'re ready to test your knowledge with a mock exam. This will help you see how well you\'ve mastered the material!',
+      tone: 'motivational',
+      actionItems: ['Start a mock exam', 'Review your strong areas', 'Practice any weak spots'],
+      nextSteps: ['Take Mock Exam 1', 'Focus on exam readiness', 'Build confidence']
+    };
+  }
+
   // Enhanced response processing
   private enhanceResponse(aiResponse: string, currentPage: string, userProgress: any): string {
     if (!aiResponse || aiResponse.trim().length < 10) {
@@ -469,11 +486,11 @@ Provide a helpful, encouraging response about Dutch driving theory. Keep it unde
     const averageScore = userProgress?.averageScore || 0;
     
     if (averageScore < 60) {
-      return "💪 Don't worry! Everyone starts somewhere. Keep practicing and you'll improve!";
+      return "Don't worry! Everyone starts somewhere. Keep practicing and you'll improve!";
     } else if (averageScore < 80) {
-      return "🎯 Great progress! You're on the right track. Keep practicing to reach 80%+";
+      return "Great progress! You're on the right track. Keep practicing to reach 80%+";
     } else {
-      return "🌟 Excellent work! You're almost ready for the real CBR exam!";
+      return "Excellent work! You're almost ready for the real CBR exam!";
     }
   }
 
@@ -481,26 +498,36 @@ Provide a helpful, encouraging response about Dutch driving theory. Keep it unde
   private getContextualFallbackMessage(currentPage: string): string {
     switch (currentPage) {
       case 'dashboard':
-        return "📊 I can help you understand your progress and suggest what to study next. What specific area would you like help with?";
+        return "I can help you understand your progress and suggest what to study next. What specific area would you like help with?";
       case 'practice-tests':
       case 'tests-page':
-        return "📚 I can help you choose the right practice test or explain any driving theory concepts. What would you like to know?";
+        return "I can help you choose the right practice test or explain any driving theory concepts. What would you like to know?";
       default:
         if (currentPage.startsWith('practice-')) {
-          return "🚗 I can help explain this question or any driving theory concept. What would you like to know?";
+          return "I can help explain this question or any driving theory concept. What would you like to know?";
         }
-        return "🎯 I'm here to help with your CBR driving theory studies. What can I help you with?";
+        return "I'm here to help with your driving theory studies. What can I help you with?";
     }
   }
 
-  // Smart fallback responses for common CBR questions
+  // Smart fallback responses for common driving theory questions
   private getSmartFallbackResponse(userMessage: string, currentPage: string, userProgress: any): AITutorResponse {
     const lowerMessage = userMessage.toLowerCase();
+    
+    // Check if user is ready for mock exams and provide motivation
+    const averageScore = userProgress?.averageScore || 0;
+    if (averageScore >= 70) {
+      // User is ready for mock exams - provide motivation
+      if (lowerMessage.includes('ready') || lowerMessage.includes('exam') || lowerMessage.includes('test') || 
+          lowerMessage.includes('mock') || lowerMessage.includes('practice') || lowerMessage.includes('next')) {
+        return this.getMockExamMotivatedResponse();
+      }
+    }
     
     // Traffic lights
     if (lowerMessage.includes('traffic light') || lowerMessage.includes('red light') || lowerMessage.includes('amber')) {
       return {
-        message: "🚦 Traffic lights in the Netherlands:\n\n• RED: Stop completely behind the stop line\n• AMBER: Prepare to stop (unless unsafe)\n• GREEN: You may proceed if safe\n\nRemember: Red + Amber together means stop - green is coming next!",
+        message: "Traffic lights in the Netherlands:\n\n• RED: Stop completely behind the stop line\n• AMBER: Prepare to stop (unless unsafe)\n• GREEN: You may proceed if safe\n\nRemember: Red + Amber together means stop - green is coming next!",
         tone: 'encouraging',
         actionItems: ['Practice traffic light questions', 'Study priority rules'],
         nextSteps: ['Take a practice test on traffic lights', 'Review road signs']
@@ -510,7 +537,7 @@ Provide a helpful, encouraging response about Dutch driving theory. Keep it unde
     // Priority rules
     if (lowerMessage.includes('priority') || lowerMessage.includes('right of way') || lowerMessage.includes('give way')) {
       return {
-        message: "🚩 Priority rules in the Netherlands:\n\n• Traffic from the RIGHT has priority (unless signs say otherwise)\n• Yield to traffic on main roads\n• Give way to emergency vehicles\n• Pedestrians have priority at crossings\n\nLook for triangular yield signs and priority road signs!",
+        message: "Priority rules in the Netherlands:\n\n• Traffic from the RIGHT has priority (unless signs say otherwise)\n• Yield to traffic on main roads\n• Give way to emergency vehicles\n• Pedestrians have priority at crossings\n\nLook for triangular yield signs and priority road signs!",
         tone: 'encouraging',
         actionItems: ['Study priority signs', 'Practice intersection questions'],
         nextSteps: ['Take priority rules practice test', 'Review road markings']
@@ -537,9 +564,9 @@ Provide a helpful, encouraging response about Dutch driving theory. Keep it unde
       };
     }
     
-    // General CBR help
+    // General driving theory help
     return {
-      message: "🎯 I'm here to help with your CBR driving theory! I can explain:\n\n• Traffic rules and regulations\n• Road signs and markings\n• Priority and right of way\n• Speed limits and safety\n• Roundabouts and intersections\n\nWhat specific topic would you like help with?",
+      message: "I'm here to help with your driving theory! I can explain:\n\n• Traffic rules and regulations\n• Road signs and markings\n• Priority and right of way\n• Speed limits and safety\n• Roundabouts and intersections\n\nWhat specific topic would you like help with?",
       tone: 'supportive',
       actionItems: ['Ask about specific topics', 'Take practice tests'],
       nextSteps: ['Study weak areas', 'Practice regularly']

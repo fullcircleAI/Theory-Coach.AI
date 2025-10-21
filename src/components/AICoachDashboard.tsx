@@ -222,6 +222,12 @@ export const AICoachDashboard: React.FC = () => {
   };
 
   const navigateToRecommendedTest = (insight: AIInsight) => {
+    // Handle mock exam CTA
+    if (insight.testId === 'mock-exam') {
+      navigate('/mock-exam');
+      return;
+    }
+    
     // Use testId from AI Coach (already calculated)
     const testId = insight.testId || 'traffic-rules-signs';
     navigate(`/practice/${testId}`);
@@ -320,9 +326,9 @@ export const AICoachDashboard: React.FC = () => {
             <button 
               className="floating-ai-btn-mascot"
               onClick={() => setShowAITutor(true)}
-              title="Ask AI Tutor"
+              title="Ask Coach"
             >
-              <img src="/images/mascot.png" alt="AI Tutor" className="floating-mascot-full" />
+              <img src="/images/mascot.png" alt="Coach" className="floating-mascot-full" />
             </button>
           </div>
 

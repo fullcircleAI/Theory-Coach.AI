@@ -155,38 +155,6 @@ export const MockExam: React.FC = () => {
       });
     };
 
-    // Map test categories to translation keys
-    const testTranslationKeys: Record<string, string> = {
-      'trafficLights': 'trafficLights',
-      'priorityRules': 'priorityRules',
-      'speedLimit': 'speedLimit',
-      'roadMarkings': 'roadMarkings',
-      'expandedPriorityRules': 'expandedPriorityRules',
-      'motorwayRules': 'motorwayRules',
-      'parkingRules': 'parkingRules',
-      'environmentalZones': 'environmentalZones',
-      'technologySafety': 'technologySafety',
-      'alcoholDrugs': 'alcoholDrugs',
-      'fatigueRest': 'fatigueRest',
-      'emergencyProcedures': 'emergencyProcedures',
-      'bicycleInteractions': 'bicycleInteractions',
-      'roundaboutRules': 'roundaboutRules',
-      'tramInteractions': 'tramInteractions',
-      'pedestrianCrossings': 'pedestrianCrossings',
-      'constructionZones': 'constructionZones',
-      'weatherConditions': 'weatherConditions',
-      'vehicleCategories': 'vehicleCategories',
-      'vehicleDocumentation': 'vehicleDocumentation',
-      'mandatorySigns': 'mandatorySigns',
-      'warningSigns': 'warningSigns',
-      'prohibitorySigns': 'prohibitorySigns',
-      'prohibitorySigns2': 'prohibitorySigns2',
-      'roadInformation': 'roadInformation',
-      'signIdentification': 'signIdentification',
-      'mandatorySigns2': 'mandatorySigns2',
-      'hazardPerception': 'hazardPerception',
-      'insightPractice': 'insightPractice'
-    };
 
     // Apply translations to each category
     const translatedTrafficRules = translateQuestions(trafficRulesQuestions, 'trafficLights'); // Use first test key as fallback
@@ -317,7 +285,6 @@ export const MockExam: React.FC = () => {
 
   // Intro Screen - Native iOS/Android style
   if (!isExamStarted) {
-    const quizNumber = examId === 'beginner' ? '1' : examId === 'intermediate' ? '2' : '3';
     
     return (
       <div className="main-layout">

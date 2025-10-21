@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { freeAIService, AITutorResponse } from '../services/freeAIService';
+import { aiCoach } from '../services/aiCoach';
 import './AITutor.css';
 
 interface AITutorProps {
@@ -52,6 +53,20 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
+
+    // Limit to 3 questions max
+    const userMessages = messages.filter(msg => msg.type === 'user');
+    if (userMessages.length >= 3) {
+      const limitMessage: ChatMessage = {
+        id: Date.now().toString(),
+        type: 'ai',
+        message: 'I can only answer 3 questions per session. Please close and reopen the chat to ask more questions.',
+        timestamp: new Date(),
+        tone: 'supportive'
+      };
+      setMessages(prev => [...prev, limitMessage]);
+      return;
+    }
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -118,21 +133,41 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
   };
 
   const getToneIcon = (tone?: string) => {
-    switch (tone) {
-      case 'encouraging': return '💪';
-      case 'motivational': return '🚀';
-      case 'analytical': return '🧠';
-      case 'supportive': return '🤗';
-      default: return '🤖';
-    }
+    // Always use mascot, no emojis
+    return '🎓';
   };
 
-  const quickQuestions = [
-    t('aiTutor.quickQuestions.whyWrong', 'Why did I get this wrong?'),
-    t('aiTutor.quickQuestions.explainRule', 'Explain this rule'),
-    t('aiTutor.quickQuestions.howImprove', 'How can I improve?'),
-    t('aiTutor.quickQuestions.whenReady', 'When am I ready for the exam?')
-  ];
+  // Dynamic questions based on user performance and context
+  const getDynamicQuestions = () => {
+    const averageScore = userProgress?.averageScore || 0;
+    const testContext = currentTest || 'dashboard';
+    
+    // Get AI insights for personalized questions
+    const aiInsights = userProgress ? aiCoach.getAIInsights() : [];
+    
+    const questions = [];
+    
+    // Question 1: Based on performance level
+    if (averageScore < 60) {
+      questions.push("What should I focus on first?");
+    } else if (averageScore < 80) {
+      questions.push("How can I reach 80%+ scores?");
+    } else {
+      questions.push("Am I ready for mock exams?");
+    }
+    
+    // Question 2: Based on current context and AI insights
+    if (testContext && testContext !== 'dashboard') {
+      questions.push(`How can I improve in ${testContext.replace('-', ' ')}?`);
+    } else if (aiInsights.length > 0) {
+      const topWeakness = aiInsights[0]?.message || 'weak areas';
+      questions.push(`Why is ${topWeakness} difficult?`);
+    } else {
+      questions.push("What should I study next?");
+    }
+    
+    return questions.slice(0, 2); // Only show 2 questions
+  };
 
   return (
     <div className="ai-tutor-overlay">
@@ -140,8 +175,8 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
         {/* Header */}
         <div className="ai-tutor-header">
           <div className="ai-tutor-title">
-            <img src="/images/mascot.png" alt="AI Tutor" className="ai-tutor-mascot" />
-            <h3>{t('aiTutor.title', 'AI Tutor')}</h3>
+            <img src="/images/mascot.png" alt="Coach" className="ai-tutor-mascot" />
+            <h3>{t('aiTutor.title', 'Coach')}</h3>
           </div>
           <button className="ai-tutor-close" onClick={onClose}>
             ×
@@ -191,7 +226,7 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
           {isTyping && (
             <div className="ai-tutor-message ai">
               <div className="ai-tutor-message-content">
-                <div className="ai-tutor-avatar">🤖</div>
+                <div className="ai-tutor-avatar">🎓</div>
                 <div className="ai-tutor-typing">
                   <span></span>
                   <span></span>
@@ -204,12 +239,12 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Quick Questions */}
+        {/* Dynamic Quick Questions */}
         {messages.length === 1 && (
           <div className="ai-tutor-quick-questions">
             <p>{t('aiTutor.quickQuestions.title', 'Try asking:')}</p>
             <div className="ai-tutor-quick-buttons">
-              {quickQuestions.map((question, index) => (
+              {getDynamicQuestions().map((question, index) => (
                 <button
                   key={index}
                   className="ai-tutor-quick-button"
@@ -230,15 +265,22 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder={t('aiTutor.inputPlaceholder', 'Ask me anything about driving theory...')}
+            placeholder={t('aiTutor.inputPlaceholder', 'Message Coach...')}
             disabled={isLoading}
           />
           <button
             onClick={handleSendMessage}
             disabled={!inputMessage.trim() || isLoading}
             className="ai-tutor-send"
+            title={isLoading ? 'Sending...' : 'Send message'}
           >
-            {isLoading ? '⏳' : '📤'}
+            {isLoading ? (
+              <div className="loading-spinner"></div>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 11L12 6L17 11M12 18V7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
           </button>
         </div>
       </div>

@@ -296,6 +296,9 @@ export const PracticeTest: React.FC = () => {
     const needsWork = percentage >= 60 && percentage < 80;  // Recommended retry
     const hasMastery = percentage >= 80;  // Ready to progress
 
+    // Check if user is ready for mock exams (70%+ in all practice tests)
+    const isReadyForMockExam = aiCoach.canUnlockMockExams();
+
     // Coaching messages based on performance
     const getCoachingMessage = () => {
       if (isCritical) {
@@ -377,6 +380,25 @@ export const PracticeTest: React.FC = () => {
                 {/* Proficiency (80%+): Encourage progression */}
                 {hasMastery && (
                   <>
+                    {/* Show Mock Exam CTA if ready */}
+                    {isReadyForMockExam && (
+                      <button 
+                        className="practice-nav-btn mock-exam-cta primary" 
+                        onClick={() => navigate('/mock-exam')}
+                        style={{
+                          background: 'linear-gradient(135deg, #1A3E7A, #002868)',
+                          color: 'white',
+                          fontWeight: '700',
+                          fontSize: '1.1rem',
+                          padding: '1rem 1.5rem',
+                          marginBottom: '1rem',
+                          boxShadow: '0 4px 12px rgba(26, 62, 122, 0.3)'
+                        }}
+                      >
+                        Start Mock Exam
+                      </button>
+                    )}
+                    
                     <button className="practice-nav-btn next-test primary" onClick={() => {
                       window.location.href = `/practice/${nextTest.id}`;
                     }}>

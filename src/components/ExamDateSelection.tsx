@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import './ExamDateSelection.css';
 
 interface ExamDateSelectionProps {
@@ -9,7 +8,6 @@ interface ExamDateSelectionProps {
 
 export const ExamDateSelection: React.FC<ExamDateSelectionProps> = ({ onComplete }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -98,13 +96,6 @@ export const ExamDateSelection: React.FC<ExamDateSelectionProps> = ({ onComplete
     onComplete();
   };
 
-  const getDaysRemaining = () => {
-    if (!selectedDate) return 0;
-    const examDate = new Date(selectedDate);
-    return Math.ceil((examDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-  };
-
-  const daysRemaining = getDaysRemaining();
 
   return (
     <div className="exam-date-selection">

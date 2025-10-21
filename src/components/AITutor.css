@@ -15,15 +15,56 @@
 
 .ai-tutor-container {
   background: white;
-  border-radius: 20px;
+  border-radius: 16px;
   width: 100%;
   max-width: 500px;
   height: 80vh;
   max-height: 600px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .ai-tutor-overlay {
+    padding: 10px;
+  }
+  
+  .ai-tutor-container {
+    height: 90vh;
+    max-height: none;
+    border-radius: 16px;
+    margin: 0;
+  }
+  
+  .ai-tutor-header {
+    padding: 16px;
+  }
+  
+  .ai-tutor-title h2 {
+    font-size: 1.1rem;
+  }
+  
+  .ai-tutor-input {
+    padding: 16px;
+    gap: 10px;
+  }
+  
+  .ai-tutor-input input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 12px 16px;
+    border-radius: 10px;
+  }
+  
+  .ai-tutor-send {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    border-width: 1px;
+  }
 }
 
 .ai-tutor-header {
@@ -83,10 +124,11 @@
 .ai-tutor-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
+  background: white;
 }
 
 .ai-tutor-message {
@@ -131,10 +173,12 @@
 }
 
 .ai-tutor-message-text {
-  background: #f3f4f6;
+  background: #f8f9fa;
   padding: 12px 16px;
   border-radius: 18px;
   border-bottom-left-radius: 4px;
+  color: #000000;
+  border: 1px solid #e9ecef;
 }
 
 .ai-tutor-message.user .ai-tutor-message-text {
@@ -235,13 +279,13 @@
 .ai-tutor-quick-questions {
   padding: 20px;
   border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  background: white;
 }
 
 .ai-tutor-quick-questions p {
   margin: 0 0 10px 0;
   font-size: 14px;
-  color: #6b7280;
+  color: #000000;
   font-weight: 500;
 }
 
@@ -252,14 +296,15 @@
 }
 
 .ai-tutor-quick-button {
-  background: white;
-  border: 1px solid #d1d5db;
-  border-radius: 20px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
   padding: 8px 12px;
   font-size: 12px;
-  color: #374151;
+  color: #000000;
   cursor: pointer;
   transition: all 0.2s;
+  font-weight: 500;
 }
 
 .ai-tutor-quick-button:hover {
@@ -268,39 +313,52 @@
   border-color: #002868;
 }
 
+/* ChatGPT-style input area */
 .ai-tutor-input {
   padding: 20px;
   border-top: 1px solid #e5e7eb;
   display: flex;
-  gap: 10px;
-  align-items: center;
+  gap: 12px;
+  align-items: flex-end;
+  background: white;
+  position: relative;
+  border-radius: 0 0 16px 16px;
 }
 
 .ai-tutor-input input {
   flex: 1;
   border: 1px solid #d1d5db;
-  border-radius: 25px;
+  border-radius: 12px;
   padding: 12px 16px;
-  font-size: 14px;
+  font-size: 16px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
+  background: #f8f9fa;
+  resize: none;
+  min-height: 24px;
+  max-height: 120px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .ai-tutor-input input:focus {
   border-color: #002868;
+  background: white;
+  box-shadow: 0 0 0 2px rgba(0, 40, 104, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .ai-tutor-input input:disabled {
-  background: #f3f4f6;
-  color: #9ca3af;
+  background: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
 }
 
+/* ChatGPT-style send button - Always visible */
 .ai-tutor-send {
-  background: linear-gradient(135deg, #002868, #1e40af);
-  border: none;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
+  background: #002868;
+  border: 1px solid #002868;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -308,19 +366,45 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  opacity: 1;
+  position: relative;
 }
 
 .ai-tutor-send:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 40, 104, 0.3);
+  background: #1A3E7A;
+  border-color: #1A3E7A;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
+/* Make disabled state more visible like ChatGPT */
 .ai-tutor-send:disabled {
-  background: #d1d5db;
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #9ca3af;
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  opacity: 0.6;
 }
+
+/* Loading spinner */
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 /* Mobile optimizations */
 @media (max-width: 768px) {

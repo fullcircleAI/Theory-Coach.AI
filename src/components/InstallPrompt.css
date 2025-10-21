@@ -89,23 +89,19 @@
   font-weight: 400;
 }
 
-.install-features {
-  display: flex;
-  gap: 16px;
+/* iOS/Android native mobile message */
+.install-mobile-message {
+  text-align: center;
   margin-bottom: 24px;
-  justify-content: center;
-  flex-wrap: wrap;
+  padding: 0 20px;
 }
 
-.install-feature {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.8rem;
+.install-mobile-message p {
+  font-size: 0.9rem;
   color: #6b7280;
   font-weight: 500;
-  min-width: 60px;
+  margin: 0;
+  line-height: 1.4;
 }
 
 .feature-icon {
@@ -206,14 +202,13 @@
     margin-bottom: 20px;
   }
 
-  .install-features {
-    gap: 12px;
+  .install-mobile-message {
     margin-bottom: 20px;
+    padding: 0 16px;
   }
 
-  .install-feature {
-    font-size: 0.75rem;
-    min-width: 50px;
+  .install-mobile-message p {
+    font-size: 0.85rem;
   }
   
   .install-actions {

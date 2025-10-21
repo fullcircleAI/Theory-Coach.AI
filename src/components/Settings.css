@@ -107,9 +107,10 @@
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  height: auto;
-  min-height: 100vh;
-  overflow: visible;
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
   box-sizing: border-box;
   padding-right: 0;
 }
@@ -596,9 +597,10 @@
   }
 
   .settings-subpage {
-    height: auto;
-    min-height: calc(100vh - 100px);
-    overflow: visible;
+    height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .settings-subpage-content {
@@ -647,9 +649,10 @@
   }
 
   .settings-subpage {
-    height: auto;
-    min-height: calc(100vh - 120px);
-    overflow: visible;
+    height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .settings-subpage-content {
@@ -681,9 +684,10 @@
   }
 
   .settings-subpage {
-    height: auto;
-    min-height: calc(100vh - 4rem);
-    overflow: visible;
+    height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 }
 

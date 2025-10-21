@@ -2290,5 +2290,12 @@
         "o3": "snelheid omhoog naar get through the wind snel"
       }
     }
+  },
+  "install": {
+    "title": "Installeer Theory Coach AI",
+    "description": "Leer theorie in 24 uur met ons AI-aangedreven coachingssysteem",
+    "mobileMessage": "Installeer op mobiel voor de beste ervaring",
+    "installNow": "Nu Installeren",
+    "maybeLater": "Misschien Later"
   }
 }

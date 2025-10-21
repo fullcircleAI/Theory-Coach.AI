@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './InstallPrompt.css';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -7,6 +8,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export const InstallPrompt: React.FC = () => {
+  const { t } = useTranslation();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
 
@@ -77,32 +79,21 @@ export const InstallPrompt: React.FC = () => {
             <img src="/images/mascot.png" alt="Theory Coach AI Mascot" className="mascot-image" />
           </div>
         
-        <h3 className="install-title">Install Theory Coach AI</h3>
+        <h3 className="install-title">{t('install.title', 'Install Theory Coach AI')}</h3>
         <p className="install-description">
-          Learn driving theory in 24 hours with our AI-powered coaching system
+          {t('install.description', 'Learn driving theory in 24 hours with our AI-powered coaching system')}
         </p>
         
-        <div className="install-features">
-          <div className="install-feature">
-            <div className="feature-icon">⚡</div>
-            <span>Fast & Offline</span>
-          </div>
-          <div className="install-feature">
-            <div className="feature-icon">📱</div>
-            <span>Home Screen Access</span>
-          </div>
-          <div className="install-feature">
-            <div className="feature-icon">🎯</div>
-            <span>Native App Feel</span>
-          </div>
+        <div className="install-mobile-message">
+          <p>{t('install.mobileMessage', 'Install on mobile for the best experience')}</p>
         </div>
         
           <div className="install-actions">
             <button className="install-btn primary" onClick={handleInstall}>
-              Install Now
+              {t('install.installNow', 'Install Now')}
             </button>
             <button className="install-btn secondary" onClick={handleDismiss}>
-              Maybe Later
+              {t('install.maybeLater', 'Maybe Later')}
             </button>
           </div>
         </div>
