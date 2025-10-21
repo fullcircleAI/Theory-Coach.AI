@@ -85,45 +85,7 @@
   box-shadow: 0 0 0 3px rgba(26, 62, 122, 0.1);
 }
 
-/* Days remaining */
-.days-remaining {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: linear-gradient(135deg, #1a3e7a, #3b82f6);
-  border-radius: 12px;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
 
-.days-number {
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.days-text {
-  font-size: 0.9rem;
-  opacity: 0.9;
-}
-
-/* Motivational message */
-.motivational-message {
-  margin: 1rem 0;
-  padding: 1rem;
-  background: #f0f9ff;
-  border-radius: 12px;
-  border-left: 4px solid #1a3e7a;
-}
-
-.motivational-message p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #1e40af;
-  font-weight: 500;
-}
 
 /* Action buttons */
 .exam-date-actions {
@@ -135,10 +97,10 @@
 .skip-button {
   flex: 1;
   padding: 0.75rem 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #1a3e7a;
   border-radius: 12px;
   background: white;
-  color: #6b7280;
+  color: #1a3e7a;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -146,8 +108,8 @@
 }
 
 .skip-button:hover:not(:disabled) {
-  border-color: #d1d5db;
-  background: #f9fafb;
+  background: #1a3e7a;
+  color: white;
 }
 
 .skip-button:disabled {

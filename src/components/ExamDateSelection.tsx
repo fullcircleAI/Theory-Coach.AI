@@ -136,18 +136,6 @@ export const ExamDateSelection: React.FC<ExamDateSelectionProps> = ({ onComplete
             className="date-input"
           />
           
-          {/* Days remaining display */}
-          {selectedDate && daysRemaining > 0 && (
-            <div className="days-remaining">
-              <span className="days-number">{daysRemaining}</span>
-              <span className="days-text">
-                {daysRemaining === 1 
-                  ? t('examDate.dayRemaining', 'day remaining')
-                  : t('examDate.daysRemaining', 'days remaining')
-                }
-              </span>
-            </div>
-          )}
         </div>
 
 
