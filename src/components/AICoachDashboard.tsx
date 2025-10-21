@@ -124,12 +124,21 @@ export const AICoachDashboard: React.FC = () => {
     const studyTime = userProgress.studyTime; // Hours studied
     const totalQuestions = userProgress.totalQuestions; // Questions answered
     
-    // SIMPLE FORMULA: Score + Study Time + Practice Volume
+    // SMART FORMULA: Score + Study Time (Diminishing Returns) + Practice Volume
     // 1. Your average score (0-100%)
-    // 2. Study time bonus: +1% per hour (max +24%)
+    // 2. Study time bonus: +1% per hour (first 15 hours), then +0.5% per hour (max +20%)
     // 3. Practice bonus: +1% per 50 questions (max +10%)
     // Example: 70% score + 8 hours + 100 questions = 70% + 8% + 2% = 80%
-    const studyBonus = Math.min(24, studyTime); // +1% per hour, max +24%
+    
+    // Diminishing returns for study time (realistic learning curve)
+    let studyBonus = 0;
+    if (studyTime <= 15) {
+      studyBonus = studyTime; // +1% per hour for first 15 hours
+    } else {
+      studyBonus = 15 + ((studyTime - 15) * 0.5); // +0.5% per hour after 15 hours
+    }
+    studyBonus = Math.min(20, studyBonus); // Cap at +20%
+    
     const practiceBonus = Math.min(10, Math.floor(totalQuestions / 50)); // +1% per 50 questions, max +10%
     const readiness = Math.min(100, averageScore + studyBonus + practiceBonus);
     
