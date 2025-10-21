@@ -33,9 +33,16 @@ export const AICoachDashboard: React.FC = () => {
 
   const [aiInsights, setAiInsights] = useState<AIInsight[]>([]);
   const [showAITutor, setShowAITutor] = useState(false);
+  const [examDate, setExamDate] = useState<string | null>(null);
   // const [unlockProgress, setUnlockProgress] = useState(aiCoach.getUnlockProgress()); // Removed unused variable
 
   useEffect(() => {
+    // Load exam date if set
+    const savedExamDate = localStorage.getItem('examDate');
+    if (savedExamDate) {
+      setExamDate(savedExamDate);
+    }
+
     // Load REAL data from AI Coach (including mock exams)
     const loadDashboardData = () => {
       try {
@@ -220,7 +227,14 @@ export const AICoachDashboard: React.FC = () => {
             <div className="summary-stats">
               <div className="summary-stat">
                 <div className="stat-number">{getExamReadiness()}%</div>
-                <div className="stat-label">Exam Readiness</div>
+                <div className="stat-label">
+                  Exam Readiness
+                  {examDate && (
+                    <div className="exam-date-display">
+                      {new Date(examDate).toLocaleDateString()}
+                    </div>
+                  )}
+                </div>
                 <div className="progress-bar-bg">
                   <div className="progress-bar-fill" 
                        style={{ 

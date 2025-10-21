@@ -903,3 +903,12 @@
     font-size: 0.65rem;
   }
 }
+
+/* Exam Date Display */
+.exam-date-display {
+  font-size: 0.7rem;
+  color: #1A3E7A;
+  font-weight: 600;
+  margin-top: 0.25rem;
+  opacity: 0.8;
+}
