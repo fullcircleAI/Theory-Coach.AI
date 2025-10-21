@@ -33,11 +33,10 @@
   },
   "examDate": {
     "title": "Wanneer is je examen?",
-    "subtitle": "Krijg een persoonlijk studieplan gebaseerd op je examendatum",
     "selectDate": "Selecteer Datum",
     "dayRemaining": "dag over",
     "daysRemaining": "dagen over",
-    "motivational": "Je kunt rijtheorie leren in 24 uur studeren!",
+    "weekdayNotice": "Selecteer een werkdag (maandag-vrijdag) binnen de volgende 7 werkdagen",
     "skip": "Overslaan voor nu",
     "continue": "Doorgaan",
     "continuing": "Bezig..."

@@ -33,11 +33,10 @@
   },
   "examDate": {
     "title": "When's Your Exam?",
-    "subtitle": "Get a personalized study plan based on your exam date",
     "selectDate": "Select Date",
     "dayRemaining": "day remaining",
     "daysRemaining": "days remaining",
-    "motivational": "You can learn driving theory in 24 hours of study!",
+    "weekdayNotice": "Select a weekday (Monday-Friday) within the next 7 business days",
     "skip": "Skip for now",
     "continue": "Continue",
     "continuing": "Continuing..."

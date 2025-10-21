@@ -114,11 +114,6 @@ export const ExamDateSelection: React.FC<ExamDateSelectionProps> = ({ onComplete
           {t('examDate.title', 'When\'s Your Exam?')}
         </h1>
 
-        {/* Subtitle */}
-        <p className="exam-date-subtitle">
-          {t('examDate.subtitle', 'Get a personalized study plan based on your exam date')}
-        </p>
-        
         {/* Weekday notice */}
         <div className="weekday-notice">
           <p className="weekday-text">
@@ -155,14 +150,6 @@ export const ExamDateSelection: React.FC<ExamDateSelectionProps> = ({ onComplete
           )}
         </div>
 
-        {/* Motivational message */}
-        {selectedDate && (
-          <div className="motivational-message">
-            <p>
-              {t('examDate.motivational', 'You can learn driving theory in 24 hours of study!')}
-            </p>
-          </div>
-        )}
 
         {/* Action buttons */}
         <div className="exam-date-actions">
