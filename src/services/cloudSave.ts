@@ -1,11 +1,11 @@
 // Cloud Save Service - Free tier using Supabase
 // No credit card required, free for up to 50,000 users
 
-import { createClient } from '@supabase/supabase-js';
+// import { createClient } from '@supabase/supabase-js';
 
 // Free Supabase project (no credit card required)
-const supabaseUrl = 'https://your-project.supabase.co';
-const supabaseKey = 'your-anon-key';
+// const supabaseUrl = 'https://your-project.supabase.co';
+// const supabaseKey = 'your-anon-key';
 
 // For now, we'll use a simple localStorage + sync approach
 // This can be easily upgraded to real cloud storage later

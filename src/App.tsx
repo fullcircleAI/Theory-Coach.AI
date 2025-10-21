@@ -14,12 +14,15 @@ import { PracticeTest } from './components/PracticeTest';
 import { MockExamSelection } from './components/MockExamSelection';
 import { MockExam } from './components/MockExam';
 import { MockExamResults } from './components/MockExamResults';
+import UserAuth from './components/UserAuth';
+import { userAuth, User } from './services/userAuth';
 import './App.css';
 
 // AppContent component that manages the app flow
 function AppContent() {
   const { i18n } = useTranslation();
   const currentLanguage = i18n.language;
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showSplash, setShowSplash] = useState(() => {
     // Only show splash on first visit (like Duolingo)
     const hasSeenSplash = localStorage.getItem('hasSeenSplash');
@@ -30,6 +33,15 @@ function AppContent() {
     const isAuthenticated = localStorage.getItem('userAuthenticated');
     return !isAuthenticated;
   });
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const savedUser = userAuth.getCurrentUser();
+    if (savedUser) {
+      setCurrentUser(savedUser);
+      setShowLogin(false);
+    }
+  }, []);
 
   useEffect(() => {
     // Add body class to prevent scrolling during splash
@@ -60,6 +72,14 @@ function AppContent() {
     setShowLogin(false);
   };
 
+  const handleUserChange = (user: User | null) => {
+    setCurrentUser(user);
+    if (user) {
+      setShowLogin(false);
+      console.log('✅ User authenticated:', user.name);
+    }
+  };
+
   // SPLASH SCREEN FIRST (like Duolingo)
   if (showSplash) {
     return <SplashScreen onFinish={handleSplashFinish} />;
@@ -70,9 +90,9 @@ function AppContent() {
     return <LanguageSelection />;
   }
 
-  // Then show login/signup (if not authenticated)
+  // Then show user authentication (if not authenticated)
   if (showLogin) {
-    return <LoginSignup onComplete={handleLoginComplete} />;
+    return <UserAuth onUserChange={handleUserChange} />;
   }
 
   // Finally show the main app
