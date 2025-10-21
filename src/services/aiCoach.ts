@@ -185,7 +185,7 @@ class AICoachService {
     const topWeak = weakAreas[0];
     const testName = TEST_METADATA[topWeak.testId].name;
     
-    // Determine priority and reason
+    // Determine priority and reason - 3-tier traffic light system
     let priority: 'critical' | 'high' | 'medium' = 'medium';
     let reason = 'Practice this to improve';
 
@@ -196,12 +196,9 @@ class AICoachService {
       priority = 'critical';
       const potentialGain = 88 - topWeak.score;
       reason = `Focus here for +${potentialGain}% toward pass`;
-    } else if (topWeak.score < 75) {
-      priority = 'high';
-      reason = `Improve to ${topWeak.score + 10}% for exam readiness`;
     } else if (topWeak.score < 88) {
-      priority = 'medium';
-      reason = `Almost exam-ready - boost to 88%+`;
+      priority = 'high';
+      reason = `Improve to 88% for exam readiness`;
     }
 
     return {
