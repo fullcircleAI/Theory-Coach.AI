@@ -280,11 +280,11 @@ class AICoachService {
 
     const insights: AIInsight[] = [];
 
-    // 1. Top recommendation (RED)
+    // 1. Top recommendation (ALWAYS RED for visibility)
     insights.push({
       type: 'recommendation',
       message: recommendation.testName,
-      priority: recommendation.priority === 'critical' ? 'red' : 'amber',
+      priority: 'red', // Always red for maximum visibility and action
       testId: recommendation.testId,
       explanation: recommendation.reason
     });
