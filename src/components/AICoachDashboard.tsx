@@ -34,13 +34,23 @@ export const AICoachDashboard: React.FC = () => {
   const [aiInsights, setAiInsights] = useState<AIInsight[]>([]);
   const [showAITutor, setShowAITutor] = useState(false);
   const [examDate, setExamDate] = useState<string | null>(null);
+  const [showExamDatePrompt, setShowExamDatePrompt] = useState(false);
   // const [unlockProgress, setUnlockProgress] = useState(aiCoach.getUnlockProgress()); // Removed unused variable
 
   useEffect(() => {
     // Load exam date if set
     const savedExamDate = localStorage.getItem('examDate');
     if (savedExamDate) {
-      setExamDate(savedExamDate);
+      const examDateObj = new Date(savedExamDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to start of day
+      
+      if (examDateObj < today) {
+        // Exam date has passed - show prompt
+        setShowExamDatePrompt(true);
+      } else {
+        setExamDate(savedExamDate);
+      }
     }
 
     // Load REAL data from AI Coach (including mock exams)
@@ -318,6 +328,39 @@ export const AICoachDashboard: React.FC = () => {
           </div>
         </PullToRefresh>
       </main>
+
+      {/* Exam Date Prompt */}
+      {showExamDatePrompt && (
+        <div className="exam-date-prompt-overlay">
+          <div className="exam-date-prompt">
+            <div className="prompt-header">
+              <h3>Your exam date has passed</h3>
+              <p>Would you like to set a new exam date?</p>
+            </div>
+            <div className="prompt-actions">
+              <button 
+                className="prompt-button secondary"
+                onClick={() => {
+                  localStorage.removeItem('examDate');
+                  setShowExamDatePrompt(false);
+                }}
+              >
+                Remove Date
+              </button>
+              <button 
+                className="prompt-button primary"
+                onClick={() => {
+                  setShowExamDatePrompt(false);
+                  // Navigate to exam date selection
+                  window.location.href = '/exam-date';
+                }}
+              >
+                Set New Date
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* AI Tutor Modal */}
       {showAITutor && (

@@ -912,3 +912,79 @@
   margin-top: 0.25rem;
   opacity: 0.8;
 }
+
+/* Exam Date Prompt */
+.exam-date-prompt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+}
+
+.exam-date-prompt {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.prompt-header h3 {
+  margin: 0 0 0.5rem 0;
+  color: #1A3E7A;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.prompt-header p {
+  margin: 0 0 1.5rem 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.prompt-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.prompt-button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.prompt-button.secondary {
+  background: white;
+  color: #1A3E7A;
+  border: 2px solid #1A3E7A;
+}
+
+.prompt-button.secondary:hover {
+  background: #1A3E7A;
+  color: white;
+}
+
+.prompt-button.primary {
+  background: linear-gradient(135deg, #1A3E7A, #002868);
+  color: white;
+  box-shadow: 0 4px 12px rgba(26, 62, 122, 0.3);
+}
+
+.prompt-button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(26, 62, 122, 0.4);
+}
