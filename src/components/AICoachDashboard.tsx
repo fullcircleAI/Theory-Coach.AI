@@ -171,21 +171,25 @@ export const AICoachDashboard: React.FC = () => {
                 </div>
               </div>
               <div className="summary-stat combined-progress">
-                <div className="progress-container">
-                  <div className="progress-clock-left">
-                    <span className="time-value">{formatTime(userProgress.studyTime)}</span>
-                    <span className="time-label">{t('dashboard.studyTime')}</span>
-                  </div>
-                  <div className="progress-bar-bg">
-                    <div className="progress-bar-fill" 
-                         style={{ 
-                           width: `${Math.min((userProgress.studyTime / 24) * 100, 100)}%`,
-                           backgroundColor: '#10b981'
-                         }}></div>
-                  </div>
-                  <div className="progress-clock-right">
-                    <span className="time-value">{formatTime(getTimeRemaining().remaining)}</span>
-                    <span className="time-label">{t('dashboard.timeRemaining')}</span>
+                <div className="digital-watch-container">
+                  <div className="digital-watch-display">
+                    <div className="time-section">
+                      <span className="time-label">{t('dashboard.studyTime')}</span>
+                      <span className="time-value">{formatTime(userProgress.studyTime)}</span>
+                    </div>
+                    <div className="progress-section">
+                      <div className="progress-bar-bg">
+                        <div className="progress-bar-fill" 
+                             style={{ 
+                               width: `${Math.min((userProgress.studyTime / 24) * 100, 100)}%`,
+                               backgroundColor: '#10b981'
+                             }}></div>
+                      </div>
+                    </div>
+                    <div className="time-section">
+                      <span className="time-label">{t('dashboard.timeRemaining')}</span>
+                      <span className="time-value">{formatTime(getTimeRemaining().remaining)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
