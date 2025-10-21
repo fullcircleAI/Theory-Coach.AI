@@ -59,7 +59,7 @@
   height: 60px; /* Meta/WhatsApp standard size */
   border-radius: 50%;
   background: transparent;
-  border: none;
+  border: 3px solid #1A3E7A; /* Blue circle outline like bubble screen */
   cursor: pointer;
   display: flex;
   align-items: center;

@@ -172,52 +172,31 @@ Provide a helpful explanation with tips.`;
         };
       }
       
-      // Enhanced prompt with more context and CBR focus
+      // Try to get AI response, but provide smart fallbacks
       const currentPage = context?.currentTest || 'dashboard';
       const userProgress = context?.userProgress || {};
       
-      const prompt = `You are a Dutch CBR driving theory expert. You ONLY answer questions about Dutch driving theory, CBR exam, and road safety.
-
-STRICT TOPICS ONLY:
-- Dutch traffic rules and regulations
-- Road signs and markings (Dutch system)
-- CBR theory exam preparation
-- Vehicle knowledge and safety
-- Priority rules and right of way
-- Speed limits and parking rules
-- Roundabouts and intersections
-- Hazard perception and safety
-- Driving behavior and legal requirements
-
-CONTEXT:
-- Current page: ${currentPage}
-- User progress: ${JSON.stringify(userProgress)}
-- User question: "${userMessage}"
-
-INSTRUCTIONS:
-- Answer ONLY in the context of Dutch driving theory
-- Be specific and accurate
-- Keep response under 120 words
-- Be encouraging and helpful
-- Focus on practical CBR exam knowledge
-- Use simple, clear language
-
-Provide a helpful, accurate response focused on Dutch CBR driving theory:`;
+      // First try the AI service
+      const prompt = `You are a Dutch CBR driving theory expert. Answer this question: "${userMessage}". Keep it under 100 words and focus on practical Dutch driving theory.`;
       
       const aiResponse = await this.callHuggingFace(prompt);
       
-      // Enhanced response with better context
-      const enhancedMessage = this.enhanceResponse(aiResponse, currentPage, userProgress);
+      // If AI response is good, use it
+      if (aiResponse && aiResponse.trim().length > 10) {
+        return {
+          message: aiResponse,
+          tone: 'encouraging',
+          actionItems: this.getContextualActionItems(currentPage),
+          nextSteps: this.getContextualNextSteps(currentPage, userProgress)
+        };
+      }
       
-      return {
-        message: enhancedMessage,
-        tone: 'encouraging',
-        actionItems: this.getContextualActionItems(currentPage),
-        nextSteps: this.getContextualNextSteps(currentPage, userProgress)
-      };
+      // Otherwise, provide smart contextual responses
+      return this.getSmartFallbackResponse(userMessage, currentPage, userProgress);
+      
     } catch (error) {
       console.error('Free AI tutor error:', error);
-      return this.getFallbackTutorResponse();
+      return this.getSmartFallbackResponse(userMessage, context?.currentTest || 'dashboard', context?.userProgress || {});
     }
   }
 
@@ -430,6 +409,59 @@ Provide a helpful, accurate response focused on Dutch CBR driving theory:`;
         }
         return "🎯 I'm here to help with your CBR driving theory studies. What can I help you with?";
     }
+  }
+
+  // Smart fallback responses for common CBR questions
+  private getSmartFallbackResponse(userMessage: string, currentPage: string, userProgress: any): AITutorResponse {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    // Traffic lights
+    if (lowerMessage.includes('traffic light') || lowerMessage.includes('red light') || lowerMessage.includes('amber')) {
+      return {
+        message: "🚦 Traffic lights in the Netherlands:\n\n• RED: Stop completely behind the stop line\n• AMBER: Prepare to stop (unless unsafe)\n• GREEN: You may proceed if safe\n\nRemember: Red + Amber together means stop - green is coming next!",
+        tone: 'encouraging',
+        actionItems: ['Practice traffic light questions', 'Study priority rules'],
+        nextSteps: ['Take a practice test on traffic lights', 'Review road signs']
+      };
+    }
+    
+    // Priority rules
+    if (lowerMessage.includes('priority') || lowerMessage.includes('right of way') || lowerMessage.includes('give way')) {
+      return {
+        message: "🚩 Priority rules in the Netherlands:\n\n• Traffic from the RIGHT has priority (unless signs say otherwise)\n• Yield to traffic on main roads\n• Give way to emergency vehicles\n• Pedestrians have priority at crossings\n\nLook for triangular yield signs and priority road signs!",
+        tone: 'encouraging',
+        actionItems: ['Study priority signs', 'Practice intersection questions'],
+        nextSteps: ['Take priority rules practice test', 'Review road markings']
+      };
+    }
+    
+    // Speed limits
+    if (lowerMessage.includes('speed') || lowerMessage.includes('limit') || lowerMessage.includes('km/h')) {
+      return {
+        message: "🏁 Speed limits in the Netherlands:\n\n• Built-up areas: 50 km/h (unless signed otherwise)\n• Outside built-up areas: 80 km/h\n• Motorways: 100-130 km/h (check signs)\n• School zones: 30 km/h\n\nAlways check for speed limit signs - they override general rules!",
+        tone: 'encouraging',
+        actionItems: ['Study speed limit signs', 'Practice speed questions'],
+        nextSteps: ['Take speed & safety practice test', 'Review traffic rules']
+      };
+    }
+    
+    // Roundabouts
+    if (lowerMessage.includes('roundabout') || lowerMessage.includes('roundabout')) {
+      return {
+        message: "🔄 Roundabouts in the Netherlands:\n\n• Give way to traffic already on the roundabout\n• Signal LEFT when entering (if going left/straight)\n• Signal RIGHT when exiting\n• Keep to the right lane unless signs indicate otherwise\n\nRemember: Traffic on the roundabout has priority!",
+        tone: 'encouraging',
+        actionItems: ['Practice roundabout questions', 'Study lane markings'],
+        nextSteps: ['Take roundabout practice test', 'Review traffic rules']
+      };
+    }
+    
+    // General CBR help
+    return {
+      message: "🎯 I'm here to help with your CBR driving theory! I can explain:\n\n• Traffic rules and regulations\n• Road signs and markings\n• Priority and right of way\n• Speed limits and safety\n• Roundabouts and intersections\n\nWhat specific topic would you like help with?",
+      tone: 'supportive',
+      actionItems: ['Ask about specific topics', 'Take practice tests'],
+      nextSteps: ['Study weak areas', 'Practice regularly']
+    };
   }
 }
 
