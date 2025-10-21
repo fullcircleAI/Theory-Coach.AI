@@ -170,26 +170,25 @@ export const AICoachDashboard: React.FC = () => {
                   {getReadinessMessage(getExamReadiness())}
                 </div>
               </div>
-              <div className="summary-stat">
-                <div className="stat-number">{formatTime(userProgress.studyTime)}</div>
-                <div className="stat-label">{t('dashboard.studyTime')}</div>
-                <div className="progress-bar-bg">
-                  <div className="progress-bar-fill" 
-                       style={{ 
-                         width: `${Math.min((userProgress.studyTime / 24) * 100, 100)}%`,
-                         backgroundColor: userProgress.studyTime >= 24 ? '#10b981' : '#f59e0b'
-                       }}></div>
-                </div>
-              </div>
-              <div className="summary-stat">
-                <div className="stat-number">{formatTime(getTimeRemaining().remaining)}</div>
-                <div className="stat-label">{t('dashboard.timeRemaining')}</div>
-                <div className="progress-bar-bg">
-                  <div className="progress-bar-fill" 
-                       style={{ 
-                         width: `${getTimeRemaining().percentage}%`,
-                         backgroundColor: getTimeRemaining().percentage >= 100 ? '#10b981' : '#f59e0b'
-                       }}></div>
+              <div className="summary-stat combined-progress">
+                <div className="progress-container">
+                  <div className="progress-clock-left">
+                    <span className="clock-icon">🕐</span>
+                    <span className="time-value">{formatTime(userProgress.studyTime)}</span>
+                    <span className="time-label">{t('dashboard.studyTime')}</span>
+                  </div>
+                  <div className="progress-bar-bg">
+                    <div className="progress-bar-fill" 
+                         style={{ 
+                           width: `${Math.min((userProgress.studyTime / 24) * 100, 100)}%`,
+                           backgroundColor: userProgress.studyTime >= 24 ? '#10b981' : '#f59e0b'
+                         }}></div>
+                  </div>
+                  <div className="progress-clock-right">
+                    <span className="clock-icon">🕐</span>
+                    <span className="time-value">{formatTime(getTimeRemaining().remaining)}</span>
+                    <span className="time-label">{t('dashboard.timeRemaining')}</span>
+                  </div>
                 </div>
               </div>
             </div>
