@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { userAuth, User } from '../services/userAuth';
 import { cloudSave } from '../services/cloudSave';
-import './UserAuth.css';
+import { supabaseAuth } from '../services/supabaseAuth';
+import './LoginSignup.css';
 
 interface UserAuthProps {
   onUserChange: (user: User | null) => void;
@@ -54,6 +55,24 @@ const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
     setLoading(false);
   };
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    try {
+      const user = await supabaseAuth.signInWithGoogle();
+      if (user) {
+        console.log('✅ Google sign-in successful:', user);
+        onUserChange(user);
+        setMessage('✅ Google sign-in successful! Your progress will be saved.');
+      } else {
+        setMessage('❌ Google sign-in failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      setMessage('❌ Google sign-in failed. Please try again.');
+    }
+    setLoading(false);
+  };
+
   const handleGuestMode = () => {
     const guestUser = userAuth.createGuestUser();
     onUserChange(guestUser);
@@ -61,12 +80,14 @@ const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
   };
 
   return (
-    <div className="user-auth">
-      <div className="auth-container">
-        <h2>Save Your Progress</h2>
-        <p className="auth-description">
-          Create a free account to save your progress across devices, just like Duolingo!
-        </p>
+    <div className="login-signup-container">
+      <div className="login-signup-content">
+        <div className="auth-header">
+          <h2>Save Your Progress</h2>
+          <p className="auth-description">
+            Create a free account to save your progress across devices, just like Duolingo!
+          </p>
+        </div>
 
         <div className="auth-tabs">
           <button 
@@ -126,6 +147,16 @@ const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
             </button>
           </form>
         )}
+
+        <div className="auth-divider">
+          <span>or</span>
+        </div>
+
+        {/* Google Sign-In Button */}
+        <button onClick={handleGoogleSignIn} className="social-button google" disabled={loading}>
+          <span className="social-icon-text">G</span>
+          {loading ? 'Signing in...' : 'Continue with Google'}
+        </button>
 
         <div className="auth-divider">
           <span>or</span>
