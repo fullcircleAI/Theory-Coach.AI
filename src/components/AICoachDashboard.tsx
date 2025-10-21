@@ -37,45 +37,72 @@ export const AICoachDashboard: React.FC = () => {
 
   useEffect(() => {
     // Load REAL data from AI Coach (including mock exams)
-    try {
-      const realData: UserProgress = {
-        averageScore: aiCoach.getCombinedAverage(), // Now includes practice tests + mock exams
-        totalQuestions: aiCoach.getTotalQuestions(), // Now includes practice + mock exam questions
-        correctAnswers: aiCoach.getTestHistory().reduce((sum, t) => sum + t.score, 0),
-        studyTime: aiCoach.getStudyTime(), // Now includes mock exam time
-        weakAreas: [],
-        strongAreas: []
-      };
+    const loadDashboardData = () => {
+      try {
+        // Force refresh by getting fresh data
+        const testHistory = aiCoach.getTestHistory();
+        const studyTime = aiCoach.getStudyTime();
+        const averageScore = aiCoach.getCombinedAverage();
+        
+        console.log('Dashboard Data:', {
+          testHistory: testHistory.length,
+          studyTime,
+          averageScore,
+          recentTests: testHistory.slice(-3)
+        });
 
-      const realInsights = aiCoach.getAIInsights();
+        const realData: UserProgress = {
+          averageScore: averageScore,
+          totalQuestions: aiCoach.getTotalQuestions(),
+          correctAnswers: testHistory.reduce((sum, t) => sum + t.score, 0),
+          studyTime: studyTime,
+          weakAreas: [],
+          strongAreas: []
+        };
 
-      setUserProgress(realData);
-      setAiInsights(realInsights);
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-      // Set fallback data
-      setUserProgress({
-        averageScore: 0,
-        totalQuestions: 0,
-        correctAnswers: 0,
-        studyTime: 0,
-        weakAreas: [],
-        strongAreas: []
-      });
-      setAiInsights([]);
-    }
+        const realInsights = aiCoach.getAIInsights();
+
+        setUserProgress(realData);
+        setAiInsights(realInsights);
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+        // Set fallback data
+        setUserProgress({
+          averageScore: 0,
+          totalQuestions: 0,
+          correctAnswers: 0,
+          studyTime: 0,
+          weakAreas: [],
+          strongAreas: []
+        });
+        setAiInsights([]);
+      }
+    };
+
+    loadDashboardData();
   }, []);
 
   const handleRefresh = async () => {
     // Simulate data refresh
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Reload data without full page reload
+    // Force reload data without full page reload
+    const testHistory = aiCoach.getTestHistory();
+    const studyTime = aiCoach.getStudyTime();
+    const averageScore = aiCoach.getCombinedAverage();
+    
+    console.log('Refresh Data:', {
+      testHistory: testHistory.length,
+      studyTime,
+      averageScore,
+      recentTests: testHistory.slice(-3)
+    });
+    
     const realData: UserProgress = {
-      averageScore: aiCoach.getCombinedAverage(),
+      averageScore: averageScore,
       totalQuestions: aiCoach.getTotalQuestions(),
-      correctAnswers: aiCoach.getTestHistory().reduce((sum, t) => sum + t.score, 0),
-      studyTime: aiCoach.getStudyTime(),
+      correctAnswers: testHistory.reduce((sum, t) => sum + t.score, 0),
+      studyTime: studyTime,
       weakAreas: [],
       strongAreas: []
     };
