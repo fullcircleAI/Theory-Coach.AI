@@ -23,14 +23,15 @@
 }
 
 .install-prompt {
-  background: white;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border-radius: 20px 20px 0 0;
   padding: 2rem;
   max-width: 500px;
   width: 100%;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 -10px 40px rgba(26, 62, 122, 0.2);
   animation: promptSlideUp 0.4s ease;
   position: relative;
+  border: 2px solid #1A3E7A;
 }
 
 @keyframes promptSlideUp {
@@ -65,26 +66,35 @@
   color: #333;
 }
 
-.install-icon {
-  font-size: 4rem;
+.install-mascot {
   text-align: center;
   margin-bottom: 1rem;
+}
+
+.mascot-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 3px solid #1A3E7A;
+  box-shadow: 0 4px 12px rgba(26, 62, 122, 0.3);
 }
 
 .install-title {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #002868;
+  color: #1A3E7A;
   text-align: center;
   margin: 0 0 0.5rem 0;
 }
 
 .install-description {
   font-size: 1rem;
-  color: #666;
+  color: #1A3E7A;
   text-align: center;
   margin: 0 0 1.5rem 0;
   line-height: 1.5;
+  font-weight: 600;
 }
 
 .install-features {
@@ -101,12 +111,13 @@
   align-items: center;
   gap: 0.3rem;
   font-size: 0.85rem;
-  color: #666;
+  color: #1A3E7A;
   font-weight: 600;
 }
 
 .feature-icon {
   font-size: 1.5rem;
+  color: #1A3E7A;
 }
 
 .install-actions {
@@ -127,14 +138,14 @@
 }
 
 .install-btn.primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1A3E7A 0%, #002868 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(26, 62, 122, 0.3);
 }
 
 .install-btn.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(26, 62, 122, 0.4);
 }
 
 .install-btn.primary:active {

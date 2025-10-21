@@ -74,7 +74,7 @@ export const LoginSignup: React.FC<LoginSignupProps> = ({ onComplete }) => {
               <img src="/images/mascot.png" alt="Mascot" className="mascot-image" />
             </div>
             <h1 className="auth-title">
-              {t('auth.welcome', 'Welcome to AI Coach')}
+              {t('auth.welcome', 'Welcome to Theory Coach AI')}
             </h1>
             <p className="auth-subtitle">
               {t('auth.welcomeSubtitle', 'Your personal driving theory tutor')}

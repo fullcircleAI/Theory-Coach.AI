@@ -71,24 +71,26 @@ export const InstallPrompt: React.FC = () => {
       <div className="install-prompt" onClick={(e) => e.stopPropagation()}>
         <button className="install-close" onClick={handleDismiss}>×</button>
         
-        <div className="install-icon">📱</div>
+        <div className="install-mascot">
+          <img src="/images/mascot.png" alt="Theory Coach AI Mascot" className="mascot-image" />
+        </div>
         
-        <h3 className="install-title">Install AI Coach</h3>
+        <h3 className="install-title">Install Theory Coach AI</h3>
         <p className="install-description">
-          Install our app for quick access and offline practice. Works just like a native app!
+          Master driving theory in 24 hours with our AI-powered coaching system
         </p>
         
         <div className="install-features">
           <div className="install-feature">
-            <span className="feature-icon">⚡</span>
+            <div className="feature-icon">⚡</div>
             <span>Fast & Offline</span>
           </div>
           <div className="install-feature">
-            <span className="feature-icon">📱</span>
+            <div className="feature-icon">📱</div>
             <span>Home Screen Access</span>
           </div>
           <div className="install-feature">
-            <span className="feature-icon">🎯</span>
+            <div className="feature-icon">🎯</div>
             <span>Native App Feel</span>
           </div>
         </div>
