@@ -168,9 +168,8 @@ export const AICoachDashboard: React.FC = () => {
       return { status: 'Needs Practice', color: '#ef4444', emoji: '🔴' };
     }
     
-    // Only then check confidence score
-    if (confidence >= 80) return { status: 'Ready', color: '#10b981', emoji: '🟢' };
-    if (confidence >= 60) return { status: 'On Track', color: '#f59e0b', emoji: '🟡' };
+    // Only then check confidence score (70% minimum for "Ready")
+    if (confidence >= 70) return { status: 'Ready', color: '#10b981', emoji: '🟢' };
     return { status: 'Needs Practice', color: '#ef4444', emoji: '🔴' };
   };
 
