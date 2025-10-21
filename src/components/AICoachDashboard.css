@@ -813,9 +813,6 @@
   min-width: 60px;
 }
 
-.clock-icon {
-  font-size: 1rem;
-}
 
 .time-value {
   font-size: 0.9rem;
@@ -863,7 +860,4 @@
     font-size: 0.65rem;
   }
   
-  .clock-icon {
-    font-size: 0.9rem;
-  }
 }

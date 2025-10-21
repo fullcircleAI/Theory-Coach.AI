@@ -173,7 +173,6 @@ export const AICoachDashboard: React.FC = () => {
               <div className="summary-stat combined-progress">
                 <div className="progress-container">
                   <div className="progress-clock-left">
-                    <span className="clock-icon">🕐</span>
                     <span className="time-value">{formatTime(userProgress.studyTime)}</span>
                     <span className="time-label">{t('dashboard.studyTime')}</span>
                   </div>
@@ -185,7 +184,6 @@ export const AICoachDashboard: React.FC = () => {
                          }}></div>
                   </div>
                   <div className="progress-clock-right">
-                    <span className="clock-icon">🕐</span>
                     <span className="time-value">{formatTime(getTimeRemaining().remaining)}</span>
                     <span className="time-label">{t('dashboard.timeRemaining')}</span>
                   </div>
