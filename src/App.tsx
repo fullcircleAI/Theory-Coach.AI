@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SplashScreen } from './components/SplashScreen';
 import { LanguageSelection } from './components/LanguageSelection';
+import { ExamDateSelection } from './components/ExamDateSelection';
 import { InstallPrompt } from './components/InstallPrompt';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { AICoachDashboard } from './components/AICoachDashboard';
@@ -31,6 +32,11 @@ function AppContent() {
     // Show login after splash if not authenticated
     const isAuthenticated = localStorage.getItem('userAuthenticated');
     return !isAuthenticated;
+  });
+  const [showExamDate, setShowExamDate] = useState(() => {
+    // Show exam date selection after language if not set
+    const examDate = localStorage.getItem('examDate');
+    return !examDate;
   });
 
   useEffect(() => {
@@ -80,6 +86,11 @@ function AppContent() {
     }
   };
 
+  const handleExamDateComplete = () => {
+    setShowExamDate(false);
+    console.log('📅 Exam date set:', localStorage.getItem('examDate'));
+  };
+
   // SPLASH SCREEN FIRST (like Duolingo)
   if (showSplash) {
     return <SplashScreen onFinish={handleSplashFinish} />;
@@ -93,6 +104,11 @@ function AppContent() {
   // Then language selection (if no language chosen)
   if (!currentLanguage) {
     return <LanguageSelection />;
+  }
+
+  // Then exam date selection (if not set)
+  if (showExamDate) {
+    return <ExamDateSelection onComplete={handleExamDateComplete} />;
   }
 
   // Finally show the main app

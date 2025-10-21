@@ -31,6 +31,17 @@
     "yourProgress": "Performance",
     "startPractice": "Start Practice"
   },
+  "examDate": {
+    "title": "When's Your Exam?",
+    "subtitle": "Get a personalized study plan based on your exam date",
+    "selectDate": "Select Date",
+    "dayRemaining": "day remaining",
+    "daysRemaining": "days remaining",
+    "motivational": "You can master driving theory in 24 hours of study!",
+    "skip": "Skip for now",
+    "continue": "Continue",
+    "continuing": "Continuing..."
+  },
   "practice": {
     "title": "Practice",
     "recommendedForYou": "Recommended for You",

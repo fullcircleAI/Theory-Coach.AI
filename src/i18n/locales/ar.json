@@ -31,6 +31,17 @@
     "yourProgress": "الأداء",
     "startPractice": "Start Practice"
   },
+  "examDate": {
+    "title": "متى امتحانك؟",
+    "subtitle": "احصل على خطة دراسة شخصية بناءً على تاريخ امتحانك",
+    "selectDate": "اختر التاريخ",
+    "dayRemaining": "يوم متبقي",
+    "daysRemaining": "أيام متبقية",
+    "motivational": "يمكنك إتقان نظرية القيادة في 24 ساعة من الدراسة!",
+    "skip": "تخطي الآن",
+    "continue": "متابعة",
+    "continuing": "جاري..."
+  },
   "practice": {
     "title": "Practice",
     "recommendedForYou": "Recommended for You",
