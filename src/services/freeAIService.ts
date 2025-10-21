@@ -34,11 +34,54 @@ export interface AITutorResponse {
 }
 
 class FreeAIService {
-  private huggingFaceUrl = 'https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium';
+  // Upgraded to better free AI model - Google Flan-T5 for better instruction following
+  private huggingFaceUrl = 'https://api-inference.huggingface.co/models/google/flan-t5-base';
+  private fallbackModel = 'https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium';
+  
+  // Conversation memory for context awareness
+  private conversationHistory: Array<{role: 'user' | 'ai', message: string, timestamp: Date}> = [];
+  private maxHistoryLength = 10; // Keep last 10 exchanges
   
   // Check if AI is available
   isAIAvailable(): boolean {
     return true; // Always available, no API key needed
+  }
+
+  // Add conversation to memory
+  private addToHistory(role: 'user' | 'ai', message: string): void {
+    this.conversationHistory.push({
+      role,
+      message,
+      timestamp: new Date()
+    });
+    
+    // Keep only recent history
+    if (this.conversationHistory.length > this.maxHistoryLength) {
+      this.conversationHistory = this.conversationHistory.slice(-this.maxHistoryLength);
+    }
+  }
+
+  // Get conversation context for AI
+  private getConversationContext(): string {
+    if (this.conversationHistory.length === 0) return '';
+    
+    const recentHistory = this.conversationHistory.slice(-5); // Last 5 exchanges
+    return recentHistory.map(entry => 
+      `${entry.role === 'user' ? 'User' : 'AI'}: ${entry.message}`
+    ).join('\n');
+  }
+
+  // Clear conversation history
+  clearConversationHistory(): void {
+    this.conversationHistory = [];
+  }
+
+  // Get conversation statistics
+  getConversationStats(): {totalExchanges: number, lastInteraction: Date | null} {
+    return {
+      totalExchanges: this.conversationHistory.length,
+      lastInteraction: this.conversationHistory.length > 0 ? this.conversationHistory[this.conversationHistory.length - 1].timestamp : null
+    };
   }
 
   // Generate AI explanation for a question
@@ -120,8 +163,10 @@ Provide a helpful explanation with tips.`;
     }
   }
 
-  // AI Tutor conversation - STRICT CBR/Driving Theory Focus Only
+  // AI Tutor conversation - Enhanced with context awareness and smarter responses
   async getTutorResponse(userMessage: string, context: any): Promise<AITutorResponse> {
+    // Add user message to conversation history
+    this.addToHistory('user', userMessage);
     try {
       // Enhanced CBR/Driving keywords - STRICT filtering
       const cbrKeywords = [
@@ -176,23 +221,43 @@ Provide a helpful explanation with tips.`;
       const currentPage = context?.currentTest || 'dashboard';
       const userProgress = context?.userProgress || {};
       
-      // First try the AI service
-      const prompt = `You are a Dutch CBR driving theory expert. Answer this question: "${userMessage}". Keep it under 100 words and focus on practical Dutch driving theory.`;
+      // Enhanced prompt with conversation context
+      const conversationContext = this.getConversationContext();
+      const contextInfo = context ? `User is on: ${context.currentTest || 'dashboard'}, Progress: ${context.userProgress?.averageScore || 0}%` : '';
+      
+      const prompt = `You are a helpful Dutch CBR driving theory expert. 
+      
+Previous conversation:
+${conversationContext}
+
+Current context: ${contextInfo}
+User question: "${userMessage}"
+
+Provide a helpful, encouraging response about Dutch driving theory. Keep it under 100 words and be practical.`;
       
       const aiResponse = await this.callHuggingFace(prompt);
       
       // If AI response is good, use it
       if (aiResponse && aiResponse.trim().length > 10) {
-        return {
+        const response: AITutorResponse = {
           message: aiResponse,
           tone: 'encouraging',
           actionItems: this.getContextualActionItems(currentPage),
           nextSteps: this.getContextualNextSteps(currentPage, userProgress)
         };
+        
+        // Add AI response to conversation history
+        this.addToHistory('ai', aiResponse);
+        return response;
       }
       
-      // Otherwise, provide smart contextual responses
-      return this.getSmartFallbackResponse(userMessage, currentPage, userProgress);
+      // Otherwise, provide smart contextual responses with conversation awareness
+      const fallbackResponse = this.getSmartFallbackResponse(userMessage, currentPage, userProgress);
+      
+      // Add fallback response to conversation history
+      this.addToHistory('ai', fallbackResponse.message);
+      
+      return fallbackResponse;
       
     } catch (error) {
       console.error('Free AI tutor error:', error);
@@ -200,14 +265,31 @@ Provide a helpful explanation with tips.`;
     }
   }
 
-  // Call Hugging Face API (FREE!) - Enhanced for CBR focus
+  // Call Hugging Face API (FREE!) - Enhanced with fallback model
   private async callHuggingFace(prompt: string): Promise<string> {
+    try {
+      // Try primary model first
+      const response = await this.tryHuggingFaceModel(this.huggingFaceUrl, prompt);
+      if (response) return response;
+      
+      // If primary fails, try fallback model
+      console.log('Primary model failed, trying fallback...');
+      return await this.tryHuggingFaceModel(this.fallbackModel, prompt);
+      
+    } catch (error) {
+      console.error('Both AI models failed:', error);
+      return '';
+    }
+  }
+
+  // Try a specific Hugging Face model
+  private async tryHuggingFaceModel(modelUrl: string, prompt: string): Promise<string> {
     try {
       // Add timeout and retry logic
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
 
-      const response = await fetch(this.huggingFaceUrl, {
+      const response = await fetch(modelUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -230,7 +312,7 @@ Provide a helpful explanation with tips.`;
 
       if (!response.ok) {
         if (response.status === 503) {
-          // Model is loading, return fallback
+          // Model is loading, return empty to try fallback
           return '';
         }
         throw new Error(`Hugging Face API error: ${response.status}`);
@@ -262,8 +344,8 @@ Provide a helpful explanation with tips.`;
       
       return ''; // Return empty if not CBR-related
     } catch (error) {
-      console.error('Hugging Face API call failed:', error);
-      return ''; // Return empty string instead of throwing
+      console.error('Hugging Face model failed:', error);
+      return ''; // Return empty string to try fallback
     }
   }
 
