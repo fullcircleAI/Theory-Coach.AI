@@ -105,8 +105,9 @@
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  height: 100%;
-  overflow-y: auto;
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
   box-sizing: border-box;
   padding-right: 0;
 }
@@ -147,6 +148,8 @@
 
 .settings-subpage-content {
   padding: 0 0.5rem 3rem 0.5rem;
+  height: auto;
+  overflow: visible;
 }
 
 /* ========== ACCOUNT PAGE ========== */
@@ -383,6 +386,8 @@
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: auto;
+  overflow: visible;
 }
 
 .policy-content h3 {
@@ -461,6 +466,8 @@
   padding: 2rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
+  height: auto;
+  overflow: visible;
 }
 
 .form-group {
@@ -587,11 +594,15 @@
   }
 
   .settings-subpage {
-    height: calc(100vh - 100px);
+    height: auto;
+    min-height: calc(100vh - 100px);
+    overflow: visible;
   }
 
   .settings-subpage-content {
     padding-bottom: 5rem;
+    height: auto;
+    overflow: visible;
   }
 
   .settings-subpage-title {
@@ -632,11 +643,15 @@
   }
 
   .settings-subpage {
-    height: calc(100vh - 120px);
+    height: auto;
+    min-height: calc(100vh - 120px);
+    overflow: visible;
   }
 
   .settings-subpage-content {
     padding-bottom: 4rem;
+    height: auto;
+    overflow: visible;
   }
 }
 
@@ -664,6 +679,7 @@
   .settings-subpage {
     height: auto;
     min-height: calc(100vh - 4rem);
+    overflow: visible;
   }
 }
 
