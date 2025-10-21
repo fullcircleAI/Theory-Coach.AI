@@ -165,12 +165,12 @@ export const AICoachDashboard: React.FC = () => {
     
     // Must pass ALL 3 mock exams to be "Ready"
     if (passedMockExams < totalMockExams) {
-      return { status: 'Needs Practice', color: '#ef4444', emoji: '🔴' };
+      return { status: 'Aaaa Aaaa', color: '#ef4444', emoji: '🔴' };
     }
     
     // Only then check confidence score (70% minimum for "Ready")
-    if (confidence >= 70) return { status: 'Ready', color: '#10b981', emoji: '🟢' };
-    return { status: 'Needs Practice', color: '#ef4444', emoji: '🔴' };
+    if (confidence >= 70) return { status: 'Aaaa Aaaa', color: '#10b981', emoji: '🟢' };
+    return { status: 'Aaaa Aaaa', color: '#ef4444', emoji: '🔴' };
   };
 
 
