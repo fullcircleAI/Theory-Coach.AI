@@ -191,14 +191,13 @@ class AICoachService {
 
     if (topWeak.score === 0) {
       priority = 'high';
-      reason = 'Not practiced yet - start here';
+      reason = 'Not practiced yet';
     } else if (topWeak.score < 60) {
       priority = 'critical';
-      const potentialGain = 88 - topWeak.score;
-      reason = `Focus here for +${potentialGain}% toward pass`;
+      reason = 'Needs practice';
     } else if (topWeak.score < 88) {
       priority = 'high';
-      reason = `Improve to 88% for exam readiness`;
+      reason = 'Keep improving';
     }
 
     return {
@@ -256,7 +255,7 @@ class AICoachService {
           message: TEST_METADATA[secondWeak].name,
           priority: 'amber',
           testId: secondWeak,
-          explanation: `${testScores[secondWeak].average}% - room to improve`
+          explanation: `${testScores[secondWeak].average}% - needs practice`
         });
       }
     }
@@ -274,7 +273,7 @@ class AICoachService {
         message: TEST_METADATA[strengthArea].name,
         priority: 'green',
         testId: strengthArea,
-        explanation: `${score.average}% - excellent work`
+        explanation: `${score.average}% - good progress`
       });
     } else {
       // No strengths yet - encourage
