@@ -37,20 +37,33 @@ export const AICoachDashboard: React.FC = () => {
 
   useEffect(() => {
     // Load REAL data from AI Coach (including mock exams)
-    const realData: UserProgress = {
-      averageScore: aiCoach.getCombinedAverage(), // Now includes practice tests + mock exams
-      totalQuestions: aiCoach.getTotalQuestions(), // Now includes practice + mock exam questions
-      correctAnswers: aiCoach.getTestHistory().reduce((sum, t) => sum + t.score, 0),
-      studyTime: aiCoach.getStudyTime(), // Now includes mock exam time
-      weakAreas: [],
-      strongAreas: []
-    };
+    try {
+      const realData: UserProgress = {
+        averageScore: aiCoach.getCombinedAverage(), // Now includes practice tests + mock exams
+        totalQuestions: aiCoach.getTotalQuestions(), // Now includes practice + mock exam questions
+        correctAnswers: aiCoach.getTestHistory().reduce((sum, t) => sum + t.score, 0),
+        studyTime: aiCoach.getStudyTime(), // Now includes mock exam time
+        weakAreas: [],
+        strongAreas: []
+      };
 
-    const realInsights = aiCoach.getAIInsights();
+      const realInsights = aiCoach.getAIInsights();
 
-    setUserProgress(realData);
-    setAiInsights(realInsights);
-    // setUnlockProgress(aiCoach.getUnlockProgress()); // Removed unused variable
+      setUserProgress(realData);
+      setAiInsights(realInsights);
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+      // Set fallback data
+      setUserProgress({
+        averageScore: 0,
+        totalQuestions: 0,
+        correctAnswers: 0,
+        studyTime: 0,
+        weakAreas: [],
+        strongAreas: []
+      });
+      setAiInsights([]);
+    }
   }, []);
 
   const handleRefresh = async () => {
