@@ -185,6 +185,7 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
           <div className="social-buttons">
             <button className="social-button google" onClick={handleGoogleSignIn}>
               <span className="google-icon">G</span>
+              <span className="google-text">Google</span>
             </button>
           </div>
 
@@ -317,6 +318,7 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
         <div className="social-buttons">
           <button className="social-button google" onClick={handleGoogleSignIn}>
             <span className="google-icon">G</span>
+            <span className="google-text">Google</span>
           </button>
         </div>
       </div>

@@ -400,6 +400,14 @@
   border-radius: 4px;
   background: #ea4335;
   border: none;
+  margin-right: 8px;
+}
+
+.google-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Password toggle functionality */
