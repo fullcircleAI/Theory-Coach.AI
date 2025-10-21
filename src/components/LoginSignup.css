@@ -364,12 +364,19 @@
 }
 
 .social-button.google {
-  background: #EA4335;
-  color: white;
+  background: white;
+  color: #333;
+  border: 1px solid #dadce0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .social-button.google:hover {
-  background: #d33b2c;
+  background: #f8f9fa;
+  border-color: #dadce0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .social-button.apple {
