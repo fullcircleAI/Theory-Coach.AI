@@ -156,7 +156,22 @@ export const AICoachDashboard: React.FC = () => {
     const targetHours = 24; // 24-hour target
     const remaining = Math.max(0, targetHours - userProgress.studyTime);
     const percentage = Math.min(100, (userProgress.studyTime / targetHours) * 100);
-    return { remaining, percentage };
+    
+    // Adaptive messaging based on progress
+    let timeMessage = '';
+    if (userProgress.studyTime < 2) {
+      timeMessage = 'Just getting started!';
+    } else if (userProgress.studyTime < 8) {
+      timeMessage = 'Great progress!';
+    } else if (userProgress.studyTime < 16) {
+      timeMessage = 'You\'re on track!';
+    } else if (userProgress.studyTime < 24) {
+      timeMessage = 'Almost there!';
+    } else {
+      timeMessage = 'Challenge complete!';
+    }
+    
+    return { remaining, percentage, timeMessage };
   };
 
   const navigateToRecommendedTest = (insight: AIInsight) => {

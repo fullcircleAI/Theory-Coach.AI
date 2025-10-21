@@ -203,29 +203,73 @@ class AICoachService {
     const topWeak = weakAreas[0];
     const testName = TEST_METADATA[topWeak.testId].name;
     
-    // Determine priority and reason - 3-tier traffic light system
+    // Determine priority and reason - Enhanced user-focused messaging
     let priority: 'critical' | 'high' | 'medium' = 'medium';
     let reason = 'Practice this to improve';
 
     if (topWeak.score === 0) {
       priority = 'high';
-      reason = 'Not practiced yet';
+      reason = 'Start here - essential for exam success';
     } else if (topWeak.score < 60) {
       priority = 'critical';
-      reason = 'Needs practice';
+      reason = 'Critical weakness - focus here first';
     } else if (topWeak.score < 88) {
       priority = 'high';
-      reason = 'Keep improving';
+      reason = 'Almost ready - one more practice';
+    } else {
+      priority = 'medium';
+      reason = 'Good progress - maintain skills';
     }
 
+    // Add context-aware reasoning
+    const contextReason = this.getContextualReason(topWeak, testScores);
+    
     return {
       testId: topWeak.testId,
       testName,
-      reason,
+      reason: contextReason || reason,
       priority,
       score: topWeak.score,
       ignoreCount: topWeak.ignoreCount
     };
+  }
+
+  // Get contextual reasoning for recommendations
+  private getContextualReason(weakArea: { testId: string; score: number; ignoreCount: number }, testScores: any): string {
+    const { testId, score, ignoreCount } = weakArea;
+    const testName = TEST_METADATA[testId].name;
+    
+    // Count total tests completed
+    const completedTests = Object.keys(testScores).length;
+    const totalTests = Object.keys(TEST_METADATA).length;
+    const progressPercentage = Math.round((completedTests / totalTests) * 100);
+    
+    // Early learner context
+    if (completedTests < 5) {
+      if (score === 0) {
+        return `Perfect starting point - ${testName} is fundamental`;
+      }
+      return `Build your foundation with ${testName}`;
+    }
+    
+    // Mid-progress context
+    if (completedTests < 15) {
+      if (score < 60) {
+        return `Focus on ${testName} - you're ${progressPercentage}% through all topics`;
+      }
+      return `Strengthen ${testName} - almost halfway there!`;
+    }
+    
+    // Advanced learner context
+    if (score < 60) {
+      return `Final push on ${testName} - you're ${progressPercentage}% complete`;
+    }
+    
+    if (score < 88) {
+      return `Polish ${testName} - you're almost exam-ready!`;
+    }
+    
+    return `Review ${testName} to maintain your ${score}% score`;
   }
 
   // Get AI Insights for dashboard
