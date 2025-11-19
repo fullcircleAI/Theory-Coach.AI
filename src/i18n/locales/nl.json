@@ -25,11 +25,27 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "averageScore": "Practice Average",
+    "averageScore": "Oefen Gemiddelde",
     "studyTime": "Gestudeerd",
     "timeRemaining": "Resterend",
     "yourProgress": "Prestaties",
-    "startPractice": "Start Practice"
+    "startPractice": "Start",
+    "examReadiness": "Examen Gereedheid",
+    "todayFocus": "Focus van Vandaag",
+    "needsAttention": "Vereist Aandacht",
+    "focusOnThis": "Focus op dit gebied om je algehele gereedheid te verbeteren",
+    "loadingProgress": "Je voortgang laden...",
+    "analyzingData": "Je prestatiegegevens analyseren",
+    "readinessStatus": {
+      "excellent": "Uitstekend!",
+      "excellentMessage": "Je bent klaar om het echte examen te halen!",
+      "good": "Goede Voortgang",
+      "goodMessage": "Blijf oefenen om uitstekende gereedheid te bereiken",
+      "needsWork": "Heeft Meer Oefening Nodig",
+      "needsWorkMessage": "Focus op zwakke punten om je score te verbeteren",
+      "notReady": "Nog Niet Klaar",
+      "notReadyMessage": "Blijf studeren voordat je het examen doet"
+    }
   },
   "examDate": {
     "title": "Wanneer is je examen?",

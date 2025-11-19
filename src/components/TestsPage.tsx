@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Navigation } from './Navigation';
+import { useLanguage } from '../contexts/LanguageContext';
 import { aiCoach } from '../services/aiCoach';
 import './TestsPage.css';
 
@@ -17,7 +16,36 @@ interface PracticeTest {
 
 export const TestsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t_nested } = useLanguage();
+
+  // Function to get translated test name
+  const getTranslatedTestName = (testId: string): string => {
+    const testNameMap: Record<string, string> = {
+      'traffic-lights-signals': t_nested('testNames.trafficLightsSignals'),
+      'priority-rules': t_nested('testNames.priorityRules'),
+      'hazard-perception': t_nested('testNames.hazardPerception'),
+      'speed-safety': t_nested('testNames.speedSafety'),
+      'bicycle-interactions': t_nested('testNames.bicycleInteractions'),
+      'roundabout-rules': t_nested('testNames.roundaboutRules'),
+      'tram-interactions': t_nested('testNames.tramInteractions'),
+      'pedestrian-crossings': t_nested('testNames.pedestrianCrossings'),
+      'construction-zones': t_nested('testNames.constructionZones'),
+      'weather-conditions': t_nested('testNames.weatherConditions'),
+      'road-signs': t_nested('testNames.roadSigns'),
+      'motorway-rules': t_nested('testNames.motorwayRules'),
+      'vehicle-knowledge': t_nested('testNames.vehicleKnowledge'),
+      'parking-rules': t_nested('testNames.parkingRules'),
+      'environmental': t_nested('testNames.environmental'),
+      'environmental-zones': t_nested('testNames.environmental'),
+      'technology-safety': t_nested('testNames.technologySafety'),
+      'alcohol-drugs': t_nested('testNames.alcoholDrugs'),
+      'fatigue-rest': t_nested('testNames.fatigueRest'),
+      'emergency-procedures': t_nested('testNames.emergencyProcedures'),
+      'insight-practice': t_nested('testNames.insightPractice'),
+      'mock-test': t_nested('testNames.mockTest')
+    };
+    return testNameMap[testId] || testId;
+  };
 
   // Get REAL recommendation from AI Coach
   const [recommendedTest, setRecommendedTest] = useState({
@@ -27,18 +55,18 @@ export const TestsPage: React.FC = () => {
   });
 
   useEffect(() => {
-    const recommendation = aiCoach.getTopRecommendation();
+    const recommendation = aiCoach.getTopRecommendation(t_nested);
     setRecommendedTest({
       id: recommendation.testId,
       name: recommendation.testName,
       reason: recommendation.reason
     });
-  }, []);
+  }, [t_nested]);
 
   const practiceTests: PracticeTest[] = [
     {
       id: 'traffic-rules-signs',
-      name: 'Traffic Rules & Signs',
+      name: getTranslatedTestName('traffic-lights-signals'),
       description: 'Learn Dutch traffic rules, signs, and regulations',
       questionCount: 40,
       difficulty: 'medium',
@@ -47,7 +75,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'priority-rules',
-      name: 'Priority & Right of Way',
+      name: getTranslatedTestName('priority-rules'),
       description: 'Understand priority rules and right of way situations',
       questionCount: 20,
       difficulty: 'medium',
@@ -56,7 +84,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'hazard-perception',
-      name: 'Hazard Perception',
+      name: getTranslatedTestName('hazard-perception'),
       description: 'Learn to recognize and respond to dangerous situations',
       questionCount: 15,
       difficulty: 'hard',
@@ -65,7 +93,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'speed-safety',
-      name: 'Speed & Safety',
+      name: getTranslatedTestName('speed-safety'),
       description: 'Speed limits, safety rules, and vehicle regulations',
       questionCount: 20,
       difficulty: 'easy',
@@ -74,7 +102,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'bicycle-interactions',
-      name: 'Bicycle Interactions',
+      name: getTranslatedTestName('bicycle-interactions'),
       description: 'Learn to safely interact with cyclists on the road',
       questionCount: 15,
       difficulty: 'medium',
@@ -83,7 +111,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'roundabout-rules',
-      name: 'Roundabout Rules',
+      name: getTranslatedTestName('roundabout-rules'),
       description: 'Learn roundabout navigation and priority rules',
       questionCount: 18,
       difficulty: 'medium',
@@ -92,7 +120,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'tram-interactions',
-      name: 'Tram Interactions',
+      name: getTranslatedTestName('tram-interactions'),
       description: 'Understand how to safely interact with trams',
       questionCount: 12,
       difficulty: 'easy',
@@ -101,7 +129,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'pedestrian-crossings',
-      name: 'Pedestrian Crossings',
+      name: getTranslatedTestName('pedestrian-crossings'),
       description: 'Learn pedestrian crossing rules and safety',
       questionCount: 15,
       difficulty: 'easy',
@@ -110,7 +138,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'construction-zones',
-      name: 'Construction Zones',
+      name: getTranslatedTestName('construction-zones'),
       description: 'Navigate construction zones safely',
       questionCount: 10,
       difficulty: 'easy',
@@ -119,7 +147,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'weather-conditions',
-      name: 'Weather Conditions',
+      name: getTranslatedTestName('weather-conditions'),
       description: 'Drive safely in various weather conditions',
       questionCount: 12,
       difficulty: 'easy',
@@ -128,7 +156,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'road-signs',
-      name: 'Road Signs',
+      name: getTranslatedTestName('road-signs'),
       description: 'Advanced road signs and identification',
       questionCount: 25,
       difficulty: 'medium',
@@ -137,7 +165,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'motorway-rules',
-      name: 'Motorway Rules',
+      name: getTranslatedTestName('motorway-rules'),
       description: 'Specific rules for motorway driving',
       questionCount: 18,
       difficulty: 'medium',
@@ -146,7 +174,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'vehicle-knowledge',
-      name: 'Vehicle Knowledge',
+      name: getTranslatedTestName('vehicle-knowledge'),
       description: 'Vehicle categories and documentation',
       questionCount: 15,
       difficulty: 'easy',
@@ -155,7 +183,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'parking-rules',
-      name: 'Parking Rules',
+      name: getTranslatedTestName('parking-rules'),
       description: 'Parking regulations and restrictions',
       questionCount: 20,
       difficulty: 'medium',
@@ -164,7 +192,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'environmental',
-      name: 'Environmental Zones',
+      name: getTranslatedTestName('environmental-zones'),
       description: 'Environmental zones and restrictions',
       questionCount: 10,
       difficulty: 'easy',
@@ -173,7 +201,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'technology-safety',
-      name: 'Technology & Safety',
+      name: getTranslatedTestName('technology-safety'),
       description: 'Modern vehicle technology and safety features',
       questionCount: 12,
       difficulty: 'easy',
@@ -182,7 +210,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'alcohol-drugs',
-      name: 'Alcohol & Drugs',
+      name: getTranslatedTestName('alcohol-drugs'),
       description: 'Alcohol and drug regulations for drivers',
       questionCount: 15,
       difficulty: 'medium',
@@ -191,7 +219,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'fatigue-rest',
-      name: 'Fatigue & Rest',
+      name: getTranslatedTestName('fatigue-rest'),
       description: 'Driver fatigue and rest requirements',
       questionCount: 10,
       difficulty: 'easy',
@@ -200,7 +228,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'emergency-procedures',
-      name: 'Emergency Procedures',
+      name: getTranslatedTestName('emergency-procedures'),
       description: 'Emergency procedures and protocols',
       questionCount: 12,
       difficulty: 'medium',
@@ -209,7 +237,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'insight-practice',
-      name: 'Insight Practice',
+      name: getTranslatedTestName('insight-practice'),
       description: 'Practice understanding traffic scenarios',
       questionCount: 20,
       difficulty: 'hard',
@@ -218,7 +246,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'traffic-lights-signals',
-      name: 'Traffic Lights & Signals',
+      name: getTranslatedTestName('traffic-lights-signals'),
       description: 'Traffic light signals and sequences',
       questionCount: 25,
       difficulty: 'medium',
@@ -227,7 +255,7 @@ export const TestsPage: React.FC = () => {
     },
     {
       id: 'mock-test',
-      name: 'Mock Test',
+      name: getTranslatedTestName('mock-test'),
       description: 'Practice with official exam format questions',
       questionCount: 25,
       difficulty: 'hard',
@@ -243,13 +271,12 @@ export const TestsPage: React.FC = () => {
 
   return (
     <div className="main-layout">
-      <Navigation />
       <main className="main-content tests-page">
         <div className="tests-page">
           <div className="tests-header">
             <div className="header-content">
               <div className="header-text">
-                <h1>{t('practice.title')}</h1>
+                <h1>{t_nested('practice.title')}</h1>
               </div>
             </div>
           </div>
@@ -259,7 +286,7 @@ export const TestsPage: React.FC = () => {
             {/* Recommendation Banner - iOS/Android Style */}
             <div className="recommendation-banner">
               <div className="recommendation-header">
-                <span className="recommendation-title">{t('practice.recommendedForYou')}</span>
+                <span className="recommendation-title">{t_nested('practice.recommendedForYou')}</span>
               </div>
               <div className="recommendation-content">
                 <h3 className="recommendation-test-name">{recommendedTest.name}</h3>
@@ -269,7 +296,7 @@ export const TestsPage: React.FC = () => {
                 className="recommendation-start-btn"
                 onClick={() => handleTestClick(recommendedTest.id)}
               >
-                {t('practice.startTest')}
+                {t_nested('practice.startTest')}
               </button>
             </div>
 

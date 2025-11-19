@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from './contexts/LanguageContext';
+import { TimerProvider } from './contexts/TimerContext';
 import { SplashScreen } from './components/SplashScreen';
 import { LanguageSelection } from './components/LanguageSelection';
 import { ExamDateSelection } from './components/ExamDateSelection';
@@ -15,16 +16,16 @@ import { MockExamSelection } from './components/MockExamSelection';
 import { MockExam } from './components/MockExam';
 import { MockExamResults } from './components/MockExamResults';
 import { OfficialExam } from './components/RealCBRExam';
-// import { ExamInstructions } from './components/ExamInstructions';
+import { TranslationDashboard } from './components/TranslationDashboard';
+import { Navigation } from './components/Navigation';
 import UserAuth from './components/UserAuth';
 import { userAuth, User } from './services/userAuth';
 import './App.css';
 
 // AppContent component that manages the app flow
 function AppContent() {
-  const { i18n } = useTranslation();
-  const currentLanguage = i18n.language;
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const { currentLanguage } = useLanguage();
+  const [, setCurrentUser] = useState<User | null>(null);
   const [showSplash, setShowSplash] = useState(() => {
     // Only show splash on first visit (like Duolingo)
     const hasSeenSplash = localStorage.getItem('hasSeenSplash');
@@ -75,22 +76,16 @@ function AppContent() {
     setShowSplash(false);
   };
 
-  // const handleLoginComplete = () => {
-  //   setShowLogin(false);
-  // }; // Replaced with handleUserChange
 
   const handleUserChange = (user: User | null) => {
     setCurrentUser(user);
     if (user) {
       setShowLogin(false);
-      console.log('✅ User authenticated:', user.name);
-      console.log('👤 Current user:', currentUser?.name || 'None');
     }
   };
 
   const handleExamDateComplete = () => {
     setShowExamDate(false);
-    console.log('📅 Exam date set:', localStorage.getItem('examDate'));
   };
 
   // SPLASH SCREEN FIRST (like Duolingo)
@@ -119,6 +114,7 @@ function AppContent() {
       {/* Global Components */}
       <InstallPrompt />
       <OfflineIndicator />
+      <Navigation />
       
       <Routes>
         <Route path="/" element={<AICoachDashboard />} />
@@ -128,8 +124,8 @@ function AppContent() {
         <Route path="/mock-exam/results" element={<MockExamResults />} />
         <Route path="/mock-exam/:examId" element={<MockExam />} />
         <Route path="/official-exam/:examId" element={<OfficialExam />} />
-        {/* <Route path="/instructions" element={<ExamInstructions />} /> */}
         <Route path="/settings" element={<Settings />} />
+        <Route path="/translation-dashboard" element={<TranslationDashboard />} />
         <Route path="/practice/:testId" element={<PracticeTest />} />
       </Routes>
     </div>
@@ -138,9 +134,11 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <TimerProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </TimerProvider>
   );
 }
 

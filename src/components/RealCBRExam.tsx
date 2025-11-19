@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Navigation } from './Navigation';
 import { lightHaptic, impactHaptic } from '../utils/haptics';
 import './RealCBRExam.css';
 import './TestsPage.css';
@@ -165,7 +164,6 @@ export const OfficialExam: React.FC = () => {
   if (showInstructions && examConfig) {
     return (
       <div className="cbr-exam-container">
-        <Navigation />
         <div className="cbr-question-container">
           <button 
             className="back-button-icon"
@@ -208,7 +206,6 @@ export const OfficialExam: React.FC = () => {
 
     return (
       <div className="cbr-exam-container">
-        <Navigation />
         <div className="cbr-results-container">
           <div className="cbr-results-header">
             <div className={`cbr-results-status ${passed ? 'passed' : 'failed'}`}>
@@ -254,7 +251,6 @@ export const OfficialExam: React.FC = () => {
   if (!examConfig || questions.length === 0) {
     return (
       <div className="cbr-exam-container">
-        <Navigation />
         <div className="cbr-question-container">
           <div style={{ textAlign: 'center', padding: '2rem' }}>
             <div>Loading official exam...</div>

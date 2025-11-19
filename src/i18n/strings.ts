@@ -18,7 +18,7 @@ export const strings: Record<string, LanguageStrings> = {
     navigation: {
       dashboard: 'Dashboard',
       practice: 'Practice',
-      exam: 'Exam',
+      mockExam: 'Mock Exam',
       chat: 'Chat',
       settings: 'Settings',
     },
@@ -26,7 +26,7 @@ export const strings: Record<string, LanguageStrings> = {
       title: 'Dashboard',
       welcomeMessage: "Welcome back!",
       welcomeSubtitle: "Let's make learning fun!",
-      startPractice: "Let’s Go! 🚦",
+      startPractice: "Start",
       performanceTracker: "Performance",
       testsCompleted: "Tests Conquered",
       averageScore: "Your Super Score",
@@ -35,17 +35,130 @@ export const strings: Record<string, LanguageStrings> = {
       focusNote: "Practice these to level up!",
       upgradeToPremium: "Unlock Epic Mode",
       upgradeDescription: "Get all tests, all features, all the fun!",
-      upgradeNow: "Upgrade & Zoom 🚀",
-      doingAmazing: "You’re zooming ahead! Keep it up! 🏎️",
+      upgradeNow: "Upgrade & Zoom",
+      doingAmazing: "You're zooming ahead! Keep it up!",
       makingProgress: "Every click is a win!",
       readyToStart: "Adventure awaits!",
-      woohoo: "Woohoo! You’re a star! 🌟",
-      youGotThis: "You’ve got this! Smash it! 💪",
-      firstWin: "First win unlocked! 🎉"
+      woohoo: "Woohoo! You're a star!",
+      youGotThis: "You've got this! Smash it!",
+      firstWin: "First win unlocked!",
+      examReadiness: "Exam Readiness",
+      studyTime: "Studied",
+      timeRemaining: "Remaining",
+      yourProgress: "Performance",
+      todayFocus: "Today's Focus",
+      needsAttention: "Needs Attention",
+      focusOnThis: "Focus on this area to improve your overall readiness",
+      startMockExam: "Start Mock Exam",
+      readyToTest: "Ready to test your knowledge!",
+      notPracticedYet: "Not practiced yet - good next step",
+      readyToStartLearning: "Ready to start learning",
+      startWithBasics: "Start with the basics and build up!",
+      practiceMore: "Practice More",
+      continueBuilding: "Continue building your foundation",
+      excellentMastery: "excellent mastery",
+      strongPerformance: "strong performance",
+      goodProgress: "good progress",
+      buildingSkills: "building skills",
+      loadingProgress: "Loading your progress...",
+      analyzingData: "Analyzing your study data and generating insights"
+    },
+    settings: {
+      title: 'Settings',
+      account: 'Account',
+      language: 'Language',
+      privacy: 'Privacy',
+      terms: 'Terms',
+      faq: 'FAQ',
+      support: 'Support',
+      about: 'About',
+      enterUsername: 'Enter username',
+      supportSubject: 'What do you need help with?',
+      supportMessage: 'Describe your issue or question...',
+      faqData: {
+        progressTracking: {
+          question: 'How does the progress tracking work?',
+          answer: 'Your progress is automatically saved as you complete practice tests. You can view detailed analytics including your average score, weak areas, and study streak. Data is synced across all your devices when you create an account.'
+        },
+        dataSecurity: {
+          question: 'Is my data secure and private?',
+          answer: 'Yes! Your data is stored securely in the cloud and is only accessible to you. We don\'t share your personal information with third parties. You can delete your account and all data at any time.'
+        },
+        offlineUse: {
+          question: 'Can I use the app offline?',
+          answer: 'Yes, you can use the app offline for practice tests. Your progress will be saved locally and synced to the cloud when you\'re back online. However, some features like cloud sync require an internet connection.'
+        },
+        aiCoach: {
+          question: 'How accurate is the AI Learning Coach?',
+          answer: 'The AI Learning Coach analyzes your performance patterns to provide personalized study recommendations. It identifies your weak areas and tracks your learning progress to help you study more effectively.'
+        },
+        dataLoss: {
+          question: 'What if I lose my device or clear my browser?',
+          answer: 'If you\'ve created an account, your progress is safely stored in the cloud and can be restored on any device. Simply log in with your name and all your data will be available. For anonymous users, data is stored locally and may be lost if the browser is cleared.'
+        }
+      }
+    },
+    achievements: {
+      firstTest: {
+        title: "First Steps!",
+        description: "Completed your first practice test"
+      },
+      oneHour: {
+        title: "Dedicated Learner!",
+        description: "Studied for 1 hour"
+      },
+      fiveHours: {
+        title: "Study Champion!",
+        description: "Studied for 5 hours"
+      },
+      seventyPercent: {
+        title: "Passing Grade!",
+        description: "Achieved 70% average score"
+      },
+      eightyFivePercent: {
+        title: "Exam Ready!",
+        description: "Achieved 85% average score"
+      },
+      firstMock: {
+        title: "Mock Exam Master!",
+        description: "Completed your first mock exam"
+      },
+      hundredQuestions: {
+        title: "Question Master!",
+        description: "Answered 100 questions"
+      },
+      fiveHundredQuestions: {
+        title: "Theory Expert!",
+        description: "Answered 500 questions"
+      }
+    },
+    testNames: {
+      trafficLightsSignals: "Traffic Lights & Signals",
+      priorityRules: "Priority & Right of Way",
+      hazardPerception: "Hazard Perception",
+      speedSafety: "Speed & Safety",
+      bicycleInteractions: "Bicycle Interactions",
+      roundaboutRules: "Roundabout Rules",
+      tramInteractions: "Tram Interactions",
+      pedestrianCrossings: "Pedestrian Crossings",
+      constructionZones: "Construction Zones",
+      weatherConditions: "Weather Conditions",
+      roadSigns: "Road Signs",
+      motorwayRules: "Motorway Rules",
+      vehicleKnowledge: "Vehicle Knowledge",
+      parkingRules: "Parking Rules",
+      environmental: "Environmental Zones",
+      technologySafety: "Technology & Safety",
+      alcoholDrugs: "Alcohol & Drugs",
+      fatigueRest: "Fatigue & Rest",
+      emergencyProcedures: "Emergency Procedures",
+      insightPractice: "Insight Practice",
+      mockTest: "Mock Test"
     },
     practice: {
       title: 'Practice',
       startTest: 'Start',
+      recommendedForYou: 'Recommended for You',
       hazardPerception: 'Hazard Perception',
       insightPractice: 'Insight Practice',
       mandatorySigns: 'Mandatory Signs',
@@ -98,11 +211,11 @@ export const strings: Record<string, LanguageStrings> = {
       instruction5: 'Results will be shown after completion',
       practiceRequirement: 'Practice Requirement',
       progressComplete: 'Complete',
-      readyTitle: "Quiz Hero! 🦸‍♂️",
+      readyTitle: "Quiz Hero!",
       readyMessage: "You’re quiz-ready! Time to shine.",
-      almostTitle: "Almost a legend! 📚",
+      almostTitle: "Almost a legend!",
       almostMessage: "Just a bit more practice and you’ll be unstoppable!",
-      practiceTitle: "Warm up first! 🔥",
+      practiceTitle: "Warm up first!",
       practiceMessage: "A few more practice runs and you’ll ace it!",
       startMockExam: "Start",
       continuePracticing: "Keep Practicing",
@@ -159,7 +272,13 @@ export const strings: Record<string, LanguageStrings> = {
       good: 'Good Work!',
       close: 'Almost There!',
       needPractice: 'Need More Practice',
-      backToQuizzes: 'Back to Quizzes'
+      backToQuizzes: 'Back to Quizzes',
+      requirement: 'Requirement:',
+      requirementText: 'Score 70% or higher on practice tests to access mock exams',
+      questionsLabel: 'questions',
+      minutesLabel: 'min',
+      passMarkLabel: 'to pass',
+      completePracticeToUnlock: 'Complete practice tests to unlock'
     },
     quizSelection: {
       title: 'Quiz',
@@ -213,8 +332,8 @@ export const strings: Record<string, LanguageStrings> = {
     },
     results: {
       title: 'Test Results',
-      congratulations: "You did it! 🎉",
-      wellDone: "Epic job! 🏆",
+      congratulations: "You did it!",
+      wellDone: "Epic job!",
       keepPracticing: "Keep going, champion!",
       score: 'Score',
       correct: 'Correct',
@@ -225,6 +344,31 @@ export const strings: Record<string, LanguageStrings> = {
       backToPractice: 'Back to Practice',
       tryAgain: "Give it another go!",
       shareResults: "Brag to your friends! 🥳"
+    },
+    aiTutor: {
+      title: 'Coach',
+      welcome: 'Hi! I can help with Dutch driving theory, exam costs, traffic rules, and your progress. What would you like to know?',
+      error: 'Sorry, I\'m having trouble right now. Please try again in a moment.',
+      actionItems: 'Action Items:',
+      nextSteps: 'Next Steps:',
+      inputPlaceholder: 'Message Coach...',
+      quickQuestions: {
+        title: 'Try asking:'
+      }
+    },
+    examDate: {
+      title: 'When\'s Your Exam?',
+      selectDate: 'Select Date',
+      skip: 'Skip for now',
+      continue: 'Continue',
+      continuing: 'Continuing...'
+    },
+    install: {
+      title: 'Install Theory Coach AI',
+      description: 'Learn driving theory in 24 hours with our AI-powered coaching system',
+      mobileMessage: 'Install on mobile for the best experience',
+      installNow: 'Install Now',
+      maybeLater: 'Maybe Later'
     },
     progressTracker: {
       title: 'Performance',
@@ -296,15 +440,15 @@ export const strings: Record<string, LanguageStrings> = {
     navigation: {
       dashboard: 'Dashboard',
       practice: 'Oefenen',
-      exam: 'Examen',
+      mockExam: 'Proefexamen',
       chat: 'Chat',
       settings: 'Instellingen',
     },
     dashboard: {
       title: 'Dashboard',
-      welcomeMessage: "Welcome back!",
-      welcomeSubtitle: "Let's make learning fun!",
-      startPractice: "Let’s Go! 🚦",
+      welcomeMessage: "Welkom terug!",
+      welcomeSubtitle: "Laten we leren leuk maken!",
+      startPractice: "Start",
       performanceTracker: "Jouw Weg naar Succes",
       testsCompleted: "Toetsen Gehaald",
       averageScore: "Jouw Super Score",
@@ -313,17 +457,130 @@ export const strings: Record<string, LanguageStrings> = {
       focusNote: "Oefen deze om te levelen!",
       upgradeToPremium: "Ontgrendel Epic Modus",
       upgradeDescription: "Alle toetsen, alle functies, alle fun!",
-      upgradeNow: "Upgrade & Gaan 🚀",
-      doingAmazing: "Je gaat als een speer! Ga zo door! 🏎️",
+      upgradeNow: "Upgrade & Gaan",
+      doingAmazing: "Je gaat als een speer! Ga zo door!",
       makingProgress: "Elke klik is een overwinning!",
       readyToStart: "Avontuur wacht!",
-      woohoo: "Woohoo! Je bent een ster! 🌟",
-      youGotThis: "Je kunt dit! Smashen! 💪",
-      firstWin: "Eerste overwinning! 🎉"
+      woohoo: "Woohoo! Je bent een ster!",
+      youGotThis: "Je kunt dit! Smashen!",
+      firstWin: "Eerste overwinning!",
+      examReadiness: "Examen Gereedheid",
+      studyTime: "Gestudeerd",
+      timeRemaining: "Resterend",
+      yourProgress: "Prestaties",
+      todayFocus: "Focus van Vandaag",
+      needsAttention: "Vereist Aandacht",
+      focusOnThis: "Focus op dit gebied om je algehele gereedheid te verbeteren",
+      startMockExam: "Start Proefexamen",
+      readyToTest: "Klaar om je kennis te testen!",
+      notPracticedYet: "Nog niet geoefend - goede volgende stap",
+      readyToStartLearning: "Klaar om te beginnen met leren",
+      startWithBasics: "Begin met de basis en bouw op!",
+      practiceMore: "Meer Oefenen",
+      continueBuilding: "Blijf je fundament bouwen",
+      excellentMastery: "uitstekende beheersing",
+      strongPerformance: "sterke prestatie",
+      goodProgress: "goede vooruitgang",
+      buildingSkills: "vaardigheden opbouwen",
+      loadingProgress: "Jouw voortgang laden...",
+      analyzingData: "Jouw studiedata analyseren en inzichten genereren"
+    },
+    settings: {
+      title: 'Instellingen',
+      account: 'Account',
+      language: 'Taal',
+      privacy: 'Privacy',
+      terms: 'Voorwaarden',
+      faq: 'FAQ',
+      support: 'Ondersteuning',
+      about: 'Over',
+      enterUsername: 'Voer gebruikersnaam in',
+      supportSubject: 'Waar heb je hulp bij nodig?',
+      supportMessage: 'Beschrijf je probleem of vraag...',
+      faqData: {
+        progressTracking: {
+          question: 'Hoe werkt de voortgangsregistratie?',
+          answer: 'Je voortgang wordt automatisch opgeslagen terwijl je oefentoetsen voltooit. Je kunt gedetailleerde analyses bekijken inclusief je gemiddelde score, zwakke punten en studiestreak. Data wordt gesynchroniseerd op al je apparaten wanneer je een account aanmaakt.'
+        },
+        dataSecurity: {
+          question: 'Is mijn data veilig en privé?',
+          answer: 'Ja! Je data wordt veilig opgeslagen in de cloud en is alleen toegankelijk voor jou. We delen je persoonlijke informatie niet met derden. Je kunt je account en alle data op elk moment verwijderen.'
+        },
+        offlineUse: {
+          question: 'Kan ik de app offline gebruiken?',
+          answer: 'Ja, je kunt de app offline gebruiken voor oefentoetsen. Je voortgang wordt lokaal opgeslagen en gesynchroniseerd naar de cloud wanneer je weer online bent. Sommige functies zoals cloud sync vereisen echter een internetverbinding.'
+        },
+        aiCoach: {
+          question: 'Hoe accuraat is de AI Leercoach?',
+          answer: 'De AI Leercoach analyseert je prestaties om gepersonaliseerde studierichtlijnen te geven. Het identificeert je zwakke punten en volgt je leerproces om je effectiever te laten studeren.'
+        },
+        dataLoss: {
+          question: 'Wat als ik mijn apparaat verlies of mijn browser leegmaak?',
+          answer: 'Als je een account hebt aangemaakt, wordt je voortgang veilig opgeslagen in de cloud en kan worden hersteld op elk apparaat. Log gewoon in met je naam en al je data is beschikbaar. Voor anonieme gebruikers wordt data lokaal opgeslagen en kan verloren gaan als de browser wordt geleegd.'
+        }
+      }
+    },
+    achievements: {
+      firstTest: {
+        title: "Eerste Stappen!",
+        description: "Je eerste oefentoets voltooid"
+      },
+      oneHour: {
+        title: "Toegewijde Leerling!",
+        description: "1 uur gestudeerd"
+      },
+      fiveHours: {
+        title: "Studie Kampioen!",
+        description: "5 uur gestudeerd"
+      },
+      seventyPercent: {
+        title: "Voldoende!",
+        description: "70% gemiddelde score behaald"
+      },
+      eightyFivePercent: {
+        title: "Examen Klaar!",
+        description: "85% gemiddelde score behaald"
+      },
+      firstMock: {
+        title: "Proefexamen Meester!",
+        description: "Je eerste proefexamen voltooid"
+      },
+      hundredQuestions: {
+        title: "Vraag Meester!",
+        description: "100 vragen beantwoord"
+      },
+      fiveHundredQuestions: {
+        title: "Theorie Expert!",
+        description: "500 vragen beantwoord"
+      }
+    },
+    testNames: {
+      trafficLightsSignals: "Verkeerslichten & Signalen",
+      priorityRules: "Voorrang & Weggebruik",
+      hazardPerception: "Gevaarherkenning",
+      speedSafety: "Snelheid & Veiligheid",
+      bicycleInteractions: "Fiets Interacties",
+      roundaboutRules: "Rotonde Regels",
+      tramInteractions: "Tram Interacties",
+      pedestrianCrossings: "Voetgangersoversteekplaatsen",
+      constructionZones: "Bouwzones",
+      weatherConditions: "Weersomstandigheden",
+      roadSigns: "Wegborden",
+      motorwayRules: "Autosnelweg Regels",
+      vehicleKnowledge: "Voertuigkennis",
+      parkingRules: "Parkeerregels",
+      environmental: "Milieuzones",
+      technologySafety: "Technologie & Veiligheid",
+      alcoholDrugs: "Alcohol & Drugs",
+      fatigueRest: "Vermoeidheid & Rust",
+      emergencyProcedures: "Noodprocedures",
+      insightPractice: "Inzicht Oefening",
+      mockTest: "Proefexamen"
     },
     practice: {
       title: 'Oefentoetsen',
       startTest: 'Start',
+      recommendedForYou: 'Aanbevolen voor Jou',
       hazardPerception: 'Gevaarherkenning',
       insightPractice: 'Inzicht Oefening',
       mandatorySigns: 'Gebodsborden',
@@ -376,11 +633,11 @@ export const strings: Record<string, LanguageStrings> = {
       instruction5: 'Resultaten worden getoond na voltooiing',
       practiceRequirement: 'Oefenvereiste',
       progressComplete: 'Voltooid',
-      readyTitle: "Quizheld! 🦸‍♂️",
+      readyTitle: "Quizheld!",
       readyMessage: "Je bent quiz-klaar! Tijd om te shinen.",
-      almostTitle: "Bijna een legende! 📚",
+      almostTitle: "Bijna een legende!",
       almostMessage: "Nog een beetje oefenen en je bent niet te stoppen!",
-      practiceTitle: "Eerst opwarmen! 🔥",
+      practiceTitle: "Eerst opwarmen!",
       practiceMessage: "Nog een paar oefenrondes en je rockt het!",
       startMockExam: 'Start',
       continuePracticing: 'Blijf Oefenen',
@@ -437,7 +694,13 @@ export const strings: Record<string, LanguageStrings> = {
       good: 'Goed Werk!',
       close: 'Bijna Daar!',
       needPractice: 'Meer Oefening Nodig',
-      backToQuizzes: 'Terug naar Quizzes'
+      backToQuizzes: 'Terug naar Quizzes',
+      requirement: 'Vereiste:',
+      requirementText: 'Scoor 70% of hoger op oefentoetsen om proefexamens te ontgrendelen',
+      questionsLabel: 'vragen',
+      minutesLabel: 'min',
+      passMarkLabel: 'om te slagen',
+      completePracticeToUnlock: 'Voltooi oefentoetsen om te ontgrendelen'
     },
     quizSelection: {
       title: 'Quiz',
@@ -491,8 +754,8 @@ export const strings: Record<string, LanguageStrings> = {
     },
     results: {
       title: 'Toetsresultaten',
-      congratulations: "Je hebt het gedaan! 🎉",
-      wellDone: "Top gedaan! 🏆",
+      congratulations: "Je hebt het gedaan!",
+      wellDone: "Top gedaan!",
       keepPracticing: "Blijf gaan, kampioen!",
       score: 'Score',
       correct: 'Correct',
@@ -503,6 +766,31 @@ export const strings: Record<string, LanguageStrings> = {
       backToPractice: 'Terug naar Oefenen',
       tryAgain: "Probeer het nog eens!",
       shareResults: "Laat het je vrienden zien! 🥳"
+    },
+    aiTutor: {
+      title: 'Coach',
+      welcome: 'Hoi! Ik kan helpen met Nederlandse rijtheorie, examenkosten, verkeersregels en je voortgang. Wat wil je weten?',
+      error: 'Sorry, ik heb nu problemen. Probeer het over een momentje opnieuw.',
+      actionItems: 'Actiepunten:',
+      nextSteps: 'Volgende Stappen:',
+      inputPlaceholder: 'Bericht Coach...',
+      quickQuestions: {
+        title: 'Probeer te vragen:'
+      }
+    },
+    examDate: {
+      title: 'Wanneer is je Examen?',
+      selectDate: 'Selecteer Datum',
+      skip: 'Overslaan voor nu',
+      continue: 'Doorgaan',
+      continuing: 'Doorgaan...'
+    },
+    install: {
+      title: 'Installeer Theory Coach AI',
+      description: 'Leer rijtheorie in 24 uur met ons AI-aangedreven coachingssysteem',
+      mobileMessage: 'Installeer op mobiel voor de beste ervaring',
+      installNow: 'Installeer Nu',
+      maybeLater: 'Misschien Later'
     },
     progressTracker: {
       title: 'Prestaties',
@@ -574,15 +862,15 @@ export const strings: Record<string, LanguageStrings> = {
     navigation: {
       dashboard: 'لوحة التحكم',
       practice: 'التدريب',
-      exam: 'الامتحان',
+      mockExam: 'الامتحان التجريبي',
       chat: 'المحادثة',
       settings: 'الإعدادات',
     },
     dashboard: {
       title: 'لوحة التحكم',
-      welcomeMessage: "مرحباً {username}، جاهز للتألق اليوم؟ 🚗💨",
+      welcomeMessage: "مرحباً {username}، جاهز للتألق اليوم؟",
       welcomeSubtitle: "لنستمتع بالتعلم!",
-      startPractice: "لنبدأ! 🚦",
+      startPractice: "ابدأ",
       performanceTracker: "طريقك إلى النجاح",
       testsCompleted: "الاختبارات المنجزة",
       averageScore: "درجتك المميزة",
@@ -591,17 +879,130 @@ export const strings: Record<string, LanguageStrings> = {
       focusNote: "تدرب هنا لترتقي!",
       upgradeToPremium: "افتح الوضع الأسطوري",
       upgradeDescription: "كل الاختبارات، كل الميزات، كل المتعة!",
-      upgradeNow: "ترقية وانطلاق 🚀",
-      doingAmazing: "أنت تتقدم بسرعة! استمر! 🏎️",
+      upgradeNow: "ترقية وانطلاق",
+      doingAmazing: "أنت تتقدم بسرعة! استمر!",
       makingProgress: "كل نقرة انتصار!",
       readyToStart: "المغامرة بانتظارك!",
-      woohoo: "واو! أنت نجم! 🌟",
-      youGotThis: "أنت تستطيع! اكسرها! 💪",
-      firstWin: "أول فوز! 🎉"
+      woohoo: "واو! أنت نجم!",
+      youGotThis: "أنت تستطيع! اكسرها!",
+      firstWin: "أول فوز!",
+      examReadiness: "جاهزية الامتحان",
+      studyTime: "مُدَرَّس",
+      timeRemaining: "متبقي",
+      yourProgress: "الأداء",
+      todayFocus: "التركيز اليوم",
+      needsAttention: "يحتاج انتباه",
+      focusOnThis: "ركز على هذا المجال لتحسين جاهزيتك العامة",
+      startMockExam: "ابدأ الامتحان التجريبي",
+      readyToTest: "جاهز لاختبار معرفتك!",
+      notPracticedYet: "لم يتم التدرب بعد - خطوة جيدة التالية",
+      readyToStartLearning: "جاهز لبدء التعلم",
+      startWithBasics: "ابدأ بالأساسيات وابنِ عليها!",
+      practiceMore: "تدرب أكثر",
+      continueBuilding: "استمر في بناء أساسك",
+      excellentMastery: "إتقان ممتاز",
+      strongPerformance: "أداء قوي",
+      goodProgress: "تقدم جيد",
+      buildingSkills: "بناء المهارات",
+      loadingProgress: "تحميل تقدمك...",
+      analyzingData: "تحليل بيانات دراستك وتوليد رؤى"
+    },
+    settings: {
+      title: 'الإعدادات',
+      account: 'الحساب',
+      language: 'اللغة',
+      privacy: 'الخصوصية',
+      terms: 'الشروط',
+      faq: 'الأسئلة الشائعة',
+      support: 'الدعم',
+      about: 'حول',
+      enterUsername: 'أدخل اسم المستخدم',
+      supportSubject: 'بماذا تحتاج مساعدة؟',
+      supportMessage: 'اوصف مشكلتك أو سؤالك...',
+      faqData: {
+        progressTracking: {
+          question: 'كيف يعمل تتبع التقدم؟',
+          answer: 'يتم حفظ تقدمك تلقائياً أثناء إكمال اختبارات التدريب. يمكنك عرض تحليلات مفصلة تشمل متوسط درجاتك والمناطق الضعيفة ومسار الدراسة. يتم مزامنة البيانات عبر جميع أجهزتك عند إنشاء حساب.'
+        },
+        dataSecurity: {
+          question: 'هل بياناتي آمنة وخاصة؟',
+          answer: 'نعم! يتم تخزين بياناتك بأمان في السحابة وهي متاحة لك فقط. نحن لا نشارك معلوماتك الشخصية مع أطراف ثالثة. يمكنك حذف حسابك وجميع البيانات في أي وقت.'
+        },
+        offlineUse: {
+          question: 'هل يمكنني استخدام التطبيق بدون اتصال؟',
+          answer: 'نعم، يمكنك استخدام التطبيق بدون اتصال لاختبارات التدريب. سيتم حفظ تقدمك محلياً ومزامنته إلى السحابة عندما تعود متصلاً. ومع ذلك، تتطلب بعض الميزات مثل مزامنة السحابة اتصالاً بالإنترنت.'
+        },
+        aiCoach: {
+          question: 'ما مدى دقة مدرب التعلم بالذكاء الاصطناعي؟',
+          answer: 'يحلل مدرب التعلم بالذكاء الاصطناعي أنماط أدائك لتقديم توصيات دراسة مخصصة. يحدد المناطق الضعيفة ويتتبع تقدمك في التعلم لمساعدتك على الدراسة بفعالية أكبر.'
+        },
+        dataLoss: {
+          question: 'ماذا لو فقدت جهازي أو مسحت المتصفح؟',
+          answer: 'إذا كنت قد أنشأت حساباً، يتم تخزين تقدمك بأمان في السحابة ويمكن استعادته على أي جهاز. ببساطة سجل دخولك باسمك وستكون جميع بياناتك متاحة. للمستخدمين المجهولين، يتم تخزين البيانات محلياً وقد تضيع إذا تم مسح المتصفح.'
+        }
+      }
+    },
+    achievements: {
+      firstTest: {
+        title: "الخطوات الأولى!",
+        description: "أكملت أول اختبار تدريبي"
+      },
+      oneHour: {
+        title: "متعلم مخلص!",
+        description: "درست لمدة ساعة واحدة"
+      },
+      fiveHours: {
+        title: "بطل الدراسة!",
+        description: "درست لمدة 5 ساعات"
+      },
+      seventyPercent: {
+        title: "درجة النجاح!",
+        description: "حصلت على متوسط 70%"
+      },
+      eightyFivePercent: {
+        title: "جاهز للامتحان!",
+        description: "حصلت على متوسط 85%"
+      },
+      firstMock: {
+        title: "سيد الامتحان التجريبي!",
+        description: "أكملت أول امتحان تجريبي"
+      },
+      hundredQuestions: {
+        title: "سيد الأسئلة!",
+        description: "أجبت على 100 سؤال"
+      },
+      fiveHundredQuestions: {
+        title: "خبير النظرية!",
+        description: "أجبت على 500 سؤال"
+      }
+    },
+    testNames: {
+      trafficLightsSignals: "إشارات المرور والإشارات",
+      priorityRules: "الأولوية وحق الطريق",
+      hazardPerception: "إدراك المخاطر",
+      speedSafety: "السرعة والسلامة",
+      bicycleInteractions: "تفاعلات الدراجات",
+      roundaboutRules: "قواعد الدوار",
+      tramInteractions: "تفاعلات الترام",
+      pedestrianCrossings: "معابر المشاة",
+      constructionZones: "مناطق البناء",
+      weatherConditions: "الظروف الجوية",
+      roadSigns: "علامات الطريق",
+      motorwayRules: "قواعد الطرق السريعة",
+      vehicleKnowledge: "معرفة المركبات",
+      parkingRules: "قواعد الوقوف",
+      environmental: "المناطق البيئية",
+      technologySafety: "التكنولوجيا والسلامة",
+      alcoholDrugs: "الكحول والمخدرات",
+      fatigueRest: "التعب والراحة",
+      emergencyProcedures: "إجراءات الطوارئ",
+      insightPractice: "تدريب البصيرة",
+      mockTest: "اختبار تجريبي"
     },
     practice: {
       title: 'اختبارات التدريب',
       startTest: 'ابدأ',
+      recommendedForYou: 'موصى لك',
       hazardPerception: 'إدراك المخاطر',
       insightPractice: 'تدريب البصيرة',
       mandatorySigns: 'العلامات الإلزامية',
@@ -654,11 +1055,11 @@ export const strings: Record<string, LanguageStrings> = {
       instruction5: 'ستظهر النتائج بعد الانتهاء',
       practiceRequirement: 'متطلب التدريب',
       progressComplete: 'مكتمل',
-      readyTitle: 'بطل الاختبار! 🦸‍♂️',
+      readyTitle: 'بطل الاختبار!',
       readyMessage: "أنت جاهز للاختبار! أظهر مهاراتك.",
-      almostTitle: 'قريب من الأسطورة! 📚',
+      almostTitle: 'قريب من الأسطورة!',
       almostMessage: "بعض التدريب الإضافي وستصبح لا يُقهر!",
-      practiceTitle: 'سخّن أولاً! 🔥',
+      practiceTitle: 'سخّن أولاً!',
       practiceMessage: "بعض الجولات التدريبية وستتفوق!",
       startMockExam: 'ابدأ',
       continuePracticing: 'استمر في التدريب',
@@ -715,7 +1116,13 @@ export const strings: Record<string, LanguageStrings> = {
       good: 'عمل جيد!',
       close: 'تقريباً هناك!',
       needPractice: 'تحتاج مزيد من التدريب',
-      backToQuizzes: 'العودة إلى الاختبارات'
+      backToQuizzes: 'العودة إلى الاختبارات',
+      requirement: 'المتطلب:',
+      requirementText: 'احصل على 70% أو أعلى في اختبارات التدريب لفتح الامتحانات التجريبية',
+      questionsLabel: 'أسئلة',
+      minutesLabel: 'دقيقة',
+      passMarkLabel: 'للنجاح',
+      completePracticeToUnlock: 'أكمل اختبارات التدريب لفتح القفل'
     },
     quizSelection: {
       title: 'اختبار',
@@ -764,13 +1171,13 @@ export const strings: Record<string, LanguageStrings> = {
       subtitle: 'هل لديك سؤال حول قواعد الطريق أو مواضيع الامتحان؟',
       placeholder: 'اكتب سؤالك هنا...',
       send: 'إرسال',
-      emptyState: "اسألني أي شيء! أنا مساعدك في القيادة. 🦉",
+      emptyState: "اسألني أي شيء! أنا مساعدك في القيادة.",
       typing: "أفكر في إجابة رائعة..."
     },
     results: {
       title: 'نتائج الاختبار',
-      congratulations: "لقد فعلتها! 🎉",
-      wellDone: "عمل رائع! 🏆",
+      congratulations: "لقد فعلتها!",
+      wellDone: "عمل رائع!",
       keepPracticing: "استمر أيها البطل!",
       score: 'النتيجة',
       correct: 'صحيح',
@@ -781,6 +1188,31 @@ export const strings: Record<string, LanguageStrings> = {
       backToPractice: 'العودة إلى التدريب',
       tryAgain: "جرب مرة أخرى!",
       shareResults: "شارك أصدقاءك! 🥳"
+    },
+    aiTutor: {
+      title: 'المدرب',
+      welcome: 'مرحباً! يمكنني المساعدة في نظرية القيادة الهولندية وتكاليف الامتحان وقواعد المرور وتقدمك. ماذا تريد أن تعرف؟',
+      error: 'عذراً، أواجه مشاكل الآن. يرجى المحاولة مرة أخرى بعد لحظة.',
+      actionItems: 'نقاط العمل:',
+      nextSteps: 'الخطوات التالية:',
+      inputPlaceholder: 'رسالة للمدرب...',
+      quickQuestions: {
+        title: 'جرب السؤال عن:'
+      }
+    },
+    examDate: {
+      title: 'متى امتحانك؟',
+      selectDate: 'اختر التاريخ',
+      skip: 'تخطي الآن',
+      continue: 'متابعة',
+      continuing: 'جاري المتابعة...'
+    },
+    install: {
+      title: 'تثبيت مدرب النظرية الذكي',
+      description: 'تعلم نظرية القيادة في 24 ساعة مع نظام التدريب المدعوم بالذكاء الاصطناعي',
+      mobileMessage: 'ثبت على الهاتف المحمول للحصول على أفضل تجربة',
+      installNow: 'تثبيت الآن',
+      maybeLater: 'ربما لاحقاً'
     },
     progressTracker: {
       title: 'الأداء',

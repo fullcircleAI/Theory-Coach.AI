@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { userAuth, User } from '../services/userAuth';
 import { supabaseAuth } from '../services/supabaseAuth';
 import './LoginSignup.css';
@@ -9,7 +9,7 @@ interface UserAuthProps {
 }
 
 export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
-  const { t } = useTranslation();
+  const { t_nested } = useLanguage();
   const [currentPage, setCurrentPage] = useState<'main' | 'login' | 'signup'>('main');
   const [formData, setFormData] = useState({
     email: '',
@@ -71,7 +71,6 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
     try {
       const supabaseUser = await supabaseAuth.signInWithGoogle();
       if (supabaseUser) {
-        console.log('✅ Google sign-in successful:', supabaseUser);
         
         // Convert SupabaseUser to User format
         const user: User = {
@@ -84,7 +83,6 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
         
         onUserChange(user);
       } else {
-        console.log('Google sign-in failed');
       }
     } catch (error) {
       console.error('Google sign-in error:', error);
@@ -186,7 +184,7 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
               <input
                 type="email"
                 name="email"
-                placeholder={t('auth.email', 'Email')}
+                placeholder={t_nested('auth.email')}
                 value={formData.email}
                 onChange={handleInputChange}
                 required
@@ -198,7 +196,7 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                placeholder={t('auth.password', 'Password')}
+                placeholder={t_nested('auth.password')}
                 value={formData.password}
                 onChange={handleInputChange}
                 required
@@ -220,7 +218,7 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
                 className="forgot-password-link"
                 onClick={() => alert('Forgot password functionality coming soon!')}
               >
-                {t('auth.forgotPassword', 'Forgot Password?')}
+                {t_nested('auth.forgotPassword')}
               </button>
             </div>
 
@@ -280,7 +278,7 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
             <input
               type="text"
               name="name"
-              placeholder={t('auth.fullName', 'Full Name')}
+              placeholder={t_nested('auth.fullName')}
               value={formData.name}
               onChange={handleInputChange}
               required
@@ -292,7 +290,7 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
             <input
               type="email"
               name="email"
-              placeholder={t('auth.email', 'Email')}
+              placeholder={t_nested('auth.email')}
               value={formData.email}
               onChange={handleInputChange}
               required
@@ -304,7 +302,7 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              placeholder={t('auth.password', 'Password')}
+              placeholder={t_nested('auth.password')}
               value={formData.password}
               onChange={handleInputChange}
               required
@@ -323,7 +321,7 @@ export const UserAuth: React.FC<UserAuthProps> = ({ onUserChange }) => {
             <input
               type={showPassword ? "text" : "password"}
               name="confirmPassword"
-              placeholder={t('auth.confirmPassword', 'Confirm Password')}
+              placeholder={t_nested('auth.confirmPassword')}
               value={formData.confirmPassword}
               onChange={handleInputChange}
               required

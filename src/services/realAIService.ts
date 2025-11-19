@@ -52,7 +52,6 @@ class RealAIService {
       const prompt = this.createDutchDrivingPrompt(userMessage, context);
       aiResponse = await this.callFreeAI(prompt);
     } catch (error) {
-      console.log('External AI failed, using smart fallback');
     }
     
     // If external AI fails or gives poor response, use smart fallback
@@ -194,7 +193,6 @@ Give helpful, accurate answer. Be conversational. Under 100 words.`;
         this.currentModelIndex = (this.currentModelIndex + 1) % this.models.length;
         
       } catch (error) {
-        console.log(`Model ${this.currentModelIndex} failed, trying next...`);
         this.currentModelIndex = (this.currentModelIndex + 1) % this.models.length;
       }
     }
@@ -223,7 +221,6 @@ Give helpful, accurate answer. Be conversational. Under 100 words.`;
         return response.generated_text.trim();
       }
     } catch (error) {
-      console.log(`Model ${modelName} failed:`, error instanceof Error ? error.message : 'Unknown error');
     }
 
     return '';

@@ -60,13 +60,38 @@ const TEST_METADATA: Record<string, { name: string; category: string }> = {
 const BEGINNER_PATH = ['traffic-rules-signs', 'priority-rules', 'hazard-perception', 'speed-safety'];
 
 class AICoachService {
+  // Get translated test name
+  private getTranslatedTestName(testId: string, translate: (key: string) => string): string {
+    const testNameMap: Record<string, string> = {
+      'traffic-lights-signals': translate('testNames.trafficLightsSignals'),
+      'priority-rules': translate('testNames.priorityRules'),
+      'hazard-perception': translate('testNames.hazardPerception'),
+      'speed-safety': translate('testNames.speedSafety'),
+      'bicycle-interactions': translate('testNames.bicycleInteractions'),
+      'roundabout-rules': translate('testNames.roundaboutRules'),
+      'tram-interactions': translate('testNames.tramInteractions'),
+      'pedestrian-crossings': translate('testNames.pedestrianCrossings'),
+      'construction-zones': translate('testNames.constructionZones'),
+      'weather-conditions': translate('testNames.weatherConditions'),
+      'road-signs': translate('testNames.roadSigns'),
+      'motorway-rules': translate('testNames.motorwayRules'),
+      'vehicle-knowledge': translate('testNames.vehicleKnowledge'),
+      'parking-rules': translate('testNames.parkingRules'),
+      'environmental': translate('testNames.environmental'),
+      'technology-safety': translate('testNames.technologySafety'),
+      'alcohol-drugs': translate('testNames.alcoholDrugs'),
+      'fatigue-rest': translate('testNames.fatigueRest'),
+      'emergency-procedures': translate('testNames.emergencyProcedures'),
+      'traffic-rules-signs': translate('testNames.trafficLightsSignals'), // Map old key to new translation
+    };
+    return testNameMap[testId] || TEST_METADATA[testId]?.name || testId;
+  }
+
   // Save test result
   async saveTestResult(result: TestResult): Promise<void> {
-    console.log('💾 Saving test result:', result);
     const history = this.getTestHistory();
     history.push(result);
     localStorage.setItem('testHistory', JSON.stringify(history));
-    console.log('💾 Test history after save:', history);
     
     // Save to cloud if user is logged in
     const currentUser = userAuth.getCurrentUser();
@@ -90,7 +115,6 @@ class AICoachService {
   getTestHistory(): TestResult[] {
     const history = localStorage.getItem('testHistory');
     const parsed = history ? JSON.parse(history) : [];
-    console.log('📚 Getting test history:', parsed);
     return parsed;
   }
 
@@ -141,7 +165,7 @@ class AICoachService {
   }
 
   // Get top recommendation (SMART LOGIC)
-  getTopRecommendation(): TestRecommendation {
+  getTopRecommendation(translate?: (key: string) => string): TestRecommendation {
     const testScores = this.getTestScores();
     const ignores = this.getIgnoreCounts();
 
@@ -200,7 +224,7 @@ class AICoachService {
     });
 
     const topWeak = weakAreas[0];
-    const testName = TEST_METADATA[topWeak.testId].name;
+    const testName = translate ? this.getTranslatedTestName(topWeak.testId, translate) : TEST_METADATA[topWeak.testId].name;
     
     // Determine priority and reason - Enhanced user-focused messaging
     let priority: 'critical' | 'high' | 'medium' = 'medium';
@@ -272,7 +296,7 @@ class AICoachService {
   }
 
   // Get AI Insights for dashboard - ALWAYS 3 boxes (RED, YELLOW, GREEN)
-  getAIInsights(): AIInsight[] {
+  getAIInsights(translate?: (key: string) => string): AIInsight[] {
     const testScores = this.getTestScores();
     const recommendation = this.getTopRecommendation();
     const isReadyForMockExam = this.canUnlockMockExams();
@@ -283,10 +307,10 @@ class AICoachService {
     if (isReadyForMockExam) {
       insights.push({
         type: 'recommendation',
-        message: 'Start Mock Exam',
+        message: translate ? translate('dashboard.startMockExam') : 'Start Mock Exam',
         priority: 'red',
         testId: 'mock-exam',
-        explanation: 'Ready to test your knowledge!'
+        explanation: translate ? translate('dashboard.readyToTest') : 'Ready to test your knowledge!'
       });
     } else {
         insights.push({
@@ -299,7 +323,7 @@ class AICoachService {
     }
 
     // 2. YELLOW BOX - Second priority (ALWAYS)
-    const secondPriority = this.getSecondPriority(testScores, recommendation.testId);
+    const secondPriority = this.getSecondPriority(testScores, recommendation.testId, translate);
     insights.push({
       type: 'mistake',
       message: secondPriority.testName,
@@ -309,7 +333,7 @@ class AICoachService {
     });
 
     // 3. GREEN BOX - Strength/maintenance (ALWAYS)
-    const strengthArea = this.getStrengthArea(testScores);
+    const strengthArea = this.getStrengthArea(testScores, translate);
       insights.push({
         type: 'strength',
       message: strengthArea.testName,
@@ -322,15 +346,15 @@ class AICoachService {
   }
 
   // Get second priority for YELLOW box
-  private getSecondPriority(testScores: any, excludeTestId: string): { testName: string; testId: string; explanation: string } {
+  private getSecondPriority(testScores: any, excludeTestId: string, translate?: (key: string) => string): { testName: string; testId: string; explanation: string } {
     // Find second weakest area (not the top recommendation)
     const availableTests = Object.keys(TEST_METADATA).filter(id => id !== excludeTestId);
     
     if (availableTests.length === 0) {
       return {
-        testName: 'Practice More',
+        testName: translate ? translate('dashboard.practiceMore') : 'Practice More',
         testId: 'traffic-rules-signs',
-        explanation: 'Continue building your foundation'
+        explanation: translate ? translate('dashboard.continueBuilding') : 'Continue building your foundation'
       };
     }
 
@@ -347,7 +371,7 @@ class AICoachService {
     
     let explanation = '';
     if (secondWeak.score === 0) {
-      explanation = 'Not practiced yet - good next step';
+      explanation = translate ? translate('dashboard.notPracticedYet') : 'Not practiced yet - good next step';
     } else if (secondWeak.score < 60) {
       explanation = `${secondWeak.score}% - needs improvement`;
     } else if (secondWeak.score < 80) {
@@ -364,7 +388,7 @@ class AICoachService {
   }
 
   // Get strength area for GREEN box
-  private getStrengthArea(testScores: any): { testName: string; testId: string; explanation: string } {
+  private getStrengthArea(testScores: any, translate?: (key: string) => string): { testName: string; testId: string; explanation: string } {
     // Find best performing area
     const bestTest = Object.keys(TEST_METADATA)
       .map(testId => ({
@@ -377,15 +401,15 @@ class AICoachService {
     
     let explanation = '';
     if (bestTest.score >= 90) {
-      explanation = `${bestTest.score}% - excellent mastery`;
+      explanation = translate ? `${bestTest.score}% - ${translate('dashboard.excellentMastery')}` : `${bestTest.score}% - excellent mastery`;
     } else if (bestTest.score >= 80) {
-      explanation = `${bestTest.score}% - strong performance`;
+      explanation = translate ? `${bestTest.score}% - ${translate('dashboard.strongPerformance')}` : `${bestTest.score}% - strong performance`;
     } else if (bestTest.score >= 70) {
-      explanation = `${bestTest.score}% - good progress`;
+      explanation = translate ? `${bestTest.score}% - ${translate('dashboard.goodProgress')}` : `${bestTest.score}% - good progress`;
     } else if (bestTest.score > 0) {
-      explanation = `${bestTest.score}% - building skills`;
+      explanation = translate ? `${bestTest.score}% - ${translate('dashboard.buildingSkills')}` : `${bestTest.score}% - building skills`;
     } else {
-      explanation = 'Ready to start learning';
+      explanation = translate ? translate('dashboard.readyToStartLearning') : 'Ready to start learning';
     }
 
     return {
@@ -468,7 +492,7 @@ class AICoachService {
     const mockExamQuestions = mockExamResults.reduce((sum, result) => sum + result.totalQuestions, 0);
     const totalQuestions = practiceQuestions + mockExamQuestions;
     
-    const hours = totalQuestions / 40; // 1.5 min per Q = 40 Q per hour
+    const hours = totalQuestions / 40; // 1.5 min per Q = 40 Q per hour (FIXED: was 60 Q per hour)
     return parseFloat(hours.toFixed(1));
   }
 
@@ -553,7 +577,7 @@ class AICoachService {
   }
 
   // Smart Study Plan - Game-changing features
-  getSmartStudyPlan() {
+  getSmartStudyPlan(translate?: (key: string) => string) {
     const testScores = this.getTestScores();
     const averageScore = this.getCombinedAverage();
     const examDate = localStorage.getItem('examDate');
@@ -589,7 +613,7 @@ class AICoachService {
     const studyTimeNeeded = this.calculateStudyTimeNeeded(averageScore, daysRemaining);
     
     // Get exam readiness prediction
-    const examPrediction = this.getExamPrediction(averageScore, weakAreas, daysRemaining);
+    const examPrediction = this.getExamPrediction(averageScore, weakAreas, daysRemaining, translate);
 
     return {
       todayFocus,
@@ -631,7 +655,7 @@ class AICoachService {
     return Math.min(dailyMinutes, 60); // Max 1 hour per day
   }
 
-  private getExamPrediction(averageScore: number, weakAreas: any[], daysRemaining: number) {
+  private getExamPrediction(averageScore: number, weakAreas: any[], daysRemaining: number, translate?: (key: string) => string) {
     if (daysRemaining <= 0) return null;
     
     // Base prediction on current score
@@ -653,13 +677,13 @@ class AICoachService {
     
     let message = '';
     if (confidence >= 80) {
-      message = `You're ${confidence}% ready - exam confident!`;
+      message = `Excellent progress! Keep it up!`;
     } else if (confidence >= 60) {
-      message = `You're ${confidence}% ready - almost there!`;
+      message = `Good progress! You're doing well!`;
     } else if (confidence >= 40) {
-      message = `You're ${confidence}% ready - focus on weak areas`;
+      message = `Keep practicing to improve!`;
     } else {
-      message = `You're ${confidence}% ready - start with basics`;
+      message = translate ? translate('dashboard.startWithBasics') : `Start with the basics and build up!`;
     }
     
     return { confidence: Math.round(confidence), message };

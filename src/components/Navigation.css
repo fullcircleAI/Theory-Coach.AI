@@ -1,372 +1,146 @@
-/* Navigation Styles - Exact from old app */
+/* ========================================
+   NAVIGATION - SIDEBAR (WEB) & FOOTER (MOBILE)
+   ======================================== */
 
-.sidebar {
-  width: 240px;
-  background: #fff;
-  border-right: 1px solid #e5e7eb;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+/* Desktop Sidebar Navigation - Labels visible */
+.sidebar-nav {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 10;
-  padding: 1.5rem 0 0 0;
+  width: 240px;
+  height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  display: none;
+  flex-direction: column;
+  z-index: 100;
+  padding: 1.5rem 0;
+  overflow-y: auto;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #1A3E7A;
-  margin-left: 0;
-  margin-bottom: 2rem;
-}
-
-.logo-icon {
-  font-size: 2rem;
-  margin-right: 0.5rem;
-}
-
-.logo-mascot {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
-  margin: 0;
-}
-
-.nav-list {
+.sidebar-nav-list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 2rem;
-  margin-top: 2rem;
+  padding: 0 1rem;
 }
 
-.nav-btn {
+.sidebar-nav-btn {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 18px;
-  font-size: 1.1rem;
-  border-radius: 10px;
-  color: #333;
+  padding: 12px 16px;
   background: none;
   border: none;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  border-radius: 8px;
   cursor: pointer;
-  width: 100%;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  color: #6b7280;
   text-align: left;
+  width: 100%;
+  pointer-events: auto;
+  position: relative;
+  z-index: 101;
 }
 
-.nav-btn .nav-icon {
-  display: none;
+.sidebar-nav-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
 }
 
-.nav-btn.active, .nav-btn:hover {
-  background: rgba(26, 62, 122, 0.1);
-  color: #1A3E7A;
-  transform: translateX(4px);
-  box-shadow: 0 2px 8px rgba(26, 62, 122, 0.2);
+.sidebar-nav-btn.active {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 500;
 }
 
-.nav-btn.active .nav-icon, .nav-btn:hover .nav-icon {
-  color: #1A3E7A;
+.sidebar-nav-label {
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-.nav-label {
-  flex: 1;
-  text-align: center;
-  display: block;
-  opacity: 1;
-  transition: none;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.sidebar-user {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem 2rem;
+/* Mobile Footer Navigation - Icons only */
+.footer-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
   border-top: 1px solid #e5e7eb;
+  padding: 8px 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  pointer-events: auto;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.user-avatar {
-  width: 40px;
-  height: 40px;
-  background: #1A3E7A;
-  color: #fff;
-  border-radius: 50%;
+.footer-nav-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.user-name {
-  font-weight: 600;
-  color: #1A3E7A;
-  font-size: 0.9rem;
-}
-
-.user-status {
-  font-size: 0.8rem;
-  color: #666;
-}
-
-.mobile-menu-toggle {
-  display: none;
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 1001;
-  background: #1A3E7A;
-  color: white;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  background: none;
   border: none;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 1.2rem;
+  border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(26, 62, 122, 0.3);
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  color: #6b7280;
+  pointer-events: auto;
+  position: relative;
+  z-index: 101;
+  flex-shrink: 0;
 }
 
-.mobile-menu-toggle:hover {
-  background: #002868;
-  transform: scale(1.05);
+.footer-nav-btn:active {
+  background: #f3f4f6;
+  transform: scale(0.95);
 }
 
-.mobile-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+.footer-nav-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
 }
 
-.footer-nav {
-  display: none;
+.footer-nav-btn.active {
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
-/* Mobile Footer Mode - Copy from old app */
+/* Responsive Design */
 @media (max-width: 768px) {
-  .sidebar {
+  /* Hide sidebar on mobile */
+  .sidebar-nav {
     display: none !important;
   }
   
+  /* Show footer on mobile */
   .footer-nav {
     display: flex !important;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100vw;
-    background: #fff;
-    border-top: 1px solid #e5e7eb;
-    z-index: 20;
-    justify-content: space-around;
-    padding: 0.5rem 0;
-    /* Safe area handling for notched devices */
-    padding-bottom: calc(0.5rem + var(--safe-area-inset-bottom));
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 769px) {
+  /* Show sidebar on desktop */
+  .sidebar-nav {
+    display: flex !important;
   }
   
-  .footer-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #1A3E7A;
-    text-decoration: none;
-    font-size: 0.95rem;
-    padding: 0.5rem 0.8rem;
-    border-radius: 8px;
-    transition: background 0.2s, color 0.2s;
-    min-height: 44px;
-    min-width: 44px;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .footer-btn.active, .footer-btn:hover {
-    background: rgba(26, 62, 122, 0.1);
-    color: #1A3E7A;
-  }
-  
-  /* Hide footer during practice tests for more vertical space */
-  body.practice-test-active .footer-nav {
+  /* Hide footer on desktop */
+  .footer-nav {
     display: none !important;
   }
   
-  .footer-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    margin-bottom: 0.2rem;
-  }
-  
-  .footer-icon svg {
-    width: 24px;
-    height: 24px;
-    transition: stroke 0.2s ease;
-  }
-  
-  .footer-label {
-    display: none;
-  }
-
-  .mobile-menu-toggle {
-    display: none;
-  }
-
-  .mobile-overlay {
-    display: none;
+  /* Add margin to main content for sidebar */
+  .main-content {
+    margin-left: 240px;
   }
 }
 
-/* Tablet Footer Mode */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .sidebar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    top: auto;
-    height: auto;
-    width: 100%;
-    max-height: 80px;
-    flex-direction: row;
-    padding: 0;
-    border-right: none;
-    border-top: 1px solid #e5e7eb;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-  }
 
-  .logo {
-    display: none;
-  }
-
-  .nav-list {
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 0;
-    margin: 0;
-    padding: 0 2rem;
-    width: 100%;
-  }
-
-  .nav-btn {
-    flex-direction: column;
-    padding: 8px 12px;
-    font-size: 0.8rem;
-    min-width: 80px;
-    text-align: center;
-    border-radius: 0;
-  }
-
-  .nav-btn:hover {
-    transform: none;
-    background: rgba(26, 62, 122, 0.1);
-  }
-
-  .nav-icon {
-    font-size: 1.2rem;
-    margin-bottom: 4px;
-  }
-
-  .nav-label {
-    display: none;
-  }
-
-  .sidebar-user {
-    display: none;
-  }
-
-  .mobile-menu-toggle {
-    display: none;
-  }
-}
-
-/* Desktop Sidebar Mode - Keep as sidebar for web */
-@media (min-width: 1025px) {
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    width: 240px;
-    flex-direction: column;
-    padding: 1.5rem 0 0 0;
-    border-right: 1px solid #e5e7eb;
-    background: #fff;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #1A3E7A;
-    margin-left: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .nav-list {
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-  }
-
-  .nav-btn {
-    flex-direction: row;
-    padding: 10px 18px;
-    font-size: 1.1rem;
-    text-align: left;
-    border-radius: 10px;
-    gap: 0;
-  }
-
-  .nav-btn:hover {
-    transform: translateX(4px);
-    background: rgba(26, 62, 122, 0.1);
-  }
-
-  .nav-icon {
-    display: none;
-  }
-
-  .nav-label {
-    font-size: 1.1rem;
-    font-weight: 500;
-  }
-
-  .sidebar-user {
-    display: flex;
-    margin-top: auto;
-    padding: 1.5rem 2rem;
-    border-top: 1px solid #e5e7eb;
-  }
-
-  .mobile-menu-toggle {
-    display: none;
-  }
-}

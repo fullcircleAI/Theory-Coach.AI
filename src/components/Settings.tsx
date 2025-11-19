@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Navigation } from './Navigation';
+import { useLanguage } from '../contexts/LanguageContext';
 import './Settings.css';
 
 interface FAQ {
@@ -8,31 +7,32 @@ interface FAQ {
   answer: string;
 }
 
-const faqs: FAQ[] = [
+const getFAQs = (t_nested: (key: string) => string): FAQ[] => [
   {
-    question: "How does the progress tracking work?",
-    answer: "Your progress is automatically saved as you complete practice tests. You can view detailed analytics including your average score, weak areas, and study streak. Data is synced across all your devices when you create an account."
+    question: t_nested('settings.faqData.progressTracking.question'),
+    answer: t_nested('settings.faqData.progressTracking.answer')
   },
   {
-    question: "Is my data secure and private?",
-    answer: "Yes! Your data is stored securely in the cloud and is only accessible to you. We don't share your personal information with third parties. You can delete your account and all data at any time."
+    question: t_nested('settings.faqData.dataSecurity.question'),
+    answer: t_nested('settings.faqData.dataSecurity.answer')
   },
   {
-    question: "Can I use the app offline?",
-    answer: "Yes, you can use the app offline for practice tests. Your progress will be saved locally and synced to the cloud when you're back online. However, some features like cloud sync require an internet connection."
+    question: t_nested('settings.faqData.offlineUse.question'),
+    answer: t_nested('settings.faqData.offlineUse.answer')
   },
   {
-    question: "How accurate is the AI Learning Coach?",
-    answer: "The AI Learning Coach analyzes your performance patterns to provide personalized study recommendations. It identifies your weak areas and tracks your learning progress to help you study more effectively."
+    question: t_nested('settings.faqData.aiCoach.question'),
+    answer: t_nested('settings.faqData.aiCoach.answer')
   },
   {
-    question: "What if I lose my device or clear my browser?",
-    answer: "If you've created an account, your progress is safely stored in the cloud and can be restored on any device. Simply log in with your name and all your data will be available. For anonymous users, data is stored locally and may be lost if the browser is cleared."
+    question: t_nested('settings.faqData.dataLoss.question'),
+    answer: t_nested('settings.faqData.dataLoss.answer')
   }
 ];
 
 export const Settings: React.FC = () => {
-  const { t } = useTranslation();
+  const { t_nested } = useLanguage();
+  const faqs = getFAQs(t_nested);
   const [activePage, setActivePage] = useState<'main' | 'account' | 'language' | 'privacy' | 'terms' | 'faq' | 'support'>('main');
   const [isEditing, setIsEditing] = useState(false);
   const [editUsername, setEditUsername] = useState('AI Learner');
@@ -101,7 +101,7 @@ export const Settings: React.FC = () => {
       <div className="tests-header">
         <div className="header-content">
           <div className="header-text">
-            <h1>{t('settings.title')}</h1>
+            <h1>{t_nested('settings.title')}</h1>
           </div>
         </div>
       </div>
@@ -109,42 +109,42 @@ export const Settings: React.FC = () => {
       <div className="settings-main-menu">
         <div className="settings-btn-wrapper">
           <button className="settings-main-menu-btn" onClick={() => setActivePage('account')}>
-            <span>{t('settings.account')}</span>
+            <span>{t_nested('settings.account')}</span>
             <span className="settings-arrow">›</span>
           </button>
         </div>
 
         <div className="settings-btn-wrapper">
           <button className="settings-main-menu-btn" onClick={() => setActivePage('language')}>
-            <span>{t('settings.language')}</span>
+            <span>{t_nested('settings.language')}</span>
             <span className="settings-arrow">›</span>
           </button>
         </div>
 
         <div className="settings-btn-wrapper">
           <button className="settings-main-menu-btn" onClick={() => setActivePage('privacy')}>
-            <span>{t('settings.privacy')}</span>
+            <span>{t_nested('settings.privacy')}</span>
             <span className="settings-arrow">›</span>
           </button>
         </div>
 
         <div className="settings-btn-wrapper">
           <button className="settings-main-menu-btn" onClick={() => setActivePage('terms')}>
-            <span>{t('settings.terms')}</span>
+            <span>{t_nested('settings.terms')}</span>
             <span className="settings-arrow">›</span>
           </button>
         </div>
 
         <div className="settings-btn-wrapper">
           <button className="settings-main-menu-btn" onClick={() => setActivePage('faq')}>
-            <span>{t('settings.faq')}</span>
+            <span>{t_nested('settings.faq')}</span>
             <span className="settings-arrow">›</span>
           </button>
         </div>
 
         <div className="settings-btn-wrapper">
           <button className="settings-main-menu-btn" onClick={() => setActivePage('support')}>
-            <span>{t('settings.support')}</span>
+            <span>{t_nested('settings.support')}</span>
             <span className="settings-arrow">›</span>
           </button>
         </div>
@@ -159,7 +159,7 @@ export const Settings: React.FC = () => {
         <button className="settings-back-btn" onClick={handleBackToMain}>
           ←
         </button>
-        <h2 className="settings-subpage-title">{t('settings.account')}</h2>
+        <h2 className="settings-subpage-title">{t_nested('settings.account')}</h2>
       </div>
 
       <div className="settings-subpage-content">
@@ -173,7 +173,7 @@ export const Settings: React.FC = () => {
                   type="text"
                   value={editUsername}
                   onChange={(e) => setEditUsername(e.target.value)}
-                  placeholder="Enter username"
+                  placeholder={t_nested('settings.enterUsername')}
                 />
                 <div className="edit-actions">
                   <button className="save-btn" onClick={handleUpdateProfile}>Save</button>
@@ -399,7 +399,7 @@ export const Settings: React.FC = () => {
                 type="text"
                 value={supportSubject}
                 onChange={(e) => setSupportSubject(e.target.value)}
-                placeholder="What do you need help with?"
+                placeholder={t_nested('settings.supportSubject')}
               />
             </div>
 
@@ -408,7 +408,7 @@ export const Settings: React.FC = () => {
               <textarea
                 value={supportMessage}
                 onChange={(e) => setSupportMessage(e.target.value)}
-                placeholder="Describe your issue or question..."
+                placeholder={t_nested('settings.supportMessage')}
                 rows={6}
               />
             </div>
@@ -434,7 +434,6 @@ export const Settings: React.FC = () => {
 
   return (
     <div className="main-layout">
-      <Navigation />
       <main className="main-content settings-page">
         <div className="settings-container">
           {activePage === 'main' && renderMainMenu()}

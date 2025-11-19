@@ -296,7 +296,6 @@ Provide a helpful explanation with tips.`;
       if (response) return response;
       
       // If primary fails, try fallback model
-      console.log('Primary model failed, trying fallback...');
       return await this.tryHuggingFaceModel(this.fallbackModel, prompt);
       
     } catch (error) {

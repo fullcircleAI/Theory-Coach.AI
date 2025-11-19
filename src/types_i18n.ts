@@ -57,7 +57,7 @@ export interface LanguageStrings {
   navigation: {
     dashboard: string;
     practice: string;
-    exam: string;
+    mockExam: string;
     chat: string;
     settings: string;
   };
@@ -83,6 +83,113 @@ export interface LanguageStrings {
     woohoo: string;
     youGotThis: string;
     firstWin: string;
+    examReadiness: string;
+    studyTime: string;
+    timeRemaining: string;
+    yourProgress: string;
+    todayFocus: string;
+    needsAttention: string;
+    focusOnThis: string;
+    startMockExam: string;
+    readyToTest: string;
+    notPracticedYet: string;
+    readyToStartLearning: string;
+    startWithBasics: string;
+    practiceMore: string;
+    continueBuilding: string;
+    excellentMastery: string;
+    strongPerformance: string;
+    goodProgress: string;
+    buildingSkills: string;
+  loadingProgress: string;
+  analyzingData: string;
+  };
+  
+  settings: {
+    title: string;
+    account: string;
+    language: string;
+    privacy: string;
+    terms: string;
+    faq: string;
+    support: string;
+    about: string;
+    enterUsername: string;
+    supportSubject: string;
+    supportMessage: string;
+    faqData: {
+      progressTracking: { question: string; answer: string; };
+      dataSecurity: { question: string; answer: string; };
+      offlineUse: { question: string; answer: string; };
+      aiCoach: { question: string; answer: string; };
+      dataLoss: { question: string; answer: string; };
+    };
+  };
+  
+  achievements: {
+    firstTest: { title: string; description: string; };
+    oneHour: { title: string; description: string; };
+    fiveHours: { title: string; description: string; };
+    seventyPercent: { title: string; description: string; };
+    eightyFivePercent: { title: string; description: string; };
+    firstMock: { title: string; description: string; };
+    hundredQuestions: { title: string; description: string; };
+    fiveHundredQuestions: { title: string; description: string; };
+  };
+  
+  testNames: {
+    trafficLightsSignals: string;
+    priorityRules: string;
+    hazardPerception: string;
+    speedSafety: string;
+    bicycleInteractions: string;
+    roundaboutRules: string;
+    tramInteractions: string;
+    pedestrianCrossings: string;
+    constructionZones: string;
+    weatherConditions: string;
+    roadSigns: string;
+    motorwayRules: string;
+    vehicleKnowledge: string;
+    parkingRules: string;
+    environmental: string;
+    technologySafety: string;
+  alcoholDrugs: string;
+  fatigueRest: string;
+  emergencyProcedures: string;
+  insightPractice: string;
+  mockTest: string;
+  };
+  
+  // AI Tutor
+  aiTutor: {
+    title: string;
+    welcome: string;
+    error: string;
+    actionItems: string;
+    nextSteps: string;
+    inputPlaceholder: string;
+    quickQuestions: {
+      title: string;
+    };
+  };
+  
+  // Exam Date
+  examDate: {
+    title: string;
+    selectDate: string;
+    skip: string;
+    continue: string;
+    continuing: string;
+  };
+  
+  // Install
+  install: {
+    title: string;
+    description: string;
+    mobileMessage: string;
+    installNow: string;
+    maybeLater: string;
   };
   
   // Progress Tracker
@@ -108,6 +215,7 @@ export interface LanguageStrings {
   practice: {
     title: string;
     startTest: string;
+    recommendedForYou: string;
     hazardPerception: string;
     insightPractice: string;
     mandatorySigns: string;
@@ -278,6 +386,12 @@ export interface LanguageStrings {
     close: string;
     needPractice: string;
     backToQuizzes: string;
+    requirement: string;
+    requirementText: string;
+    questionsLabel: string;
+    minutesLabel: string;
+    passMarkLabel: string;
+    completePracticeToUnlock: string;
   };
   
   // Quiz Selection

@@ -1,13 +1,13 @@
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import type { Language } from '../types_i18n';
 import './LanguageSelection.css';
 
 export const LanguageSelection: React.FC = () => {
-  const { i18n } = useTranslation();
+  const { setLanguage } = useLanguage();
 
   const handleLanguageSelect = (language: Language) => {
-    // Set language in i18n (this will also save to localStorage)
-    i18n.changeLanguage(language);
+    // Set language using the LanguageProvider
+    setLanguage(language);
     // Trigger reload to show app
     window.location.reload();
   };

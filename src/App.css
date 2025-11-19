@@ -11,6 +11,14 @@
   user-select: none;
 }
 
+/* Ensure buttons and interactive elements are clickable */
+button, a, [role="button"], .start-practice-btn, .floating-ai-btn-mascot {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* Allow text selection in specific areas */
 input, textarea, [contenteditable="true"] {
   -webkit-user-select: text;
@@ -19,10 +27,11 @@ input, textarea, [contenteditable="true"] {
 
 .App {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1A3E7A 0%, #002868 100%);
+  background: #FFFFFF;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   
   /* iOS safe area support */
   padding-top: env(safe-area-inset-top);
@@ -31,32 +40,7 @@ input, textarea, [contenteditable="true"] {
   padding-right: env(safe-area-inset-right);
 }
 
-/* Decorative background elements */
-.App::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 40%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-  border-radius: 50%;
-  z-index: 0;
-  animation: float 6s ease-in-out infinite;
-}
-
-.App::after {
-  content: '';
-  position: absolute;
-  bottom: -30%;
-  left: -15%;
-  width: 30%;
-  height: 150%;
-  background: radial-gradient(circle, rgba(191, 10, 48, 0.15) 0%, transparent 70%);
-  border-radius: 50%;
-  z-index: 0;
-  animation: float 8s ease-in-out infinite reverse;
-}
+/* Decorative background elements - Removed to eliminate blue areas */
 
 @keyframes float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -130,26 +114,35 @@ input, textarea, [contenteditable="true"] {
 .main-layout {
   display: flex;
   min-height: 100vh;
-  background: var(--background-gradient);
+  background: #FFFFFF;
   position: relative;
   z-index: 1;
 }
 
 .main-content {
   flex: 1;
-  margin-left: 240px;
+  margin-left: 0;
   padding: 1rem;
-  background: var(--background-gradient);
+  background: #FFFFFF;
   height: 100vh;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   box-sizing: border-box;
+}
+
+/* Desktop: Add margin for sidebar */
+@media (min-width: 769px) {
+  .main-content {
+    margin-left: 240px;
+  }
 }
 
 /* Web only - ensure no scrolling for dashboard, but allow for practice/tests/settings */
 @media (min-width: 1025px) {
   .main-content {
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 1rem;
     box-sizing: border-box;
   }
@@ -162,10 +155,11 @@ input, textarea, [contenteditable="true"] {
     height: 100vh !important;
   }
   
-  /* Mock exam page should not scroll */
+  /* Mock exam page should work like settings page */
   .main-content.tests-page.mock-exam-page {
-    overflow: hidden !important;
-    height: 100vh !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100vh !important;
   }
   
   /* Settings page: overflow hidden at main-content level, scrolling handled by subpage */
@@ -175,46 +169,123 @@ input, textarea, [contenteditable="true"] {
   }
 }
 
-/* Mobile Layout */
+/* iPad Portrait - iOS App Feel */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+  .main-content {
+    margin-left: 0;
+    padding: 0.75rem;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    overflow-x: hidden;
+  }
+
+  /* Mock exam page - UNSCROLLABLE on iPad Portrait */
+  .main-content.tests-page.mock-exam-page {
+    overflow: hidden !important;
+    height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    min-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    max-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Settings page - UNSCROLLABLE on iPad Portrait */
+  .main-content.settings-page {
+    overflow: hidden !important;
+    height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    min-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    max-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+/* iPad Landscape - iOS App Feel */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+  .main-content {
+    margin-left: 0;
+    padding: 0.5rem;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    overflow-x: hidden;
+  }
+
+  /* Mock exam page - UNSCROLLABLE on iPad Landscape */
+  .main-content.tests-page.mock-exam-page {
+    overflow: hidden !important;
+    height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    min-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    max-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Settings page - UNSCROLLABLE on iPad Landscape */
+  .main-content.settings-page {
+    overflow: hidden !important;
+    height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    min-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    max-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    padding-bottom: 0 !important;
+  }
+}
+/* Mobile Layout - Duolingo Style */
 @media (max-width: 768px) {
   .main-content {
     margin-left: 0;
     padding: 0.5rem;
-    height: calc(100vh - 100px); /* Account for mobile footer */
-    overflow: hidden;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible; /* Allow natural scrolling like Duolingo */
+    overflow-x: hidden;
+    /* CRITICAL: Add padding-bottom to account for fixed footer */
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* Footer height + safe area */
   }
   
-  /* Full height for practice tests when footer is hidden */
-  body.practice-test-active .main-content {
-    height: 100vh !important;
-    padding: 0 !important;
+  /* All pages work the same way - footer overlays content */
+  .main-content.tests-page.mock-exam-page,
+  .main-content.tests-page,
+  .main-content.settings-page {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* Footer height + safe area */
+    min-height: 100vh; /* Full height like Duolingo */
+    overflow: visible; /* Natural scrolling */
   }
   
   /* Dashboard must NEVER scroll on mobile */
   .main-content:not(.tests-page):not(.settings-page) {
     overflow: hidden !important;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* Footer height + safe area */
   }
   
   /* Make Tests page scrollable - single scroll */
   .main-content.tests-page:not(.mock-exam-page) {
     overflow-y: auto !important;
     overflow-x: hidden !important;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* Footer height + safe area */
   }
   
-  /* Mock exam page should not scroll on mobile */
+  /* Mock exam page - UNSCROLLABLE on mobile */
   .main-content.tests-page.mock-exam-page {
-    overflow: hidden !important;
+    overflow: hidden !important; /* NO SCROLLING */
+    height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important; /* Full height minus footer */
+    min-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    max-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    padding-bottom: 0 !important; /* No padding needed */
   }
   
   /* Practice test page - single scroll */
   .main-content.practice-test-page {
     overflow-y: auto !important;
     overflow-x: hidden !important;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* Footer height + safe area */
   }
   
-  /* Settings page: overflow hidden at main-content level, scrolling handled by subpage */
+  /* Settings page - UNSCROLLABLE on mobile */
   .main-content.settings-page {
-    overflow: hidden !important;
+    overflow: hidden !important; /* NO SCROLLING */
+    height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important; /* Full height minus footer */
+    min-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    max-height: calc(100vh - 80px - env(safe-area-inset-bottom)) !important;
+    padding-bottom: 0 !important; /* No padding needed */
   }
 }
 

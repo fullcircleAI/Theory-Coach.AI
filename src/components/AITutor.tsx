@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { realAIService, AITutorResponse } from '../services/realAIService';
 import { aiCoach } from '../services/aiCoach';
 import './AITutor.css';
@@ -21,7 +21,7 @@ interface ChatMessage {
 }
 
 const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose }) => {
-  const { t, i18n } = useTranslation();
+  const { t_nested, currentLanguage } = useLanguage();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,12 +34,12 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
     const welcomeMessage: ChatMessage = {
       id: 'welcome',
       type: 'ai',
-      message: t('aiTutor.welcome', 'Hi! I can help with Dutch driving theory, exam costs, traffic rules, and your progress. What would you like to know?'),
+      message: t_nested('aiTutor.welcome'),
       timestamp: new Date(),
       tone: 'encouraging'
     };
     setMessages([welcomeMessage]);
-  }, [t]);
+  }, [t_nested]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -87,7 +87,7 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
         userProgress,
         currentTest,
         recentMessages: messages.slice(-3),
-        language: i18n.language || 'en' // Pass current language
+        language: currentLanguage || 'en' // Pass current language
       };
 
       const aiResponse: AITutorResponse = await realAIService.getTutorResponse(
@@ -117,7 +117,7 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
-        message: t('aiTutor.error', 'Sorry, I\'m having trouble right now. Please try again in a moment.'),
+        message: t_nested('aiTutor.error'),
         timestamp: new Date(),
         tone: 'supportive'
       };
@@ -181,7 +181,7 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
         <div className="ai-tutor-header">
           <div className="ai-tutor-title">
             <img src="/images/mascot.png" alt="Coach" className="ai-tutor-mascot" />
-            <h3>{t('aiTutor.title', 'Coach')}</h3>
+            <h3>{t_nested('aiTutor.title')}</h3>
           </div>
           <button className="ai-tutor-close" onClick={onClose}>
             ×
@@ -202,7 +202,7 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
                   <p>{message.message}</p>
                   {message.actionItems && message.actionItems.length > 0 && (
                     <div className="ai-tutor-action-items">
-                      <strong>{t('aiTutor.actionItems', 'Action Items:')}</strong>
+                      <strong>{t_nested('aiTutor.actionItems')}</strong>
                       <ul>
                         {message.actionItems.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -212,7 +212,7 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
                   )}
                   {message.nextSteps && message.nextSteps.length > 0 && (
                     <div className="ai-tutor-next-steps">
-                      <strong>{t('aiTutor.nextSteps', 'Next Steps:')}</strong>
+                      <strong>{t_nested('aiTutor.nextSteps')}</strong>
                       <ul>
                         {message.nextSteps.map((step, index) => (
                           <li key={index}>{step}</li>
@@ -247,7 +247,7 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
         {/* Dynamic Quick Questions */}
         {messages.length === 1 && (
           <div className="ai-tutor-quick-questions">
-            <p>{t('aiTutor.quickQuestions.title', 'Try asking:')}</p>
+            <p>{t_nested('aiTutor.quickQuestions.title')}</p>
             <div className="ai-tutor-quick-buttons">
               {getDynamicQuestions().map((question, index) => (
                 <button
@@ -270,7 +270,7 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder={t('aiTutor.inputPlaceholder', 'Message Coach...')}
+            placeholder={t_nested('aiTutor.inputPlaceholder')}
             disabled={isLoading}
           />
           <button
@@ -286,9 +286,16 @@ const AITutor: React.FC<AITutorProps> = ({ userProgress, currentTest, onClose })
             {isLoading ? (
               <div className="loading-spinner"></div>
             ) : (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 19l9-7-9-7v4H3v6h9v4z" fill="white" stroke="none"/>
-              </svg>
+              <>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13 7l5 5-5 5M6 12h12" fill="white" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span style={{ 
+                  position: 'absolute', 
+                  left: '-9999px', 
+                  visibility: 'hidden' 
+                }}>→</span>
+              </>
             )}
           </button>
         </div>

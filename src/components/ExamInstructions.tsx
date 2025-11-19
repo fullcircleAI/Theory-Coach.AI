@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Navigation } from './Navigation';
 import './TestsPage.css';
 
 export const ExamInstructions: React.FC = () => {
@@ -16,7 +15,6 @@ export const ExamInstructions: React.FC = () => {
 
   return (
     <div className="main-layout">
-      <Navigation />
       <main className="main-content tests-page">
         <div className="tests-page">
           <div className="tests-header">

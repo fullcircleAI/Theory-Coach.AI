@@ -1042,8 +1042,8 @@
   .practice-test {
     padding: env(safe-area-inset-top, 0.2rem) env(safe-area-inset-right, 0.5rem) calc(5rem + env(safe-area-inset-bottom, 0rem)) env(safe-area-inset-left, 0.5rem) !important;
     border-radius: 0;
-    height: 100vh !important;
-    max-height: 100vh !important;
+    height: 49vh !important;
+    max-height: 49vh !important;
     overflow: hidden !important;
   }
   .practice-question-text {

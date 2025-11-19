@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Navigation } from './Navigation';
 import './AICoachAnalysis.css';
 
 interface MistakePattern {
@@ -72,7 +71,6 @@ export const AICoachAnalysis: React.FC = () => {
 
   return (
     <div className="main-layout">
-      <Navigation />
       <main className="main-content">
         <div className="analysis-container">
           <div className="analysis-header">

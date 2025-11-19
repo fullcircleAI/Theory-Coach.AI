@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { strings } from '../i18n/strings';
 import type { Language, LanguageStrings } from '../types_i18n';
+import { translationMetrics } from '../services/translationMetrics';
+import { translationAPI } from '../services/translationAPI';
 
 interface LanguageContextType {
   currentLanguage: Language | null;
@@ -36,14 +38,26 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     return path.split('.').reduce((current, key) => current?.[key], obj) || path;
   };
 
-  // Simple translation function
+  // Enhanced translation function with quality tracking
   const t = (key: string): string => {
     if (!currentLanguage) {
       return key; // Return the key if no language is set
     }
     const langStrings = strings[currentLanguage];
     const value = langStrings[key as keyof LanguageStrings];
-    return typeof value === 'string' ? value : key;
+    const translatedText = typeof value === 'string' ? value : key;
+    
+    // Track translation usage for analytics
+    if (currentLanguage && translatedText !== key) {
+      translationMetrics.trackTranslation(
+        key,
+        currentLanguage,
+        key, // original text (key)
+        translatedText
+      );
+    }
+    
+    return translatedText;
   };
 
   // Nested translation function

@@ -24,12 +24,28 @@
     "guestModeDescription": "ابدأ التعلم فوراً دون إنشاء حساب"
   },
   "dashboard": {
-    "title": "Dashboard",
-    "averageScore": "Practice Average",
+    "title": "لوحة التحكم",
+    "averageScore": "متوسط التدريب",
     "studyTime": "مُدَرَّس",
     "timeRemaining": "متبقي",
     "yourProgress": "الأداء",
-    "startPractice": "Start Practice"
+    "startPractice": "ابدأ",
+    "examReadiness": "جاهزية الامتحان",
+    "todayFocus": "التركيز اليوم",
+    "needsAttention": "يحتاج انتباه",
+    "focusOnThis": "ركز على هذا المجال لتحسين جاهزيتك العامة",
+    "loadingProgress": "جاري تحميل تقدمك...",
+    "analyzingData": "جاري تحليل بيانات أدائك",
+    "readinessStatus": {
+      "excellent": "ممتاز!",
+      "excellentMessage": "أنت جاهز لاجتياز الامتحان الحقيقي!",
+      "good": "تقدم جيد",
+      "goodMessage": "استمر في التدريب للوصول إلى جاهزية ممتازة",
+      "needsWork": "يحتاج مزيد من التدريب",
+      "needsWorkMessage": "ركز على النقاط الضعيفة لتحسين درجتك",
+      "notReady": "ليس جاهزاً بعد",
+      "notReadyMessage": "استمر في الدراسة قبل أداء الامتحان"
+    }
   },
   "examDate": {
     "title": "متى امتحانك؟",

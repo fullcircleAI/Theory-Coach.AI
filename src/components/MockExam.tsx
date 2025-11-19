@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-// import { useTranslation } from 'react-i18next'; // Not used since we use real exam questions directly
-import { Navigation } from './Navigation';
+// import { useLanguage } from '../contexts/LanguageContext'; // Not used since we use real exam questions directly
 import { lightHaptic, impactHaptic } from '../utils/haptics';
 import './MockExam.css';
 import * as questionData from '../question_data';
@@ -238,7 +237,6 @@ export const MockExam: React.FC = () => {
     
     return (
       <div className="main-layout">
-        <Navigation />
         <main className="main-content">
           <div className="mock-exam-intro">
             <button className="back-btn" onClick={() => navigate('/mock-exam')}>
@@ -291,7 +289,6 @@ export const MockExam: React.FC = () => {
   // Exam Screen (using Practice Test design)
   return (
     <div className="main-layout">
-      <Navigation />
       <main className="main-content">
         <div className="practice-test">
           <div className="practice-progress-bar">

@@ -538,36 +538,136 @@
 
 /* ========== RESPONSIVE DESIGN ========== */
 
-/* Mobile (max-width: 768px) */
-@media (max-width: 768px) {
+/* iPad Portrait - iOS App Feel */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
   .settings-container {
-    padding: 0.5rem;
-    height: auto;
-    min-height: 100vh;
-    overflow: visible;
+    height: calc(100vh - 80px) !important;
+    min-height: calc(100vh - 80px) !important;
+    max-height: calc(100vh - 80px) !important;
+    overflow: hidden !important;
+    padding: 1rem;
   }
 
   .settings-page {
-    height: auto;
-    min-height: 100vh;
-    overflow: visible;
+    height: calc(100vh - 80px) !important;
+    min-height: calc(100vh - 80px) !important;
+    max-height: calc(100vh - 80px) !important;
+    overflow: hidden !important;
+    padding-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tests-header {
+    padding: 0.2rem 0.15rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .header-text h1 {
+    font-size: 1.75rem;
+  }
+
+  .header-text p {
+    font-size: 1rem;
+  }
+
+  .settings-main-menu {
+    overflow: hidden !important;
+    gap: 0.08rem;
+    flex: 1;
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .settings-main-menu-btn {
+    padding: 0.12rem 0.18rem;
+    font-size: 1rem;
+    min-height: 48px;
+    border-radius: 10px;
+  }
+
+  .settings-icon {
+    font-size: 1.2rem;
+  }
+}
+
+/* iPad Landscape - iOS App Feel */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+  .settings-container {
+    height: calc(100vh - 80px) !important;
+    min-height: calc(100vh - 80px) !important;
+    max-height: calc(100vh - 80px) !important;
+    overflow: hidden !important;
+    padding: 0.75rem;
+  }
+
+  .settings-page {
+    height: calc(100vh - 80px) !important;
+    min-height: calc(100vh - 80px) !important;
+    max-height: calc(100vh - 80px) !important;
+    overflow: hidden !important;
     padding-top: 0.5rem;
     display: flex;
     flex-direction: column;
   }
 
-  /* Header - EXACT same as Practice mobile */
   .tests-header {
-    padding: 1.5rem 1rem;
-    margin-bottom: 1rem;
+    padding: 0.15rem 0.1rem;
+    margin-bottom: 0.1rem;
   }
 
   .header-text h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .header-text p {
-    font-size: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .settings-main-menu {
+    overflow: hidden !important;
+    gap: 0.06rem;
+    flex: 1;
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .settings-main-menu-btn {
+    padding: 0.1rem 0.15rem;
+    font-size: 0.95rem;
+    min-height: 48px;
+    border-radius: 8px;
+  }
+
+  .settings-icon {
+    font-size: 1.1rem;
+  }
+}
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .settings-container {
+    padding: 0.5rem;
+  }
+
+  .settings-header {
+    padding: 1rem 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .header-content {
+    gap: 0.2rem;
+  }
+
+  .header-text h1 {
+    font-size: 1.2rem;
+  }
+
+  .header-text p {
+    font-size: 0.7rem;
   }
 
   .settings-main-menu {
@@ -582,6 +682,10 @@
     font-size: 0.95rem;
     min-height: auto;
     border-radius: 10px;
+  }
+
+  .settings-btn-text {
+    font-size: 0.95rem;
   }
 
   .settings-icon {
@@ -600,35 +704,43 @@
     height: 100vh;
     max-height: 100vh;
     overflow-y: auto;
-    overflow-x: hidden;
+    padding: 0.5rem;
   }
 
-  .settings-subpage-content {
-    padding-bottom: 5rem;
-    height: auto;
-    overflow: visible;
+  .settings-subpage-header {
+    padding: 0.75rem 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .settings-subpage-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 
-  .policy-content {
-    padding: 1.5rem;
+  .settings-back-btn {
+    font-size: 0.9rem;
+    padding: 0.4rem;
   }
 
-  .support-form {
-    padding: 1.5rem;
-  }
-
-  .data-actions {
-    flex-direction: column;
+  .edit-field input {
+    padding: 0.6rem;
+    font-size: 0.9rem;
   }
 
   .data-btn {
-    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .edit-actions {
+    gap: 0.3rem;
+  }
+
+  .edit-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 }
+
 
 /* Tablet (max-width: 1024px) */
 @media (max-width: 1024px) {

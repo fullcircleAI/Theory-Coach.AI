@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import './ExamDateSelection.css';
 
 interface ExamDateSelectionProps {
@@ -7,7 +7,7 @@ interface ExamDateSelectionProps {
 }
 
 export const ExamDateSelection: React.FC<ExamDateSelectionProps> = ({ onComplete }) => {
-  const { t } = useTranslation();
+  const { t_nested } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -102,14 +102,14 @@ export const ExamDateSelection: React.FC<ExamDateSelectionProps> = ({ onComplete
       <div className="exam-date-container">
         {/* Title */}
         <h1 className="exam-date-title">
-          {t('examDate.title', 'When\'s Your Exam?')}
+          {t_nested('examDate.title')}
         </h1>
 
 
         {/* Date Selection */}
         <div className="date-selection-container">
           <label htmlFor="exam-date" className="date-label">
-            {t('examDate.selectDate', 'Select Date')}
+            {t_nested('examDate.selectDate')}
           </label>
           <input
             id="exam-date"
@@ -131,7 +131,7 @@ export const ExamDateSelection: React.FC<ExamDateSelectionProps> = ({ onComplete
             onClick={handleSkip}
             disabled={isLoading}
           >
-            {t('examDate.skip', 'Skip for now')}
+            {t_nested('examDate.skip')}
           </button>
           
           <button
@@ -139,7 +139,7 @@ export const ExamDateSelection: React.FC<ExamDateSelectionProps> = ({ onComplete
             onClick={handleContinue}
             disabled={!selectedDate || isLoading}
           >
-            {isLoading ? t('examDate.continuing', 'Continuing...') : t('examDate.continue', 'Continue')}
+            {isLoading ? t_nested('examDate.continuing') : t_nested('examDate.continue')}
           </button>
         </div>
       </div>

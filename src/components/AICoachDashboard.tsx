@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Navigation } from './Navigation';
+import { useLanguage } from '../contexts/LanguageContext';
 import { PullToRefresh } from './PullToRefresh';
 import AITutor from './AITutor';
 import { aiCoach } from '../services/aiCoach';
 import type { AIInsight } from '../services/aiCoach';
+import { useTimer } from '../contexts/TimerContext';
+import { ChallengeTimerDisplay } from './ChallengeTimerDisplay';
+import { CarBuilder } from './CarBuilder';
 import './AICoachDashboard.css';
 import '../mobile-optimizations.css';
 
@@ -33,11 +35,6 @@ interface ReadinessStatus {
   message: string;
 }
 
-interface TimeRemaining {
-  remaining: number;
-  percentage: number;
-  timeMessage: string;
-}
 
 // Utility functions for exam readiness calculation
 const calculateVariance = (scores: number[]): number => {
@@ -79,61 +76,62 @@ const calculateTimeBonus = (testHistory: any[]): number => {
   return Math.min(3, recentTests.length);
 };
 
-// Achievement definitions
-const ACHIEVEMENT_DEFINITIONS = {
+// Achievement definitions - now using translation function
+const getAchievementDefinitions = (t_nested: (key: string) => string) => ({
   'first-test': {
-    title: 'First Steps! 🎯',
-    description: 'Completed your first practice test',
-    icon: '🎯',
+    title: t_nested('achievements.firstTest.title'),
+    description: t_nested('achievements.firstTest.description'),
+    icon: '',
     color: '#10b981'
   },
   '1-hour': {
-    title: 'Dedicated Learner! ⏰',
-    description: 'Studied for 1 hour',
-    icon: '⏰',
+    title: t_nested('achievements.oneHour.title'),
+    description: t_nested('achievements.oneHour.description'),
+    icon: '',
     color: '#3b82f6'
   },
   '5-hours': {
-    title: 'Study Champion! 🏆',
-    description: 'Studied for 5 hours',
-    icon: '🏆',
+    title: t_nested('achievements.fiveHours.title'),
+    description: t_nested('achievements.fiveHours.description'),
+    icon: '',
     color: '#f59e0b'
   },
   '70-percent': {
-    title: 'Passing Grade! 📈',
-    description: 'Achieved 70% average score',
-    icon: '📈',
+    title: t_nested('achievements.seventyPercent.title'),
+    description: t_nested('achievements.seventyPercent.description'),
+    icon: '',
     color: '#10b981'
   },
   '85-percent': {
-    title: 'Exam Ready! 🎉',
-    description: 'Achieved 85% average score',
-    icon: '🎉',
+    title: t_nested('achievements.eightyFivePercent.title'),
+    description: t_nested('achievements.eightyFivePercent.description'),
+    icon: '',
     color: '#10b981'
   },
   'first-mock': {
-    title: 'Mock Exam Master! 🎭',
-    description: 'Completed your first mock exam',
-    icon: '🎭',
+    title: t_nested('achievements.firstMock.title'),
+    description: t_nested('achievements.firstMock.description'),
+    icon: '',
     color: '#8b5cf6'
   },
   '100-questions': {
-    title: 'Question Master! ❓',
-    description: 'Answered 100 questions',
-    icon: '❓',
+    title: t_nested('achievements.hundredQuestions.title'),
+    description: t_nested('achievements.hundredQuestions.description'),
+    icon: '',
     color: '#06b6d4'
   },
   '500-questions': {
-    title: 'Theory Expert! 🧠',
-    description: 'Answered 500 questions',
-    icon: '🧠',
+    title: t_nested('achievements.fiveHundredQuestions.title'),
+    description: t_nested('achievements.fiveHundredQuestions.description'),
+    icon: '',
     color: '#f59e0b'
   }
-} as const;
+});
 
 export const AICoachDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t_nested } = useLanguage();
+  const { timeRemaining, isActive, startTimer, formatTime } = useTimer();
   
   const [userProgress, setUserProgress] = useState<UserProgress>({
     averageScore: 0,
@@ -145,7 +143,6 @@ export const AICoachDashboard: React.FC = () => {
   });
 
   // Constants for better maintainability
-  const TARGET_STUDY_HOURS = 24;
   const MOCK_EXAM_PASS_THRESHOLD = 52;
   const TOTAL_MOCK_EXAMS = 3;
   
@@ -162,7 +159,7 @@ export const AICoachDashboard: React.FC = () => {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [showAchievement, setShowAchievement] = useState<Achievement | null>(null);
 
-  // Achievement System - Check for new achievements
+  // Achievement System - Check for new achievements (Optimized for performance)
   const checkAchievements = useCallback(() => {
     const testHistory = aiCoach.getTestHistory();
     const mockExamResults = aiCoach.getMockExamResults();
@@ -173,7 +170,7 @@ export const AICoachDashboard: React.FC = () => {
     // Helper function to check if achievement already exists
     const hasAchievement = (id: string) => achievements.some(a => a.id === id);
     
-    // Achievement checks
+    // Achievement checks (inline array for better performance)
     const achievementChecks = [
       { condition: testHistory.length >= 1, id: 'first-test' },
       { condition: studyTime >= 1, id: '1-hour' },
@@ -185,11 +182,13 @@ export const AICoachDashboard: React.FC = () => {
       { condition: totalQuestions >= 500, id: '500-questions' }
     ];
     
+    const achievementDefinitions = getAchievementDefinitions(t_nested);
+    
     achievementChecks.forEach(({ condition, id }) => {
       if (condition && !hasAchievement(id)) {
         newAchievements.push({
           id,
-          ...ACHIEVEMENT_DEFINITIONS[id as keyof typeof ACHIEVEMENT_DEFINITIONS]
+          ...achievementDefinitions[id as keyof typeof achievementDefinitions]
         });
       }
     });
@@ -204,56 +203,57 @@ export const AICoachDashboard: React.FC = () => {
         setShowAchievement(null);
       }, 4000);
     }
-  }, [achievements, userProgress]);
+  }, [achievements, userProgress, t_nested]);
 
-  // Data loading function - extracted for reusability
+  // Data loading function - extracted for reusability (Optimized with error handling)
   const loadDashboardData = useCallback(async () => {
     try {
-      const testHistory = aiCoach.getTestHistory();
-      const studyTime = aiCoach.getStudyTime();
-      const averageScore = aiCoach.getCombinedAverage();
-      
+        const testHistory = aiCoach.getTestHistory();
+        const studyTime = aiCoach.getStudyTime();
+        const averageScore = aiCoach.getCombinedAverage();
+        
       const realData: UserProgress = {
-        averageScore,
-        totalQuestions: aiCoach.getTotalQuestions(),
-        correctAnswers: testHistory.reduce((sum, t) => sum + t.score, 0),
+          averageScore,
+          totalQuestions: aiCoach.getTotalQuestions(),
+          correctAnswers: testHistory.reduce((sum, t) => sum + t.score, 0),
         studyTime,
-        weakAreas: [],
-        strongAreas: []
-      };
+          weakAreas: [],
+          strongAreas: []
+        };
 
-      const realInsights = aiCoach.getAIInsights();
-      
-      let smartPlan = null;
-      try {
-        smartPlan = aiCoach.getSmartStudyPlan();
-      } catch (smartPlanError) {
-        console.error('Error loading smart study plan:', smartPlanError);
-      }
+        const realInsights = aiCoach.getAIInsights(t_nested);
+        
+        let smartPlan = null;
+        try {
+          smartPlan = aiCoach.getSmartStudyPlan(t_nested);
+        } catch (smartPlanError) {
+          console.error('Error loading smart study plan:', smartPlanError);
+        }
 
-      setUserProgress(realData);
-      setAiInsights(realInsights);
-      setSmartStudyPlan(smartPlan);
-      
-      // Check for achievements after data is loaded
-      setTimeout(checkAchievements, 1000);
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-      // Set fallback data
-      setUserProgress({
-        averageScore: 0,
-        totalQuestions: 0,
-        correctAnswers: 0,
-        studyTime: 0,
-        weakAreas: [],
-        strongAreas: []
-      });
-      setAiInsights([]);
-      setSmartStudyPlan(null);
-    } finally {
-      setIsLoading(false);
+        // Batch state updates for better performance
+        setUserProgress(realData);
+        setAiInsights(realInsights);
+        setSmartStudyPlan(smartPlan);
+        
+        // Check for achievements after data is loaded (debounced)
+        setTimeout(checkAchievements, 1000);
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+        // Set fallback data
+        setUserProgress({
+          averageScore: 0,
+          totalQuestions: 0,
+          correctAnswers: 0,
+          studyTime: 0,
+          weakAreas: [],
+          strongAreas: []
+        });
+        setAiInsights([]);
+        setSmartStudyPlan(null);
+      } finally {
+        setIsLoading(false);
     }
-  }, [checkAchievements]);
+  }, [checkAchievements, t_nested]);
 
   // Mobile detection
   useEffect(() => {
@@ -281,6 +281,13 @@ export const AICoachDashboard: React.FC = () => {
     
     detectMobile();
   }, []);
+
+  // Start 24-hour challenge timer when dashboard loads
+  useEffect(() => {
+    if (!isActive) {
+      startTimer();
+    }
+  }, [isActive, startTimer]);
 
   useEffect(() => {
     // Load exam date if set
@@ -371,78 +378,63 @@ export const AICoachDashboard: React.FC = () => {
     
     if (confidence >= 85) {
       return { 
-        status: '', 
+        status: t_nested('dashboard.examReady'), 
         color: '#10b981', 
         emoji: '',
-        message: ''
+        message: t_nested('dashboard.confidentToPass')
       };
     } else if (confidence >= 70) {
       return { 
-        status: '', 
+        status: t_nested('dashboard.almostReady'), 
         color: '#f59e0b', 
         emoji: '',
-        message: ''
+        message: t_nested('dashboard.keepPracticing')
       };
     } else if (confidence >= 50) {
       return { 
-        status: '', 
+        status: t_nested('dashboard.makingProgress'), 
         color: '#3b82f6', 
         emoji: '',
-        message: ''
+        message: t_nested('dashboard.focusOnWeakAreas')
       };
     } else {
       return { 
-        status: '', 
+        status: t_nested('dashboard.needMorePractice'), 
         color: '#ef4444', 
         emoji: '',
-        message: ''
+        message: t_nested('dashboard.startWithBasics')
       };
     }
-  }, []);
+  }, [t_nested]);
 
 
-  const formatTime = useCallback((hours: number): string => {
-    const wholeHours = Math.floor(hours);
-    const minutes = Math.round((hours - wholeHours) * 60);
-    return `${String(wholeHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-  }, []);
 
-  const getTimeRemaining = useMemo((): TimeRemaining => {
-    const targetHours = TARGET_STUDY_HOURS;
-    const remaining = Math.max(0, targetHours - userProgress.studyTime);
-    const percentage = Math.min(100, (userProgress.studyTime / targetHours) * 100);
-    
-    const timeMessages = {
-      early: 'Just getting started!',
-      progress: 'Great progress!',
-      onTrack: 'You\'re on track!',
-      almost: 'Almost there!',
-      complete: 'Challenge complete!'
-    };
-    
-    let timeMessage = timeMessages.early;
-    if (userProgress.studyTime >= 24) timeMessage = timeMessages.complete;
-    else if (userProgress.studyTime >= 16) timeMessage = timeMessages.almost;
-    else if (userProgress.studyTime >= 8) timeMessage = timeMessages.onTrack;
-    else if (userProgress.studyTime >= 2) timeMessage = timeMessages.progress;
-    
-    return { remaining, percentage, timeMessage };
-  }, [userProgress.studyTime]);
 
   const navigateToRecommendedTest = useCallback((insight: AIInsight) => {
-    if (insight.testId === 'mock-exam') {
-      navigate('/mock-exam');
-      return;
-    }
+    console.log('=== START BUTTON CLICKED ===');
+    console.log('Insight:', insight);
+    console.log('Test ID:', insight.testId);
+    console.log('Navigate function:', typeof navigate);
     
-    const testId = insight.testId || 'traffic-rules-signs';
-    navigate(`/practice/${testId}`);
+    try {
+      if (insight.testId === 'mock-exam') {
+        console.log('Navigating to mock exam');
+        navigate('/mock-exam');
+      } else {
+        const testId = insight.testId || 'traffic-rules-signs';
+        console.log('Navigating to practice test:', testId);
+        navigate(`/practice/${testId}`);
+      }
+      console.log('Navigation successful');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
+    console.log('=== END START BUTTON ===');
   }, [navigate]);
 
   if (isLoading) {
     return (
       <div className="main-layout">
-        <Navigation />
         <main className="main-content">
           <div className="loading-container">
             <div className="loading-spinner">
@@ -451,8 +443,8 @@ export const AICoachDashboard: React.FC = () => {
               <div className="spinner-ring"></div>
             </div>
             <div className="loading-text">
-              <h3>Loading your progress...</h3>
-              <p>Analyzing your study data and generating insights</p>
+              <h3>{t_nested('dashboard.loadingProgress')}</h3>
+              <p>{t_nested('dashboard.analyzingData')}</p>
             </div>
             <div className="loading-progress">
               <div className="progress-bar">
@@ -467,7 +459,6 @@ export const AICoachDashboard: React.FC = () => {
 
   return (
     <div className={`main-layout ${isMobile ? 'mobile-device' : ''} ${isIOS ? 'ios-device' : ''} ${isAndroid ? 'android-device' : ''}`}>
-      <Navigation />
       <main className="main-content">
         <PullToRefresh onRefresh={handleRefresh}>
           <div className="dashboard">
@@ -477,7 +468,7 @@ export const AICoachDashboard: React.FC = () => {
               <div className="summary-stat">
                 <div className="stat-number">{getExamReadiness}%</div>
                 <div className="stat-label">
-                  Exam Readiness
+                  {t_nested('dashboard.examReadiness')}
                   {examDate && (
                     <div className="exam-date-display">
                       {new Date(examDate).toLocaleDateString()}
@@ -494,31 +485,29 @@ export const AICoachDashboard: React.FC = () => {
                 <div className="readiness-status">
                   <span className="status-text">{getReadinessStatus(getExamReadiness).status}</span>
                 </div>
+                <div className="readiness-message">
+                  {getReadinessStatus(getExamReadiness).message}
+                </div>
               </div>
               <div className="summary-stat combined-progress">
                 <div className="digital-watch-container">
                   <div className="digital-watch-display">
                     <div className="time-section">
-                      <span className="time-label">{t('dashboard.studyTime')}</span>
-                      <span className="time-value">{formatTime(userProgress.studyTime)}</span>
-                      {smartStudyPlan?.studyTimeNeeded && smartStudyPlan.studyTimeNeeded > 0 && (
-                        <div className="smart-focus">
-                          Study {smartStudyPlan.studyTimeNeeded} min today
-                        </div>
-                      )}
+                      <span className="time-label">{t_nested('dashboard.studyTime')}</span>
+                      <span className="time-value">{formatTime(24 * 60 * 60 - timeRemaining)}</span>
                     </div>
                     <div className="progress-section">
                       <div className="progress-bar-bg">
                         <div className="progress-bar-fill" 
                              style={{ 
-                               width: `${Math.min((userProgress.studyTime / TARGET_STUDY_HOURS) * 100, 100)}%`,
+                               width: `${((24 * 60 * 60 - timeRemaining) / (24 * 60 * 60)) * 100}%`,
                                backgroundColor: '#10b981'
                              }}></div>
                       </div>
                     </div>
                     <div className="time-section">
-                      <span className="time-label">{t('dashboard.timeRemaining')}</span>
-                      <span className="time-value">{formatTime(getTimeRemaining.remaining)}</span>
+                      <span className="time-label">{t_nested('dashboard.timeRemaining')}</span>
+                      <span className="time-value">{formatTime(timeRemaining)}</span>
                     </div>
                   </div>
                 </div>
@@ -526,10 +515,15 @@ export const AICoachDashboard: React.FC = () => {
             </div>
           </div>
 
+          {/* 24-Hour Challenge Timer */}
+          <ChallengeTimerDisplay />
+
+          {/* Car Builder Gamification */}
+          <CarBuilder />
 
           {/* AI Insights Summary */}
           <div className="ai-insights-summary">
-            <h3>{t('dashboard.yourProgress')}</h3>
+            <h3>{t_nested('dashboard.yourProgress')}</h3>
             <div className="insights-grid">
               {aiInsights.map((insight, index) => (
                 <div key={index} className={`insight-card ${insight.priority}`}>
@@ -547,11 +541,10 @@ export const AICoachDashboard: React.FC = () => {
                         {insight.priority === 'red' && smartStudyPlan.todayFocus && (
                           <div className="smart-insight">
                             <div className="smart-focus-header">
-                              <span className="focus-title">Today's Focus</span>
+                              <span className="focus-title">{t_nested('dashboard.todayFocus')}</span>
                             </div>
                             <div className="focus-details">
                               <strong>{smartStudyPlan.todayFocus.name}</strong>
-                              <span className="focus-time">{smartStudyPlan.studyTimeNeeded} min</span>
                             </div>
                             {smartStudyPlan.todayFocus.score && (
                               <div className="focus-score">
@@ -563,14 +556,14 @@ export const AICoachDashboard: React.FC = () => {
                         {insight.priority === 'amber' && smartStudyPlan.weakAreas && smartStudyPlan.weakAreas.length > 0 && (
                           <div className="smart-weakness">
                             <div className="weakness-header">
-                              <span className="weakness-title">Needs Attention</span>
+                              <span className="weakness-title">{t_nested('dashboard.needsAttention')}</span>
                             </div>
                             <div className="weakness-details">
                               <strong>{smartStudyPlan.weakAreas[0].name}</strong>
                               <span className="weakness-score">{Math.round(smartStudyPlan.weakAreas[0].score)}%</span>
                             </div>
                             <div className="weakness-tip">
-                              Focus on this area to improve your overall readiness
+                              {t_nested('dashboard.focusOnThis')}
                             </div>
                           </div>
                         )}
@@ -583,15 +576,19 @@ export const AICoachDashboard: React.FC = () => {
                         )}
                       </>
                     )}
-                    {/* Show Start button for recommendation insights */}
+                    {/* Start Button */}
                     {insight.type === 'recommendation' && (
-                      <button 
-                        className="start-practice-btn"
-                        onClick={() => navigateToRecommendedTest(insight)}
-                      >
-                        <span className="btn-text">{t('dashboard.startPractice')}</span>
-                        <span className="btn-time">20 min</span>
-                      </button>
+                      <div className="insight-action">
+                        <button 
+                          className="start-practice-btn"
+                          onClick={() => {
+                            console.log('Start button clicked in UI');
+                            navigateToRecommendedTest(insight);
+                          }}
+                        >
+                          {t_nested('dashboard.startPractice')}
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>

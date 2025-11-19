@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Navigation } from './Navigation';
+// import { useTranslation } from 'react-i18next'; // Removed - using LanguageContext
 import * as questionData from '../question_data';
 import { getRandomRealExamQuestions } from '../question_data/realExamQuestions';
 import { lightHaptic, successHaptic, errorHaptic } from '../utils/haptics';
 import { aiCoach } from '../services/aiCoach';
 import { useLanguage } from '../contexts/LanguageContext';
+import { audioService } from '../services/audioService';
+import { useCarBuilder } from '../hooks/useCarBuilder';
 import './PracticeTest.css';
 import './PracticeResult.css';
 
@@ -24,7 +25,8 @@ interface Question {
 export const PracticeTest: React.FC = () => {
   const { testId } = useParams<{ testId: string }>();
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t, currentLanguage } = useLanguage();
+  const { unlockPartByTest } = useCarBuilder();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -32,91 +34,108 @@ export const PracticeTest: React.FC = () => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [score, setScore] = useState(0);
   const [testComplete, setTestComplete] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Default to muted
   const [timeLeft, setTimeLeft] = useState(0);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
-  // const [isSpeaking, setIsSpeaking] = useState(false); // Not used currently
-  const [speechUtterance, setSpeechUtterance] = useState<SpeechSynthesisUtterance | null>(null);
-
-  // Voice functionality - only for practice tests, not mock exams
-  const { getSpeechLang, getSpeechVoice } = useLanguage();
 
   const speakQuestion = useCallback(() => {
-    // Don't speak for mock exams
-    if (testId === 'mock-test') {
-      console.log('Mock test - no voice');
-      return;
+    // MOCK EXAMS: NO TTS - completely silent, no code execution
+    // But MOCK TESTS (practice) should have TTS
+    if (testId === 'mock-exam') {
+      return; // Exit immediately, no TTS code
     }
     
-    console.log('Speaking question:', { isVoiceEnabled, isMuted, testId });
-    
-    // Stop any current speech
-    if (speechUtterance) {
-      window.speechSynthesis.cancel();
-    }
-
     if (!isVoiceEnabled || isMuted) {
-      console.log('Voice disabled or muted');
       return;
     }
 
-    // We'll get currentQuestion later when we need it
     if (questions.length === 0) {
-      console.log('No questions available');
       return;
     }
 
-    const questionText = questions[currentQuestionIndex]?.text || '';
-    console.log('Question text:', questionText);
+    const currentQuestion = questions[currentQuestionIndex];
+    const questionText = currentQuestion?.text || '';
 
-    const utterance = new SpeechSynthesisUtterance(questionText);
-    utterance.lang = getSpeechLang();
+    // Create full text with question and answer options
+    let fullText = questionText;
+    if (currentQuestion?.options) {
+      fullText += '. Options: ';
+      currentQuestion.options.forEach((option, index) => {
+        const optionLetter = String.fromCharCode(65 + index); // A, B, C, D
+        fullText += `${optionLetter}: ${option.text}. `;
+      });
+    }
     
-    // Get available voices
-    const voices = window.speechSynthesis.getVoices();
-    console.log('Available voices:', voices.length);
-    
-    const selectedVoice = voices.find(voice => voice.name === getSpeechVoice()) || voices.find(voice => voice.lang.startsWith(getSpeechLang()));
-    console.log('Selected voice:', selectedVoice?.name || 'default');
-    
-    utterance.voice = selectedVoice || null;
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.volume = 0.8;
-
-    utterance.onstart = () => console.log('Voice started');
-    utterance.onend = () => console.log('Voice ended');
-    utterance.onerror = (e) => console.error('Voice error:', e);
-
-    setSpeechUtterance(utterance);
-    window.speechSynthesis.speak(utterance);
-  }, [testId, speechUtterance, isVoiceEnabled, isMuted, questions, currentQuestionIndex, getSpeechLang, getSpeechVoice]);
+    // Use new audio service
+    const lang = (currentLanguage || 'en') as 'en' | 'nl' | 'ar';
+    audioService.speak(fullText, lang);
+  }, [testId, isVoiceEnabled, isMuted, questions, currentQuestionIndex, currentLanguage]);
 
   const stopSpeaking = () => {
-    if (speechUtterance) {
-      window.speechSynthesis.cancel();
+    // MOCK EXAMS: NO TTS - no speech to stop
+    // But MOCK TESTS (practice) should have TTS
+    if (testId === 'mock-exam') {
+      return;
     }
+    audioService.stop();
   };
 
-  const toggleVoice = () => {
-    console.log('Toggle voice clicked:', { isVoiceEnabled, testId });
-    if (isVoiceEnabled) {
-      stopSpeaking();
-      setIsVoiceEnabled(false);
-      console.log('Voice disabled');
-    } else {
-      setIsVoiceEnabled(true);
-      console.log('Voice enabled');
-      // Auto-speak current question when voice is enabled
-      setTimeout(() => speakQuestion(), 100);
+  const speakExplanation = useCallback(() => {
+    if (testId === 'mock-exam' || !isVoiceEnabled || isMuted) {
+      return;
     }
-  };
+    if (questions.length === 0 || !showExplanation) {
+      return;
+    }
+    const currentQuestion = questions[currentQuestionIndex];
+    if (currentQuestion?.explanation) {
+      const lang = (currentLanguage || 'en') as 'en' | 'nl' | 'ar';
+      audioService.speak(currentQuestion.explanation, lang);
+    }
+  }, [testId, isVoiceEnabled, isMuted, questions, currentQuestionIndex, showExplanation, currentLanguage]);
 
-  // Auto-speak question when it changes (only for practice tests, not mock exams)
+  // Read explanation when it's shown
   useEffect(() => {
-    console.log('Voice effect triggered:', { testId, isVoiceEnabled, isMuted, questionsLength: questions.length });
-    if (testId !== 'mock-test' && isVoiceEnabled && !isMuted && questions.length > 0) {
-      console.log('Auto-speaking question');
+    if (showExplanation && isVoiceEnabled && !isMuted) {
+      const timer = setTimeout(() => {
+        speakExplanation();
+      }, 500); // Small delay after showing explanation
+      return () => clearTimeout(timer);
+    }
+  }, [showExplanation, isVoiceEnabled, isMuted, speakExplanation]);
+
+
+  const toggleMute = () => {
+    // MOCK EXAMS: NO TTS - no mute functionality
+    // But MOCK TESTS (practice) should have TTS
+    if (testId === 'mock-exam') {
+      return;
+    }
+    
+    if (isMuted) {
+      // Unmuting - enable voice and start reading
+      setIsMuted(false);
+      setIsVoiceEnabled(true);
+      // Auto-speak current question when unmuted
+      setTimeout(() => speakQuestion(), 100);
+    } else {
+      // Muting - disable voice and stop reading
+      setIsMuted(true);
+      setIsVoiceEnabled(false);
+      stopSpeaking();
+    }
+  };
+
+  // Auto-speak question when it changes (ONLY for practice tests - NO TTS for mock exams)
+  useEffect(() => {
+    // MOCK EXAMS: NO TTS - completely silent, no auto-speak
+    // But MOCK TESTS (practice) should have TTS
+    if (testId === 'mock-exam') {
+      return;
+    }
+    
+    
+    if (isVoiceEnabled && !isMuted && questions.length > 0) {
       // Small delay to ensure question is rendered
       const timer = setTimeout(() => {
         speakQuestion();
@@ -133,14 +152,18 @@ export const PracticeTest: React.FC = () => {
     };
   }, []);
 
-  // Cleanup speech when component unmounts
+  // Cleanup speech when component unmounts (ONLY for practice tests)
   useEffect(() => {
     return () => {
+      // MOCK EXAMS: NO TTS - no speech to cleanup
+      if (testId === 'mock-test') {
+        return;
+      }
       if (speechUtterance) {
         window.speechSynthesis.cancel();
       }
     };
-  }, [speechUtterance]);
+  }, [speechUtterance, testId]);
 
   // Timer for Mock Test (30 minutes = 1800 seconds)
   useEffect(() => {
@@ -226,14 +249,12 @@ export const PracticeTest: React.FC = () => {
           questions = questionData.insightPracticeQuestions;
           break;
         case 'traffic-rules-signs':
-          questions = questionData.mandatorySignQuestions;
+          questions = questionData.trafficLightsSignalsQuestions;
           break;
         case 'mock-test':
           // Use real exam questions for mock test
           try {
             questions = getRandomRealExamQuestions(25);
-            console.log('Mock test questions loaded:', questions.length);
-            console.log('First question:', questions[0]);
           } catch (error) {
             console.error('Error loading mock test questions:', error);
             questions = [];
@@ -279,14 +300,14 @@ export const PracticeTest: React.FC = () => {
       const translationKey = testTranslationKeys[testId || ''];
       
       // If test has translations, use them
-      if (translationKey && i18n.language !== 'en') {
+      if (translationKey && currentLanguage !== 'en') {
         try {
           const translatedQuestions = questions.map((q, index) => {
             const qKey = `q${index + 1}`;
             const baseKey = `questions.${translationKey}.${qKey}`;
             
             // Check if translation exists
-            const hasTranslation = i18n.exists(`${baseKey}.text`);
+            const hasTranslation = false; // Simplified for now
             
             if (hasTranslation) {
               return {
@@ -310,16 +331,17 @@ export const PracticeTest: React.FC = () => {
         // Use English (default)
         setQuestions(questions);
       }
-      console.log('Questions set:', questions.length, 'for test:', testId);
     };
     loadQuestions();
-  }, [testId, t, i18n]);
+  }, [testId, t, currentLanguage]);
 
 
   const handleAnswer = (answerId: string) => {
     if (!isAnswered) {
-      // Stop speaking when user chooses an answer
-      stopSpeaking();
+      // MOCK EXAMS: NO TTS - no speech to stop
+      if (testId !== 'mock-test') {
+        stopSpeaking();
+      }
       
       if (!isMuted) lightHaptic(); // Haptic feedback on selection
       setSelectedAnswer(answerId);
@@ -353,13 +375,16 @@ export const PracticeTest: React.FC = () => {
         percentage: percentage,
         date: new Date().toISOString()
       });
+      
+      // Unlock car part if score is good
+      if (testId) {
+        unlockPartByTest(testId, percentage);
+      }
+      
       setTestComplete(true);
     }
   };
 
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-  };
 
 
   const getTestName = () => {
@@ -413,7 +438,6 @@ export const PracticeTest: React.FC = () => {
   if (questions.length === 0) {
     return (
       <div className="main-layout">
-        <Navigation />
         <main className="main-content">
           <div className="practice-test">
             <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -575,7 +599,6 @@ export const PracticeTest: React.FC = () => {
 
   return (
     <div className="main-layout">
-      <Navigation />
       <main className="main-content">
         <div className="practice-test">
           <div className="practice-progress-bar">
@@ -605,19 +628,17 @@ export const PracticeTest: React.FC = () => {
               >
                 ×
               </button>
-              <button 
-                className={`practice-mute-btn${isMuted ? ' muted' : ''}${isVoiceEnabled ? ' voice-enabled' : ''}`} 
-                onClick={() => {
-                  toggleMute();
-                  if (testId !== 'mock-test') {
-                    toggleVoice();
-                  }
-                }} 
-                aria-label={isMuted ? 'Unmute' : 'Mute'}
-                title={testId === 'mock-test' ? (isMuted ? 'Unmute' : 'Mute') : (isVoiceEnabled ? 'Disable Voice' : 'Enable Voice')}
-              >
-                {testId === 'mock-test' ? (isMuted ? '🔇' : '🔊') : (isVoiceEnabled ? '🎤' : '🔊')}
-              </button>
+              {/* Only show voice controls for practice tests - NO TTS for mock exams */}
+              {testId !== 'mock-test' && (
+                <button 
+                  className={`practice-mute-btn${isMuted ? ' muted' : ''}${isVoiceEnabled ? ' voice-enabled' : ''}`} 
+                  onClick={toggleMute}
+                  aria-label={isMuted ? 'Unmute and start reading' : 'Mute voice reading'}
+                  title={isMuted ? 'Unmute and start reading' : 'Mute voice reading'}
+                >
+                  {isMuted ? '🔇' : '🎤'}
+                </button>
+              )}
             </div>
           </div>
 

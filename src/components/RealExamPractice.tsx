@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Navigation } from './Navigation';
+import { useLanguage } from '../contexts/LanguageContext';
 import { realExamService, RealExamSession } from '../services/realExamService';
 import { RealExamQuestion } from '../question_data/realExamQuestions';
 import { lightHaptic, successHaptic, errorHaptic } from '../utils/haptics';
@@ -16,7 +15,7 @@ interface RealExamPracticeProps {
 
 const RealExamPractice: React.FC<RealExamPracticeProps> = ({ onComplete, onClose }) => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useLanguage();
   const [session, setSession] = useState<RealExamSession | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -109,7 +108,6 @@ const RealExamPractice: React.FC<RealExamPracticeProps> = ({ onComplete, onClose
   if (!session) {
     return (
       <div className="main-layout">
-        <Navigation />
         <main className="main-content">
           <div className="practice-test">
             <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -269,7 +267,6 @@ const RealExamPractice: React.FC<RealExamPracticeProps> = ({ onComplete, onClose
 
   return (
     <div className="main-layout">
-      <Navigation />
       <main className="main-content">
         <div className="practice-test">
           <div className="practice-progress-bar">

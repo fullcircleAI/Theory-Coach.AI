@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Navigation } from './Navigation';
 import { Mascot } from './Mascot';
 import './AICoachRecommendations.css';
 
@@ -105,7 +104,6 @@ export const AICoachRecommendations: React.FC = () => {
 
   return (
     <div className="main-layout">
-      <Navigation />
       <main className="main-content">
         <div className="recommendations-container">
           <div className="recommendations-header">

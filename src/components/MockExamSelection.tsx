@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Navigation } from './Navigation';
+import { useLanguage } from '../contexts/LanguageContext';
 import { aiCoach } from '../services/aiCoach';
 import './MockExamSelection.css';
 
 export const MockExamSelection: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t_nested } = useLanguage();
   const [recentScores, setRecentScores] = useState<Record<string, any>>({});
   const [unlockProgress, setUnlockProgress] = useState(aiCoach.getUnlockProgress());
   const [showUnlockCelebration, setShowUnlockCelebration] = useState(false);
@@ -85,17 +84,16 @@ export const MockExamSelection: React.FC = () => {
 
   return (
     <div className="main-layout">
-      <Navigation />
       <main className="main-content tests-page mock-exam-page">
         <div className="tests-page mock-exam-page">
           <div className="tests-header">
             <div className="header-content">
               <div className="header-text">
-                <h1>{t('quiz.title')}</h1>
+                <h1>{t_nested('quiz.title')}</h1>
                 <div className="mock-exam-requirement-note">
                   <div className="requirement-icon"></div>
                   <div className="requirement-text">
-                    <strong>Requirement:</strong> Score 70% or higher on practice tests to access mock exams
+                    <strong>{t_nested('quiz.requirement')}</strong> {t_nested('quiz.requirementText')}
                   </div>
                 </div>
               </div>
@@ -129,16 +127,16 @@ export const MockExamSelection: React.FC = () => {
                       
                       
                       <div className="test-meta">
-                        <span>{exam.questions} questions</span>
+                        <span>{exam.questions} {t_nested('quiz.questionsLabel')}</span>
                         <span>•</span>
-                        <span>{exam.time} min</span>
+                        <span>{exam.time} {t_nested('quiz.minutesLabel')}</span>
                         <span>•</span>
-                        <span>{exam.passRate}% to pass</span>
+                        <span>{exam.passRate}% {t_nested('quiz.passMarkLabel')}</span>
                       </div>
                       
                       {isLocked && (
                         <div className="locked-message">
-                          Complete practice tests to unlock
+                          {t_nested('quiz.completePracticeToUnlock')}
                         </div>
                       )}
                     </div>
