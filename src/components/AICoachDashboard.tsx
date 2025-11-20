@@ -5,9 +5,6 @@ import { PullToRefresh } from './PullToRefresh';
 import AITutor from './AITutor';
 import { aiCoach } from '../services/aiCoach';
 import type { AIInsight } from '../services/aiCoach';
-import { useTimer } from '../contexts/TimerContext';
-import { ChallengeTimerDisplay } from './ChallengeTimerDisplay';
-import { CarBuilder } from './CarBuilder';
 import './AICoachDashboard.css';
 import '../mobile-optimizations.css';
 
@@ -128,10 +125,18 @@ const getAchievementDefinitions = (t_nested: (key: string) => string) => ({
   }
 });
 
+// Format study time (hours) to HH:MM:SS
+const formatStudyTime = (hours: number): string => {
+  const totalSeconds = Math.floor(hours * 3600);
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+};
+
 export const AICoachDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { t_nested } = useLanguage();
-  const { timeRemaining, isActive, startTimer, formatTime } = useTimer();
   
   const [userProgress, setUserProgress] = useState<UserProgress>({
     averageScore: 0,
@@ -207,6 +212,7 @@ export const AICoachDashboard: React.FC = () => {
 
   // Data loading function - extracted for reusability (Optimized with error handling)
   const loadDashboardData = useCallback(async () => {
+    setIsLoading(true);
     try {
         const testHistory = aiCoach.getTestHistory();
         const studyTime = aiCoach.getStudyTime();
@@ -281,13 +287,6 @@ export const AICoachDashboard: React.FC = () => {
     
     detectMobile();
   }, []);
-
-  // Start 24-hour challenge timer when dashboard loads
-  useEffect(() => {
-    if (!isActive) {
-      startTimer();
-    }
-  }, [isActive, startTimer]);
 
   useEffect(() => {
     // Load exam date if set
@@ -494,20 +493,20 @@ export const AICoachDashboard: React.FC = () => {
                   <div className="digital-watch-display">
                     <div className="time-section">
                       <span className="time-label">{t_nested('dashboard.studyTime')}</span>
-                      <span className="time-value">{formatTime(24 * 60 * 60 - timeRemaining)}</span>
+                      <span className="time-value">{formatStudyTime(userProgress.studyTime)}</span>
                     </div>
                     <div className="progress-section">
                       <div className="progress-bar-bg">
                         <div className="progress-bar-fill" 
                              style={{ 
-                               width: `${((24 * 60 * 60 - timeRemaining) / (24 * 60 * 60)) * 100}%`,
+                               width: `${Math.min(100, (userProgress.studyTime / 24) * 100)}%`,
                                backgroundColor: '#10b981'
                              }}></div>
                       </div>
                     </div>
                     <div className="time-section">
                       <span className="time-label">{t_nested('dashboard.timeRemaining')}</span>
-                      <span className="time-value">{formatTime(timeRemaining)}</span>
+                      <span className="time-value">{formatStudyTime(Math.max(0, 24 - userProgress.studyTime))}</span>
                     </div>
                   </div>
                 </div>
@@ -515,11 +514,6 @@ export const AICoachDashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* 24-Hour Challenge Timer */}
-          <ChallengeTimerDisplay />
-
-          {/* Car Builder Gamification */}
-          <CarBuilder />
 
           {/* AI Insights Summary */}
           <div className="ai-insights-summary">

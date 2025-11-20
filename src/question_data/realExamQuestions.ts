@@ -691,7 +691,7 @@ export const getRealExamQuestionsByDate = (examDate: string) => {
 };
 
 // Mock Exam Image Questions (10 PERFECTLY ACCURATE image questions from practice tests)
-const mockExamImageQuestions: RealExamQuestion[] = [
+export const mockExamImageQuestions: RealExamQuestion[] = [
   {
     id: 'q-new-warn-1',
     text: 'Identify the road sign:',

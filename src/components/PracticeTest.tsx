@@ -7,7 +7,7 @@ import { lightHaptic, successHaptic, errorHaptic } from '../utils/haptics';
 import { aiCoach } from '../services/aiCoach';
 import { useLanguage } from '../contexts/LanguageContext';
 import { audioService } from '../services/audioService';
-import { useCarBuilder } from '../hooks/useCarBuilder';
+import { adaptiveDifficultyService } from '../services/adaptiveDifficultyService';
 import './PracticeTest.css';
 import './PracticeResult.css';
 
@@ -25,8 +25,7 @@ interface Question {
 export const PracticeTest: React.FC = () => {
   const { testId } = useParams<{ testId: string }>();
   const navigate = useNavigate();
-  const { t, currentLanguage } = useLanguage();
-  const { unlockPartByTest } = useCarBuilder();
+  const { t, currentLanguage, t_nested } = useLanguage();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -37,6 +36,8 @@ export const PracticeTest: React.FC = () => {
   const [isMuted, setIsMuted] = useState(true); // Default to muted
   const [timeLeft, setTimeLeft] = useState(0);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
+  const [currentDifficultyLevel, setCurrentDifficultyLevel] = useState<number>(3);
+  const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now());
 
   const speakQuestion = useCallback(() => {
     // MOCK EXAMS: NO TTS - completely silent, no code execution
@@ -156,14 +157,12 @@ export const PracticeTest: React.FC = () => {
   useEffect(() => {
     return () => {
       // MOCK EXAMS: NO TTS - no speech to cleanup
-      if (testId === 'mock-test') {
+      if (testId === 'mock-exam' || testId === 'mock-test') {
         return;
       }
-      if (speechUtterance) {
-        window.speechSynthesis.cancel();
-      }
+      audioService.stop();
     };
-  }, [speechUtterance, testId]);
+  }, [testId]);
 
   // Timer for Mock Test (30 minutes = 1800 seconds)
   useEffect(() => {
@@ -183,6 +182,22 @@ export const PracticeTest: React.FC = () => {
       return () => clearInterval(timer);
     }
   }, [testId]);
+
+  // Calculate initial difficulty level
+  useEffect(() => {
+    if (testId && testId !== 'mock-test' && testId !== 'mock-exam') {
+      const testHistory = aiCoach.getTestHistory();
+      const difficulty = adaptiveDifficultyService.calculateDifficultyLevel(testHistory);
+      setCurrentDifficultyLevel(difficulty);
+    }
+  }, [testId]);
+
+  // Track question start time
+  useEffect(() => {
+    if (questions.length > 0 && currentQuestionIndex < questions.length) {
+      setQuestionStartTime(Date.now());
+    }
+  }, [currentQuestionIndex, questions.length]);
 
   useEffect(() => {
     const loadQuestions = () => {
@@ -329,7 +344,53 @@ export const PracticeTest: React.FC = () => {
         }
       } else {
         // Use English (default)
-        setQuestions(questions);
+        // Apply adaptive learning (except for mock tests)
+        if (testId && testId !== 'mock-test' && testId !== 'mock-exam' && questions.length > 0) {
+          const testHistory = aiCoach.getTestHistory();
+          const difficulty = adaptiveDifficultyService.calculateDifficultyLevel(testHistory);
+          setCurrentDifficultyLevel(difficulty);
+          
+          // Get weak topics for prioritization
+          const testScores = aiCoach.getTestScores();
+          const weakTopics = Object.entries(testScores)
+            .filter(([_, data]) => data.average < 60)
+            .map(([testId, _]) => {
+              // Map test ID to topic name
+              const topicMap: Record<string, string> = {
+                'priority-rules': 'Priority Rules',
+                'hazard-perception': 'Hazard Perception',
+                'speed-safety': 'Speed Limits',
+                'traffic-lights-signals': 'Traffic Lights',
+                'road-signs': 'Road Signs',
+                'motorway-rules': 'Motorway Rules',
+                'roundabout-rules': 'Roundabout Rules',
+                'bicycle-interactions': 'Bicycle Interactions',
+                'tram-interactions': 'Tram Interactions',
+                'pedestrian-crossings': 'Pedestrian Crossings',
+                'construction-zones': 'Construction Zones',
+                'weather-conditions': 'Weather Conditions',
+                'vehicle-knowledge': 'Vehicle Knowledge',
+                'parking-rules': 'Parking Rules',
+                'environmental': 'Environmental Zones',
+                'technology-safety': 'Technology & Safety',
+                'alcohol-drugs': 'Alcohol & Drugs',
+                'fatigue-rest': 'Fatigue & Rest',
+                'emergency-procedures': 'Emergency Procedures',
+              };
+              return topicMap[testId] || testId;
+            });
+          
+          // Select adaptive questions with weak topic prioritization
+          const adaptiveQuestions = adaptiveDifficultyService.selectAdaptiveQuestions(
+            questions,
+            difficulty,
+            questions.length,
+            weakTopics.length > 0 ? weakTopics : undefined
+          );
+          setQuestions(adaptiveQuestions);
+        } else {
+          setQuestions(questions);
+        }
       }
     };
     loadQuestions();
@@ -341,6 +402,25 @@ export const PracticeTest: React.FC = () => {
       // MOCK EXAMS: NO TTS - no speech to stop
       if (testId !== 'mock-test') {
         stopSpeaking();
+      }
+      
+      // Calculate time spent on question
+      const timeSpent = Math.floor((Date.now() - questionStartTime) / 1000);
+      
+      // Adaptive learning: Adjust difficulty after answer
+      if (testId && testId !== 'mock-test' && testId !== 'mock-exam') {
+        const isCorrect = answerId === questions[currentQuestionIndex].correctAnswerId;
+        const currentQuestion = questions[currentQuestionIndex];
+        const questionDifficulty = (currentQuestion as any).difficulty || 
+          adaptiveDifficultyService.calculateQuestionDifficulty(currentQuestion);
+        
+        const newDifficulty = adaptiveDifficultyService.adjustDifficultyAfterAnswer(
+          currentDifficultyLevel,
+          isCorrect,
+          timeSpent,
+          questionDifficulty
+        );
+        setCurrentDifficultyLevel(newDifficulty);
       }
       
       if (!isMuted) lightHaptic(); // Haptic feedback on selection
@@ -375,11 +455,6 @@ export const PracticeTest: React.FC = () => {
         percentage: percentage,
         date: new Date().toISOString()
       });
-      
-      // Unlock car part if score is good
-      if (testId) {
-        unlockPartByTest(testId, percentage);
-      }
       
       setTestComplete(true);
     }
@@ -427,8 +502,10 @@ export const PracticeTest: React.FC = () => {
   };
 
   const getNextTest = () => {
-    // Get REAL next recommendation from AI Coach
-    const recommendation = aiCoach.getTopRecommendation();
+    // Get REAL next recommendation from AI Coach (with adaptive learning + weak area priority)
+    // This uses the same logic as Dashboard and Practice Page for consistency
+    // The recommendation reflects the just-completed test since it's saved before results page shows
+    const recommendation = aiCoach.getTopRecommendation(t_nested);
     return { 
       id: recommendation.testId, 
       name: recommendation.testName 
@@ -453,6 +530,38 @@ export const PracticeTest: React.FC = () => {
   if (testComplete) {
     const percentage = Math.round((score / questions.length) * 100);
     const nextTest = getNextTest();
+
+    // Check if all tests are completed
+    const testScores = aiCoach.getTestScores();
+    const TEST_METADATA: Record<string, { name: string; category: string }> = {
+      'traffic-lights-signals': { name: 'Traffic Lights & Signals', category: 'signals' },
+      'priority-rules': { name: 'Priority & Right of Way', category: 'rules' },
+      'hazard-perception': { name: 'Hazard Perception', category: 'safety' },
+      'speed-safety': { name: 'Speed & Safety', category: 'safety' },
+      'bicycle-interactions': { name: 'Bicycle Interactions', category: 'interactions' },
+      'roundabout-rules': { name: 'Roundabout Rules', category: 'rules' },
+      'tram-interactions': { name: 'Tram Interactions', category: 'interactions' },
+      'pedestrian-crossings': { name: 'Pedestrian Crossings', category: 'interactions' },
+      'construction-zones': { name: 'Construction Zones', category: 'zones' },
+      'weather-conditions': { name: 'Weather Conditions', category: 'safety' },
+      'road-signs': { name: 'Road Signs', category: 'signs' },
+      'motorway-rules': { name: 'Motorway Rules', category: 'rules' },
+      'vehicle-knowledge': { name: 'Vehicle Knowledge', category: 'vehicles' },
+      'parking-rules': { name: 'Parking Rules', category: 'rules' },
+      'environmental': { name: 'Environmental Zones', category: 'zones' },
+      'technology-safety': { name: 'Technology & Safety', category: 'technology' },
+      'alcohol-drugs': { name: 'Alcohol & Drugs', category: 'safety' },
+      'fatigue-rest': { name: 'Fatigue & Rest', category: 'safety' },
+      'emergency-procedures': { name: 'Emergency Procedures', category: 'safety' },
+      'insight-practice': { name: 'Insight Practice', category: 'advanced' },
+      'traffic-rules-signals': { name: 'Traffic Rules & Signs', category: 'rules' },
+    };
+    const allTestIds = Object.keys(TEST_METADATA);
+    const completedTestIds = Object.keys(testScores);
+    const allTestsCompleted = allTestIds.length > 0 && allTestIds.every(testId => completedTestIds.includes(testId));
+    
+    // Determine if there's a next test (not the same as current test and not all tests completed)
+    const hasNextTest = !allTestsCompleted && nextTest.id && nextTest.id !== testId;
 
     // Smart Coaching Logic: Determine readiness level
     const isCritical = percentage < 60;  // Must retry
@@ -489,7 +598,9 @@ export const PracticeTest: React.FC = () => {
                   <span className="score-separator">/</span>
                   <span className="score-total">{questions.length}</span>
                 </div>
-                <div className="score-percentage">{percentage}%</div>
+                <div className={`score-percentage ${hasMastery ? 'excellent' : needsWork ? 'good' : 'practice'}`}>
+                  {percentage}%
+                </div>
               </div>
 
               <div className={`result-message ${hasMastery ? 'excellent' : needsWork ? 'good' : 'practice'}`}>
@@ -497,90 +608,67 @@ export const PracticeTest: React.FC = () => {
               </div>
 
               <div className="result-actions">
-                {/* Critical (<60%): Only show Retry button */}
-                {isCritical && (
-                  <>
-                    <button className="practice-nav-btn primary" onClick={() => {
+                {/* Primary Button - Based on score and next test availability */}
+                {percentage < 80 ? (
+                  // Score < 80%: Primary = Retry Test
+                  <button 
+                    className="practice-nav-btn primary retry-btn" 
+                    onClick={() => {
                       setCurrentQuestionIndex(0);
                       setSelectedAnswer('');
                       setIsAnswered(false);
                       setShowExplanation(false);
                       setScore(0);
                       setTestComplete(false);
-                    }}>
-                      Retry Test
-                    </button>
-                    <button className="practice-nav-btn" onClick={() => navigate('/')}>
-                      Back to Dashboard
-                    </button>
-                  </>
+                    }}
+                    aria-label="Retry this test"
+                  >
+                    <span className="btn-text">Retry Test</span>
+                    <span className="btn-arrow">↻</span>
+                  </button>
+                ) : hasNextTest ? (
+                  // Score ≥ 80% with next test: Primary = Next
+                  <button 
+                    className="practice-nav-btn primary next-test-btn" 
+                    onClick={() => navigate(`/practice/${nextTest.id}`)}
+                    aria-label={`Go to next test: ${nextTest.name}`}
+                  >
+                    <span className="btn-text">Next: {nextTest.name}</span>
+                    <span className="btn-arrow">→</span>
+                  </button>
+                ) : (
+                  // Score ≥ 80% no next test: Primary = Dashboard
+                  <button 
+                    className="practice-nav-btn primary dashboard-btn" 
+                    onClick={() => navigate('/new-dashboard')}
+                    aria-label="Return to dashboard"
+                  >
+                    <span className="btn-text">Go to Dashboard</span>
+                    <span className="btn-arrow">→</span>
+                  </button>
                 )}
 
-                {/* Needs Work (60-79%): Show both, prioritize Retry */}
-                {needsWork && (
-                  <>
-                    <button className="practice-nav-btn primary" onClick={() => {
-                      setCurrentQuestionIndex(0);
-                      setSelectedAnswer('');
-                      setIsAnswered(false);
-                      setShowExplanation(false);
-                      setScore(0);
-                      setTestComplete(false);
-                    }}>
-                      Retry Test (Recommended)
-                    </button>
-                    <button className="practice-nav-btn" onClick={() => {
-                      window.location.href = `/practice/${nextTest.id}`;
-                    }}>
-                      Next: {nextTest.name}
-                    </button>
-                    <button className="practice-nav-btn" onClick={() => navigate('/')}>
-                      Back to Dashboard
-                    </button>
-                  </>
+                {/* Secondary Buttons - Conditional */}
+                {percentage < 80 && hasNextTest && (
+                  // Score < 80% with next test: Show Next as secondary
+                  <button 
+                    className="practice-nav-btn secondary next-test-btn" 
+                    onClick={() => navigate(`/practice/${nextTest.id}`)}
+                    aria-label={`Go to next test: ${nextTest.name}`}
+                  >
+                    Next: {nextTest.name}
+                  </button>
                 )}
 
-                {/* Proficiency (80%+): Encourage progression */}
-                {hasMastery && (
-                  <>
-                    {/* Show Mock Exam CTA if ready OR if this is the mock test AND user scored 70%+ */}
-                    {((isReadyForMockExam || testId === 'mock-test') && percentage >= 70) && (
-                      <button 
-                        className="practice-nav-btn mock-exam-cta primary" 
-                        onClick={() => navigate('/mock-exam')}
-                        style={{
-                          background: 'linear-gradient(135deg, #1A3E7A, #002868)',
-                          color: 'white',
-                          fontWeight: '700',
-                          fontSize: '1.1rem',
-                          padding: '1rem 1.5rem',
-                          marginBottom: '1rem',
-                          boxShadow: '0 4px 12px rgba(26, 62, 122, 0.3)'
-                        }}
-                      >
-                        Start Mock Exam
-                      </button>
-                    )}
-                    
-                    <button className="practice-nav-btn next-test primary" onClick={() => {
-                      window.location.href = `/practice/${nextTest.id}`;
-                    }}>
-                      Next: {nextTest.name}
-                    </button>
-                    <button className="practice-nav-btn" onClick={() => {
-                      setCurrentQuestionIndex(0);
-                      setSelectedAnswer('');
-                      setIsAnswered(false);
-                      setShowExplanation(false);
-                      setScore(0);
-                      setTestComplete(false);
-                    }}>
-                      Retry Test
-                    </button>
-                    <button className="practice-nav-btn" onClick={() => navigate('/')}>
-                      Back to Dashboard
-                    </button>
-                  </>
+                {/* Dashboard always available as secondary */}
+                {(percentage < 80 || hasNextTest) && (
+                  <button 
+                    className="practice-nav-btn secondary dashboard-btn" 
+                    onClick={() => navigate('/new-dashboard')}
+                    aria-label="Go to dashboard"
+                  >
+                    Go to Dashboard
+                  </button>
                 )}
               </div>
             </div>
@@ -611,6 +699,11 @@ export const PracticeTest: React.FC = () => {
                 Question {currentQuestionIndex + 1} of {questions.length}:
               </span>
               <span className="practice-question-subject">{currentQuestion.subject}</span>
+              {testId && testId !== 'mock-test' && testId !== 'mock-exam' && (
+                <span className="difficulty-badge">
+                  AI Level: {adaptiveDifficultyService.getDifficultyLabel(currentDifficultyLevel)}
+                </span>
+              )}
             </div>
             <div className="practice-header-controls">
               {testId === 'mock-test' && (

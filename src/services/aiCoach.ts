@@ -1,7 +1,9 @@
 // AI Coach Service - Real intelligent recommendations based on user performance
+// IMPORTANT: AI uses PERFORMANCE (scores, mastery, weak areas) - NOT time - for recommendations
 
 import { cloudSave } from './cloudSave';
 import { userAuth } from './userAuth';
+import { adaptiveDifficultyService } from './adaptiveDifficultyService';
 
 export interface TestResult {
   testId: string;
@@ -164,10 +166,12 @@ class AICoachService {
     localStorage.setItem('recommendationIgnores', JSON.stringify(ignores));
   }
 
-  // Get top recommendation (SMART LOGIC)
+  // Get top recommendation (STRICT WEAK AREA PRIORITY + ADAPTIVE LEARNING)
+  // PRIORITY RULE: Weak areas ALWAYS come first. Other tests only if no weak areas exist.
   getTopRecommendation(translate?: (key: string) => string): TestRecommendation {
     const testScores = this.getTestScores();
     const ignores = this.getIgnoreCounts();
+    const testHistory = this.getTestHistory();
 
     // New user - recommend beginner path
     if (Object.keys(testScores).length === 0) {
@@ -181,79 +185,163 @@ class AICoachService {
       };
     }
 
-    // Calculate weak areas
-    const weakAreas: Array<{ testId: string; score: number; ignoreCount: number }> = [];
+    // ADAPTIVE LEARNING: Get user's difficulty level and identify weak topics
+    const difficultyLevel = adaptiveDifficultyService.calculateDifficultyLevel(testHistory);
+    
+    // STEP 1: Identify ALL weak areas (score < 60% OR mastery < 60%)
+    const weakAreas: Array<{ 
+      testId: string; 
+      score: number; 
+      mastery: number;
+      ignoreCount: number;
+      isWeak: boolean; // True if score < 60 OR mastery < 60
+    }> = [];
     
     Object.keys(TEST_METADATA).forEach(testId => {
       const testData = testScores[testId];
-      if (testData) {
-        weakAreas.push({
-          testId,
-          score: testData.average,
-          ignoreCount: ignores[testId] || 0
-        });
-      } else {
-        // Not practiced yet - add as potential
-        weakAreas.push({
-          testId,
-          score: 0,
-          ignoreCount: ignores[testId] || 0
-        });
-      }
+      const mastery = adaptiveDifficultyService.getTopicMastery(testId, testHistory);
+      const score = testData?.average || 0;
+      
+      // A test is "weak" if:
+      // - Score < 60% (has been taken and scored low)
+      // - OR Mastery < 60% (adaptive learning identifies it as weak)
+      // - OR Not practiced yet (score = 0, but we'll handle this separately)
+      const isWeak = (score > 0 && score < 60) || (mastery > 0 && mastery < 60);
+      
+      weakAreas.push({
+        testId,
+        score,
+        mastery,
+        ignoreCount: ignores[testId] || 0,
+        isWeak
+      });
     });
 
-    // Sort by priority:
-    // 1. Critical areas (score < 60%) that haven't been ignored too much
-    // 2. Unpracticed tests in beginner path
-    // 3. Lower scores first
-    // 4. Less ignored first
-    weakAreas.sort((a, b) => {
-      // Critical and not over-ignored comes first
-      const aCritical = a.score < 60 && a.ignoreCount < 3;
-      const bCritical = b.score < 60 && b.ignoreCount < 3;
-      if (aCritical && !bCritical) return -1;
-      if (!aCritical && bCritical) return 1;
+    // STEP 2: Separate weak areas from other tests
+    const actualWeakAreas = weakAreas.filter(area => area.isWeak && area.ignoreCount < 3);
+    const otherTests = weakAreas.filter(area => !area.isWeak || area.ignoreCount >= 3);
 
-      // Then by ignore count (less ignored first)
-      if (a.ignoreCount !== b.ignoreCount) {
-        return a.ignoreCount - b.ignoreCount;
-      }
-
-      // Then by score (lower first)
-      return a.score - b.score;
-    });
-
-    const topWeak = weakAreas[0];
-    const testName = translate ? this.getTranslatedTestName(topWeak.testId, translate) : TEST_METADATA[topWeak.testId].name;
+    // STEP 3: STRICT PRIORITY - Only recommend from weak areas if they exist
+    let candidateAreas: typeof weakAreas = [];
     
-    // Determine priority and reason - Enhanced user-focused messaging
+    if (actualWeakAreas.length > 0) {
+      // PRIORITY RULE: Weak areas exist - ONLY recommend from weak areas
+      candidateAreas = actualWeakAreas;
+      
+      // Sort weak areas by:
+      // 1. Lowest score first (worst performance)
+      // 2. Lowest mastery first (weakest topic)
+      // 3. Less ignored first
+      candidateAreas.sort((a, b) => {
+        // First: by score (lower = worse = higher priority)
+        if (a.score !== b.score && a.score > 0 && b.score > 0) {
+          return a.score - b.score;
+        }
+        
+        // Second: by mastery (lower = weaker = higher priority)
+        if (a.mastery !== b.mastery && a.mastery > 0 && b.mastery > 0) {
+          return a.mastery - b.mastery;
+        }
+        
+        // Third: by ignore count (less ignored = higher priority)
+        if (a.ignoreCount !== b.ignoreCount) {
+          return a.ignoreCount - b.ignoreCount;
+        }
+        
+        // Tie-breaker: prefer tests with actual scores over unpracticed
+        if (a.score > 0 && b.score === 0) return -1;
+        if (a.score === 0 && b.score > 0) return 1;
+        
+        return 0;
+      });
+    } else {
+      // NO weak areas exist - only then recommend other tests
+      // This includes:
+      // - Unpracticed tests (score = 0, mastery = 0)
+      // - Strong tests (score >= 60, mastery >= 60)
+      candidateAreas = otherTests;
+      
+      // Sort other tests by:
+      // 1. Unpracticed tests first (beginner path priority)
+      // 2. Lower scores first (even if >= 60)
+      // 3. Less ignored first
+      candidateAreas.sort((a, b) => {
+        // Unpracticed tests (score = 0) come first
+        if (a.score === 0 && b.score > 0) return -1;
+        if (a.score > 0 && b.score === 0) return 1;
+        
+        // Beginner path priority for unpracticed
+        if (a.score === 0 && b.score === 0) {
+          const aInPath = BEGINNER_PATH.includes(a.testId);
+          const bInPath = BEGINNER_PATH.includes(b.testId);
+          if (aInPath && !bInPath) return -1;
+          if (!aInPath && bInPath) return 1;
+        }
+        
+        // Then by score (lower first, even if >= 60)
+        if (a.score !== b.score) {
+          return a.score - b.score;
+        }
+        
+        // Then by ignore count
+        return a.ignoreCount - b.ignoreCount;
+      });
+    }
+
+    // STEP 4: Get the top recommendation
+    const topRecommendation = candidateAreas[0];
+    if (!topRecommendation) {
+      // Fallback (shouldn't happen, but just in case)
+      return {
+        testId: BEGINNER_PATH[0],
+        testName: TEST_METADATA[BEGINNER_PATH[0]].name,
+        reason: 'Start your learning journey',
+        priority: 'high',
+        score: 0,
+        ignoreCount: 0
+      };
+    }
+
+    const testName = translate ? this.getTranslatedTestName(topRecommendation.testId, translate) : TEST_METADATA[topRecommendation.testId].name;
+    
+    // STEP 5: Determine priority and reason based on whether it's a weak area
     let priority: 'critical' | 'high' | 'medium' = 'medium';
     let reason = 'Practice this to improve';
 
-    if (topWeak.score === 0) {
-      priority = 'high';
-      reason = 'Start here - essential for exam success';
-    } else if (topWeak.score < 60) {
+    if (topRecommendation.isWeak) {
+      // WEAK AREA - Always critical priority
       priority = 'critical';
-      reason = 'Critical weakness - focus here first';
-    } else if (topWeak.score < 88) {
-      priority = 'high';
-      reason = 'Almost ready - one more practice';
+      if (topRecommendation.score < 40 || topRecommendation.mastery < 40) {
+        reason = 'Critical weakness - focus here first';
+      } else if (topRecommendation.score < 60 || topRecommendation.mastery < 60) {
+        reason = 'Weak area - improve this before moving on';
+      } else {
+        reason = 'Needs improvement - practice this area';
+      }
     } else {
-      priority = 'medium';
-      reason = 'Good progress - maintain skills';
+      // NOT a weak area (only shown if no weak areas exist)
+      if (topRecommendation.score === 0) {
+        priority = 'high';
+        reason = 'Start here - essential for exam success';
+      } else if (topRecommendation.score < 88) {
+        priority = 'high';
+        reason = 'Almost ready - one more practice';
+      } else {
+        priority = 'medium';
+        reason = 'Good progress - maintain skills';
+      }
     }
 
     // Add context-aware reasoning
-    const contextReason = this.getContextualReason(topWeak, testScores);
+    const contextReason = this.getContextualReason(topRecommendation, testScores);
 
     return {
-      testId: topWeak.testId,
+      testId: topRecommendation.testId,
       testName,
       reason: contextReason || reason,
       priority,
-      score: topWeak.score,
-      ignoreCount: topWeak.ignoreCount
+      score: topRecommendation.score,
+      ignoreCount: topRecommendation.ignoreCount
     };
   }
 
@@ -482,18 +570,23 @@ class AICoachService {
     return practiceQuestions + mockExamQuestions;
   }
 
-  // Get study time (total time spent practicing)
+  // Get study time (total time spent in app - tracked from dashboard entry)
+  // IMPORTANT: This is for DISPLAY ONLY. AI recommendations use PERFORMANCE, not time.
   getStudyTime(): number {
-    const history = this.getTestHistory();
-    const mockExamResults = this.getMockExamResults();
-    
-    // Estimate: 1.5 minutes per question (realistic average)
-    const practiceQuestions = history.reduce((sum, result) => sum + result.totalQuestions, 0);
-    const mockExamQuestions = mockExamResults.reduce((sum, result) => sum + result.totalQuestions, 0);
-    const totalQuestions = practiceQuestions + mockExamQuestions;
-    
-    const hours = totalQuestions / 40; // 1.5 min per Q = 40 Q per hour (FIXED: was 60 Q per hour)
-    return parseFloat(hours.toFixed(1));
+    // Use actual tracked time from studyTimeTracker (starts when dashboard is entered)
+    try {
+      const { studyTimeTracker } = require('./studyTimeTracker');
+      return studyTimeTracker.getStudyTimeHours();
+    } catch (error) {
+      // Fallback: estimate from questions if tracker not available
+      const history = this.getTestHistory();
+      const mockExamResults = this.getMockExamResults();
+      const practiceQuestions = history.reduce((sum, result) => sum + result.totalQuestions, 0);
+      const mockExamQuestions = mockExamResults.reduce((sum, result) => sum + result.totalQuestions, 0);
+      const totalQuestions = practiceQuestions + mockExamQuestions;
+      const hours = totalQuestions / 40; // 1.5 min per Q = 40 Q per hour
+      return parseFloat(hours.toFixed(1));
+    }
   }
 
   // Mock Exam Unlock System - UNLOCKED FOR TESTING
@@ -687,6 +780,57 @@ class AICoachService {
     }
     
     return { confidence: Math.round(confidence), message };
+  }
+
+  // Get user's performance per topic
+  getTopicPerformance(): Record<string, { average: number; count: number; lastScore: number }> {
+    return this.getTestScores();
+  }
+
+  // Get weak topics that need practice
+  getWeakTopics(threshold: number = 60): string[] {
+    const testScores = this.getTestScores();
+    const weakTopics: string[] = [];
+    
+    Object.entries(testScores).forEach(([testId, data]) => {
+      if (data.average < threshold) {
+        weakTopics.push(testId);
+      }
+    });
+
+    // Also include unpracticed tests
+    Object.keys(TEST_METADATA).forEach(testId => {
+      if (!testScores[testId] && !weakTopics.includes(testId)) {
+        weakTopics.push(testId);
+      }
+    });
+
+    return weakTopics;
+  }
+
+  // Check if mock exam should be personalized
+  shouldPersonalizeMockExam(): boolean {
+    const history = this.getTestHistory();
+    // Personalize if user has taken at least 3 practice tests
+    return history.length >= 3;
+  }
+
+  // Get recommended difficulty level for adaptive learning
+  getRecommendedDifficulty(): number {
+    const history = this.getTestHistory();
+    if (history.length === 0) return 3; // Start at beginner-intermediate
+    
+    const recentTests = history.slice(-5);
+    const scores = recentTests.map(test => test.percentage);
+    const average = scores.reduce((a, b) => a + b, 0) / scores.length;
+    
+    // Simple mapping
+    if (average >= 90) return 9;
+    if (average >= 80) return 7;
+    if (average >= 70) return 5;
+    if (average >= 60) return 4;
+    if (average >= 50) return 3;
+    return 2;
   }
 }
 

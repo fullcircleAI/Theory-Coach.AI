@@ -12,7 +12,7 @@
 }
 
 /* Ensure buttons and interactive elements are clickable */
-button, a, [role="button"], .start-practice-btn, .floating-ai-btn-mascot {
+button, a, [role="button"], .start-practice-btn, .floating-ai-btn-mascot, .side-panel-item {
   pointer-events: auto !important;
   cursor: pointer !important;
   -webkit-user-select: none;

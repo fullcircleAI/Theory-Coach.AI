@@ -103,6 +103,15 @@ export interface LanguageStrings {
     buildingSkills: string;
   loadingProgress: string;
   analyzingData: string;
+  recommendation: string;
+  mockExamsAvailable: string;
+  allTestsCompleted: string;
+  startFirstTest: string;
+  focus: string;
+  strength: string;
+  noWeakAreas: string;
+  maintainStrength: string;
+  completeTestsForStrength: string;
   };
   
   settings: {

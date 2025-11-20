@@ -5,6 +5,10 @@ import { lightHaptic, impactHaptic } from '../utils/haptics';
 import './MockExam.css';
 import * as questionData from '../question_data';
 import { getRandomRealExamQuestions } from '../question_data/realExamQuestions';
+import { dynamicMockExamService } from '../services/dynamicMockExamService';
+import { aiCoach } from '../services/aiCoach';
+import { adaptiveDifficultyService } from '../services/adaptiveDifficultyService';
+import { userAuth } from '../services/userAuth';
 
 interface Question {
   id: string;
@@ -27,6 +31,12 @@ interface MockExamConfig {
 export const MockExam: React.FC = () => {
   const { examId } = useParams<{ examId: string }>();
   const navigate = useNavigate();
+  
+  // Get user ID for question history tracking
+  const getUserId = (): string | undefined => {
+    const user = userAuth.getCurrentUser();
+    return user?.id;
+  };
   // Translation removed since we're using real exam questions directly
 
   // Mock exam configurations - Official exam format
@@ -49,6 +59,8 @@ export const MockExam: React.FC = () => {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isExamStarted, setIsExamStarted] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [isPersonalized, setIsPersonalized] = useState(false);
+  const [focusAreas, setFocusAreas] = useState<string[]>([]);
 
   // Hide mobile footer during mock exam
   useEffect(() => {
@@ -98,17 +110,47 @@ export const MockExam: React.FC = () => {
 
   // Create formatted exam - 25 questions: 15 real exam + 10 image questions
   const createFormattedExam = (): Question[] => {
-    // Use the optimized function that already provides 15 real + 10 image questions
     try {
-      const exam = getRandomRealExamQuestions(25);
+      // Check if exam should be personalized
+      const personalizationPref = localStorage.getItem('mockExamPersonalization');
+      const shouldPersonalize = personalizationPref !== 'false' && aiCoach.shouldPersonalizeMockExam();
+      const testHistory = aiCoach.getTestHistory();
       
-      console.log(`Mock exam ${examId} using optimized questions:`, { 
-        total: exam.length,
-        realExamQuestions: exam.filter(q => !q.imageUrl).length,
-        imageQuestions: exam.filter(q => q.imageUrl).length
-      });
-      
-      return exam;
+      if (shouldPersonalize && testHistory.length > 0) {
+        // Generate personalized exam from real CBR questions
+        // Includes: repeat prevention, mastery weighting, recent performance tracking
+        const difficultyLevel = adaptiveDifficultyService.calculateDifficultyLevel(testHistory);
+        const userId = getUserId();
+        const { questions: personalizedQuestions, config } = dynamicMockExamService.generatePersonalizedExam(
+          examId || 'mock-exam1',
+          testHistory,
+          difficultyLevel,
+          userId
+        );
+        
+        setIsPersonalized(true);
+        setFocusAreas(config.focusAreas);
+        
+        console.log(`Mock exam ${examId} using personalized questions:`, {
+          total: personalizedQuestions.length,
+          focusAreas: config.focusAreas,
+          personalizationLevel: config.personalizationLevel,
+          difficultyDistribution: config.difficultyDistribution
+        });
+        
+        return personalizedQuestions;
+      } else {
+        // Use random real exam questions (default)
+        const exam = getRandomRealExamQuestions(25);
+        
+        console.log(`Mock exam ${examId} using random real questions:`, { 
+          total: exam.length,
+          realExamQuestions: exam.filter(q => !q.imageUrl).length,
+          imageQuestions: exam.filter(q => q.imageUrl).length
+        });
+        
+        return exam;
+      }
     } catch (error) {
       console.error('Error loading exam questions:', error);
       // Fallback to generic questions if real exam questions fail
@@ -182,6 +224,11 @@ export const MockExam: React.FC = () => {
         passRate: examConfig.passRate
       };
       
+      // Update question history (prevent repeats in future mocks)
+      const userId = getUserId();
+      const questionIds = questions.map(q => q.id);
+      dynamicMockExamService.updateQuestionHistory(questionIds, examId, userId);
+      
       // Save to localStorage
       localStorage.setItem(`mockExamResults_${examId}`, JSON.stringify(resultsData));
       
@@ -245,6 +292,11 @@ export const MockExam: React.FC = () => {
             
             <div className="intro-header">
               <h1 className="intro-title">Mock Exam</h1>
+              {isPersonalized && focusAreas.length > 0 && (
+                <div className="ai-personalization-badge">
+                  ✨ AI Personalized - Focused on: {focusAreas.join(', ')}
+                </div>
+              )}
             </div>
 
             <div className="exam-rules">

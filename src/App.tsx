@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useLanguage } from './contexts/LanguageContext';
-import { TimerProvider } from './contexts/TimerContext';
 import { SplashScreen } from './components/SplashScreen';
 import { LanguageSelection } from './components/LanguageSelection';
 import { ExamDateSelection } from './components/ExamDateSelection';
@@ -17,7 +16,9 @@ import { MockExam } from './components/MockExam';
 import { MockExamResults } from './components/MockExamResults';
 import { OfficialExam } from './components/RealCBRExam';
 import { TranslationDashboard } from './components/TranslationDashboard';
-import { Navigation } from './components/Navigation';
+import { SidePanel } from './components/SidePanel';
+import { FooterNav } from './components/FooterNav';
+import { NewDashboard } from './components/NewDashboard';
 import UserAuth from './components/UserAuth';
 import { userAuth, User } from './services/userAuth';
 import './App.css';
@@ -86,6 +87,8 @@ function AppContent() {
 
   const handleExamDateComplete = () => {
     setShowExamDate(false);
+    // Mark that exam date was skipped (so it doesn't show again)
+    localStorage.setItem('examDateSkipped', 'true');
   };
 
   // SPLASH SCREEN FIRST (like Duolingo)
@@ -114,10 +117,12 @@ function AppContent() {
       {/* Global Components */}
       <InstallPrompt />
       <OfflineIndicator />
-      <Navigation />
+      <SidePanel />
+      <FooterNav />
       
       <Routes>
         <Route path="/" element={<AICoachDashboard />} />
+        <Route path="/new-dashboard" element={<NewDashboard />} />
         <Route path="/recommendations" element={<AICoachRecommendations />} />
         <Route path="/tests" element={<TestsPage />} />
         <Route path="/mock-exam" element={<MockExamSelection />} />
@@ -134,11 +139,9 @@ function AppContent() {
 
 function App() {
   return (
-    <TimerProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </TimerProvider>
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 

@@ -1,5 +1,43 @@
 /* Mock Exam Selection uses Tests Page styling */
 
+/* Personalization Toggle */
+.personalization-toggle-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+}
+
+.personalization-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.personalization-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #1A3E7A;
+}
+
+.personalization-toggle span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.personalization-description {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
 /* Make mock exam dashboard scrollable on mobile */
 .mock-exam-page .tests-page {
   height: auto;

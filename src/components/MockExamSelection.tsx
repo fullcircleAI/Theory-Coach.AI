@@ -10,6 +10,7 @@ export const MockExamSelection: React.FC = () => {
   const [recentScores, setRecentScores] = useState<Record<string, any>>({});
   const [unlockProgress, setUnlockProgress] = useState(aiCoach.getUnlockProgress());
   const [showUnlockCelebration, setShowUnlockCelebration] = useState(false);
+  const [personalizationEnabled, setPersonalizationEnabled] = useState(true);
 
   const mockExams = [
     {
@@ -73,6 +74,9 @@ export const MockExamSelection: React.FC = () => {
       // Show unlock requirements instead of navigating
       return;
     }
+    
+    // Store personalization preference
+    localStorage.setItem('mockExamPersonalization', personalizationEnabled.toString());
     
     // Check if it's a mock exam
     if (examId.startsWith('mock-exam')) {

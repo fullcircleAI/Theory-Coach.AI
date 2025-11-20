@@ -61,7 +61,16 @@ export const strings: Record<string, LanguageStrings> = {
       goodProgress: "good progress",
       buildingSkills: "building skills",
       loadingProgress: "Loading your progress...",
-      analyzingData: "Analyzing your study data and generating insights"
+      analyzingData: "Analyzing your study data and generating insights",
+      recommendation: "Recommendation",
+      mockExamsAvailable: "Mock Exams Available",
+      allTestsCompleted: "All practice tests completed! You can now take mock exams.",
+      startFirstTest: "Start with your first practice test!",
+      focus: "Focus",
+      strength: "Strength",
+      noWeakAreas: "No weak areas identified yet. Keep practicing!",
+      maintainStrength: "Keep maintaining this strength!",
+      completeTestsForStrength: "Complete practice tests to see your strong areas."
     },
     settings: {
       title: 'Settings',
@@ -483,7 +492,16 @@ export const strings: Record<string, LanguageStrings> = {
       goodProgress: "goede vooruitgang",
       buildingSkills: "vaardigheden opbouwen",
       loadingProgress: "Jouw voortgang laden...",
-      analyzingData: "Jouw studiedata analyseren en inzichten genereren"
+      analyzingData: "Jouw studiedata analyseren en inzichten genereren",
+      recommendation: "Aanbeveling",
+      mockExamsAvailable: "Proefexamens Beschikbaar",
+      allTestsCompleted: "Alle oefentoetsen voltooid! Je kunt nu proefexamens maken.",
+      startFirstTest: "Begin met je eerste oefentoets!",
+      focus: "Focus",
+      strength: "Sterkte",
+      noWeakAreas: "Nog geen zwakke punten geïdentificeerd. Blijf oefenen!",
+      maintainStrength: "Blijf deze sterkte behouden!",
+      completeTestsForStrength: "Voltooi oefentoetsen om je sterke punten te zien."
     },
     settings: {
       title: 'Instellingen',
@@ -905,7 +923,16 @@ export const strings: Record<string, LanguageStrings> = {
       goodProgress: "تقدم جيد",
       buildingSkills: "بناء المهارات",
       loadingProgress: "تحميل تقدمك...",
-      analyzingData: "تحليل بيانات دراستك وتوليد رؤى"
+      analyzingData: "تحليل بيانات دراستك وتوليد رؤى",
+      recommendation: "توصية",
+      mockExamsAvailable: "الامتحانات التجريبية متاحة",
+      allTestsCompleted: "اكتملت جميع اختبارات التدريب! يمكنك الآن إجراء الامتحانات التجريبية.",
+      startFirstTest: "ابدأ باختبار التدريب الأول!",
+      focus: "التركيز",
+      strength: "القوة",
+      noWeakAreas: "لم يتم تحديد نقاط ضعف بعد. استمر في التدريب!",
+      maintainStrength: "استمر في الحفاظ على هذه القوة!",
+      completeTestsForStrength: "أكمل اختبارات التدريب لرؤية نقاط قوتك."
     },
     settings: {
       title: 'الإعدادات',

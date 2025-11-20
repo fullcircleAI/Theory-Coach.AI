@@ -9,6 +9,22 @@ class AudioService {
   private isEnabled = true;
   private volume = 0.9;
   private rate = 0.85;
+  private voicesLoaded = false;
+
+  constructor() {
+    // Ensure voices are loaded before use
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      // Some browsers load voices asynchronously
+      if (this.synth.getVoices().length > 0) {
+        this.voicesLoaded = true;
+      } else {
+        // Wait for voices to load
+        this.synth.onvoiceschanged = () => {
+          this.voicesLoaded = true;
+        };
+      }
+    }
+  }
 
   speak(text: string, language: Language): void {
     if (!this.isEnabled) return;
@@ -17,7 +33,13 @@ class AudioService {
     
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = this.getLangCode(language);
-    utterance.voice = this.getVoice(language);
+    
+    // Get voice (will wait for voices if needed)
+    const voice = this.getVoice(language);
+    if (voice) {
+      utterance.voice = voice;
+    }
+    
     utterance.rate = this.rate;
     utterance.pitch = 1.0;
     utterance.volume = this.volume;
@@ -64,26 +86,67 @@ class AudioService {
   }
 
   private getVoice(lang: Language): SpeechSynthesisVoice | null {
-    const voices = this.synth.getVoices();
+    // Ensure voices are loaded
+    let voices = this.synth.getVoices();
+    if (voices.length === 0) {
+      // If voices aren't loaded yet, try to get them again
+      voices = this.synth.getVoices();
+    }
+    
     const langCode = this.getLangCode(lang);
     
-    // Try to find native female voice
+    // Comprehensive list of female voice names by language
+    const femaleVoiceNames: Record<Language, string[]> = {
+      en: [
+        'samantha', 'sarah', 'claire', 'lisa', 'karen', 'victoria', 
+        'susan', 'kate', 'samantha premium', 'siri', 'alex', 'zira',
+        'female', 'woman', 'woman voice'
+      ],
+      nl: [
+        'anna', 'nora', 'ellen', 'sophie', 'emma', 'mariska',
+        'female', 'vrouw', 'vrouwenstem'
+      ],
+      ar: [
+        'mageda', 'salma', 'hala', 'zeina', 'laila', 'nawal',
+        'female', 'أنثى', 'صوت أنثوي'
+      ]
+    };
+
+    // Priority 1: Native female voice (exact language match + female name)
     let voice = voices.find(v => {
-      const isLang = v.lang.startsWith(langCode);
-      const isFemale = v.name.toLowerCase().includes('female') ||
-                      v.name.toLowerCase().includes('samantha') ||
-                      v.name.toLowerCase().includes('claire') ||
-                      v.name.toLowerCase().includes('sarah') ||
-                      v.name.toLowerCase().includes('lisa') ||
-                      v.name.toLowerCase().includes('anna') ||
-                      v.name.toLowerCase().includes('nora') ||
-                      v.name.toLowerCase().includes('ellen');
-      return isLang && isFemale;
+      const isNativeLang = v.lang === langCode || v.lang.startsWith(langCode.split('-')[0]);
+      const nameLower = v.name.toLowerCase();
+      const isFemale = femaleVoiceNames[lang].some(femaleName => 
+        nameLower.includes(femaleName.toLowerCase())
+      ) || nameLower.includes('female') || nameLower.includes('woman');
+      
+      // Also check if voice has gender property (if available)
+      const hasFemaleGender = (v as any).gender === 'female';
+      
+      return isNativeLang && (isFemale || hasFemaleGender);
     });
 
-    // Fallback to any voice in language
+    // Priority 2: Any female voice in the language (broader match)
     if (!voice) {
-      voice = voices.find(v => v.lang.startsWith(langCode));
+      voice = voices.find(v => {
+        const isLang = v.lang.startsWith(langCode.split('-')[0]);
+        const nameLower = v.name.toLowerCase();
+        return isLang && (
+          nameLower.includes('female') || 
+          nameLower.includes('woman') ||
+          femaleVoiceNames[lang].some(femaleName => nameLower.includes(femaleName.toLowerCase()))
+        );
+      });
+    }
+
+    // Priority 3: Native voice (any gender, but prefer native)
+    if (!voice) {
+      voice = voices.find(v => v.lang === langCode || v.lang.startsWith(langCode.split('-')[0]));
+    }
+
+    // Priority 4: Any voice in language family
+    if (!voice) {
+      voice = voices.find(v => v.lang.startsWith(langCode.split('-')[0]));
     }
 
     return voice || null;
